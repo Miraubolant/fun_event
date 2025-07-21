@@ -90,6 +90,8 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
       if (currentSlide > maxSlide) {
         setCurrentSlide(0);
       }
+    }
+  }, [availableStructures.length, itemsPerSlide, totalSlides, currentSlide]);
 
   const openModal = (structure: Structure) => {
     setSelectedStructure(structure);
