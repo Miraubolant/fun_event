@@ -35,7 +35,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
           >
             <div className="w-12 h-12 rounded-full flex items-center justify-center mr-3 shadow-md group-hover:shadow-lg transition-all" style={{background: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
               <img 
-                src="/logo/cropped-thumbnail_Logo_prtit_fond-bleu.png" 
+                src="https://i.imgur.com/gfhDZfm.png" 
                 alt="Fun Event Logo" 
                 className="w-10 h-10 rounded-full object-cover"
               />
