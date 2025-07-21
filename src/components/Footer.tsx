@@ -16,7 +16,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <div className="flex items-center mb-4">
               <div className="w-14 h-14 rounded-full flex items-center justify-center mr-4 shadow-lg" style={{ background: 'linear-gradient(to right, #0F97F6, #FF5722)' }}>
                 <img 
-                  src="/logo/cropped-thumbnail_Logo_prtit_fond-bleu.png" 
+                  src="https://i.imgur.com/gfhDZfm.png" 
                   alt="Fun Event Logo" 
                   className="w-12 h-12 rounded-full object-cover"
                 />
