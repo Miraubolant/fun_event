@@ -168,7 +168,6 @@ const Quote: React.FC = () => {
               <span className="font-bold" style={{color: '#0F97F6'}}>gratuit</span> 🎯
             </p>
           </div>
-          </p>
         </div>
 
         {/* Progress bar */}
