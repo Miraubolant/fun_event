@@ -68,7 +68,7 @@ const Catalog: React.FC = () => {
                   alt={structure.name}
                   className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                <div className="absolute top-2 right-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
                   {structure.price}€
                 </div>
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
