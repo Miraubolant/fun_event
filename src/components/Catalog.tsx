@@ -47,8 +47,6 @@ const Catalog: React.FC = () => {
             </p>
           </div>
         </div>
-          </p>
-        </div>
 
         <div className="flex flex-wrap justify-center gap-4 mb-12">
           {allCategories.map((category) => {
