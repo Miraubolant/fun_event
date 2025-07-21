@@ -19,7 +19,6 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   
   // Nombre d'éléments par slide selon la taille d'écran
   const [itemsPerSlide, setItemsPerSlide] = React.useState(3);
-  const [totalSlides, setTotalSlides] = React.useState(Math.ceil(availableStructures.length / itemsPerSlide));
   
   // Fonction pour détecter la taille d'écran et ajuster le carrousel
   React.useEffect(() => {
@@ -34,64 +33,44 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         items = 3; // Desktop: 3 éléments par slide
       }
       
-      // Ne mettre à jour que si la valeur change
-      if (items !== itemsPerSlide) {
-        setItemsPerSlide(items);
-        setTotalSlides(Math.ceil(availableStructures.length / items));
-        
-        // Réajuster currentSlide si nécessaire
-        const maxSlide = Math.ceil(availableStructures.length / items) - 1;
-        if (currentSlide > maxSlide) {
-          setCurrentSlide(0);
-        }
-      }
+      setItemsPerSlide(items);
+      setCurrentSlide(0); // Reset à chaque changement de taille
     };
     
     updateItemsPerSlide();
     window.addEventListener('resize', updateItemsPerSlide);
     
     return () => window.removeEventListener('resize', updateItemsPerSlide);
-  }, [availableStructures.length, itemsPerSlide, currentSlide]);
+  }, []);
   
   // Reset du carrousel quand les structures changent
   React.useEffect(() => {
     setCurrentSlide(0);
   }, [availableStructures.length]);
   
+  // Calcul du nombre total de slides
+  const totalSlides = Math.max(1, Math.ceil(availableStructures.length / itemsPerSlide));
+  
   const nextSlide = () => {
-    setCurrentSlide((prev) => {
-      const maxSlide = Math.ceil(availableStructures.length / itemsPerSlide) - 1;
-      return prev >= maxSlide ? 0 : prev + 1;
-    });
+    setCurrentSlide((prev) => (prev + 1) % totalSlides);
   };
   
   const prevSlide = () => {
-    setCurrentSlide((prev) => {
-      const maxSlide = Math.ceil(availableStructures.length / itemsPerSlide) - 1;
-      return prev <= 0 ? maxSlide : prev - 1;
-    });
+    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
   };
   
   const goToSlide = (index: number) => {
-    const maxSlide = Math.ceil(availableStructures.length / itemsPerSlide) - 1;
-    if (index >= 0 && index <= maxSlide) {
+    if (index >= 0 && index < totalSlides) {
       setCurrentSlide(index);
     }
   };
-
-  // Recalcul du nombre total de slides
+  
+  // S'assurer que currentSlide reste valide
   React.useEffect(() => {
-    const newTotalSlides = Math.ceil(availableStructures.length / itemsPerSlide);
-    if (newTotalSlides !== totalSlides) {
-      setTotalSlides(newTotalSlides);
-      
-      // S'assurer que currentSlide est valide
-      const maxSlide = newTotalSlides - 1;
-      if (currentSlide > maxSlide) {
-        setCurrentSlide(0);
-      }
+    if (currentSlide >= totalSlides) {
+      setCurrentSlide(0);
     }
-  }, [availableStructures.length, itemsPerSlide, totalSlides, currentSlide]);
+  }, [currentSlide, totalSlides]);
 
   const openModal = (structure: Structure) => {
     setSelectedStructure(structure);
@@ -161,23 +140,22 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 {/* Carrousel Content */}
                 <div className="overflow-hidden rounded-2xl">
                   <div 
-                    className="flex transition-transform duration-500 ease-in-out gap-4 md:gap-8"
+                    className="flex transition-transform duration-500 ease-in-out"
                     style={{ transform: `translateX(-${currentSlide * 100}%)` }}
                   >
-                    {Array.from({ length: totalSlides }).map((_, slideIndex) => (
-                      <div key={slideIndex} className="w-full flex-shrink-0">
-                        <div className={`grid gap-4 md:gap-8 px-4 ${
+                    {Array.from({ length: totalSlides }, (_, slideIndex) => (
+                      <div key={slideIndex} className="w-full flex-shrink-0 px-4">
+                        <div className={`grid gap-4 md:gap-8 ${
                           itemsPerSlide === 1 ? 'grid-cols-1' :
                           itemsPerSlide === 2 ? 'grid-cols-2' :
                           'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
                         }`}>
                           {availableStructures
                             .slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide)
-                            .map((structure, index) => (
+                            .map((structure) => (
                             <div 
                               key={structure.id}
-                              className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 animate-fade-in-up overflow-hidden cursor-pointer w-full"
-                              style={{ animationDelay: `${index * 0.1}s` }}
+                              className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 overflow-hidden cursor-pointer w-full"
                               onClick={() => openModal(structure)}
                             >
                               {/* Image en bulle */}
@@ -240,7 +218,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 {/* Dots Indicators */}
                 {totalSlides > 1 && (
                   <div className="flex justify-center mt-8 space-x-2">
-                    {Array.from({ length: totalSlides }).map((_, index) => (
+                    {Array.from({ length: totalSlides }, (_, index) => (
                       <button
                         key={index}
                         onClick={() => goToSlide(index)}
