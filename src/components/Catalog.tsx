@@ -68,12 +68,8 @@ const Catalog: React.FC = () => {
                   alt={structure.name}
                   className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <div className="absolute top-4 right-4 bg-gradient-to-r from-blue-500 to-orange-500 text-white px-4 py-2 rounded-full font-bold shadow-lg"
-                     style={{ background: 'linear-gradient(to right, #FF5722, #FF8A65)' }}>
-                  <div className="flex items-center">
-                    <Euro className="w-4 h-4 mr-1" />
-                    {structure.price}€
-                  </div>
+                <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                  {structure.price}€
                 </div>
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
                   <button
