@@ -69,7 +69,7 @@ const Catalog: React.FC = () => {
                   className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute top-4 right-4 bg-gradient-to-r from-blue-500 to-orange-500 text-white px-4 py-2 rounded-full font-bold shadow-lg"
-                     style={{ background: 'linear-gradient(to right, #2196F3, #FF5722)' }}>
+                     style={{ background: 'linear-gradient(to right, #FF5722, #FF8A65)' }}>
                   <div className="flex items-center">
                     <Euro className="w-4 h-4 mr-1" />
                     {structure.price}€
