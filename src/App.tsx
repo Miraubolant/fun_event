@@ -18,12 +18,18 @@ const AppContent: React.FC = () => {
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const { isAdmin } = useAuth();
 
+  const handleNavigate = (page: Page) => {
+    setCurrentPage(page);
+    // Scroll automatiquement en haut de la page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const renderPage = () => {
     switch (currentPage) {
       case 'accueil':
         return (
           <>
-            <Hero onNavigate={setCurrentPage} />
+            <Hero onNavigate={handleNavigate} />
           </>
         );
       case 'catalogue':
@@ -43,7 +49,7 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header currentPage={currentPage} onNavigate={setCurrentPage} />
+      <Header currentPage={currentPage} onNavigate={handleNavigate} />
       
       {/* Bouton admin flottant */}
       {!isAdmin && (
@@ -57,7 +63,7 @@ const AppContent: React.FC = () => {
       )}
       
       {renderPage()}
-      <Footer onNavigate={setCurrentPage} />
+      <Footer onNavigate={handleNavigate} />
       
       {showAdminLogin && (
         <AdminLogin onClose={() => setShowAdminLogin(false)} />

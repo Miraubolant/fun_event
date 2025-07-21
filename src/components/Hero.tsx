@@ -33,13 +33,17 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
       } else {
         items = 3; // Desktop: 3 éléments par slide
       }
-      setItemsPerSlide(items);
-      setTotalSlides(Math.ceil(availableStructures.length / items));
       
-      // Réajuster currentSlide si nécessaire
-      const maxSlide = Math.ceil(availableStructures.length / items) - 1;
-      if (currentSlide > maxSlide) {
-        setCurrentSlide(0);
+      // Ne mettre à jour que si la valeur change
+      if (items !== itemsPerSlide) {
+        setItemsPerSlide(items);
+        setTotalSlides(Math.ceil(availableStructures.length / items));
+        
+        // Réajuster currentSlide si nécessaire
+        const maxSlide = Math.ceil(availableStructures.length / items) - 1;
+        if (currentSlide > maxSlide) {
+          setCurrentSlide(0);
+        }
       }
     };
     
@@ -47,19 +51,45 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
     window.addEventListener('resize', updateItemsPerSlide);
     
     return () => window.removeEventListener('resize', updateItemsPerSlide);
-  }, [availableStructures.length, currentSlide]);
+  }, [availableStructures.length, itemsPerSlide, currentSlide]);
+  
+  // Reset du carrousel quand les structures changent
+  React.useEffect(() => {
+    setCurrentSlide(0);
+  }, [availableStructures.length]);
   
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % totalSlides);
+    setCurrentSlide((prev) => {
+      const maxSlide = Math.ceil(availableStructures.length / itemsPerSlide) - 1;
+      return prev >= maxSlide ? 0 : prev + 1;
+    });
   };
   
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+    setCurrentSlide((prev) => {
+      const maxSlide = Math.ceil(availableStructures.length / itemsPerSlide) - 1;
+      return prev <= 0 ? maxSlide : prev - 1;
+    });
   };
   
   const goToSlide = (index: number) => {
-    setCurrentSlide(index);
+    const maxSlide = Math.ceil(availableStructures.length / itemsPerSlide) - 1;
+    if (index >= 0 && index <= maxSlide) {
+      setCurrentSlide(index);
+    }
   };
+
+  // Recalcul du nombre total de slides
+  React.useEffect(() => {
+    const newTotalSlides = Math.ceil(availableStructures.length / itemsPerSlide);
+    if (newTotalSlides !== totalSlides) {
+      setTotalSlides(newTotalSlides);
+      
+      // S'assurer que currentSlide est valide
+      const maxSlide = newTotalSlides - 1;
+      if (currentSlide > maxSlide) {
+        setCurrentSlide(0);
+      }
 
   const openModal = (structure: Structure) => {
     setSelectedStructure(structure);
