@@ -33,7 +33,7 @@ const Contact: React.FC = () => {
       value: '06 63 52 80 72',
       description: 'Disponible 7j/7 de 8h à 20h',
       link: 'tel:0663528072',
-      color: 'from-green-500 to-green-600'
+      color: 'from-blue-500 to-blue-600'
     },
     {
       icon: MessageCircle,
@@ -41,7 +41,7 @@ const Contact: React.FC = () => {
       value: '06 63 52 80 72',
       description: 'Réponse immédiate',
       link: 'https://wa.me/33663528072',
-      color: 'from-green-500 to-green-600'
+      color: 'from-orange-500 to-orange-600'
     },
     {
       icon: Mail,
