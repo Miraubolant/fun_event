@@ -104,7 +104,7 @@ const Contact: React.FC = () => {
             </h1>
             <p className="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium max-w-4xl mx-auto">
               💬 Une <span className="font-bold" style={{color: '#0F97F6'}}>question</span> ? Un 
-              <span className="font-bold text-orange-500">projet</span> ? Notre équipe est là pour vous 
+              <span className="font-bold text-orange-500"> projet</span> ? Notre équipe est là pour vous 
               <span className="font-bold" style={{color: '#0F97F6'}}>accompagner</span> 🤝
             </p>
           </div>
