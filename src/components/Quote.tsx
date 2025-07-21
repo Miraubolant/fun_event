@@ -164,8 +164,8 @@ const Quote: React.FC = () => {
             </h1>
             <p className="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium max-w-4xl mx-auto">
               📋 Obtenez un <span className="font-bold" style={{color: '#0F97F6'}}>devis personnalisé</span> en 
-              <span className="font-bold text-orange-500">3 étapes simples</span> et 
-              <span className="font-bold" style={{color: '#0F97F6'}}>gratuit</span> 🎯
+              <span className="font-bold text-orange-500"> 3 étapes simples</span> et 
+              <span className="font-bold" style={{color: '#0F97F6'}}> gratuit</span> 🎯
             </p>
           </div>
         </div>
