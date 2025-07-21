@@ -136,7 +136,7 @@ const Catalog: React.FC = () => {
                     href="https://wa.me/33663528072"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-3 border-2 border-blue-500 text-blue-500 rounded-lg font-semibold hover:bg-blue-500 hover:text-white transition-all"
+                    className="absolute top-2 right-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg"
                     style={{ borderColor: '#2196F3', color: '#2196F3' }}
                   >
                     💬
