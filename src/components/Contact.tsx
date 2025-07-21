@@ -108,7 +108,6 @@ const Contact: React.FC = () => {
               <span className="font-bold" style={{color: '#0F97F6'}}>accompagner</span> 🤝
             </p>
           </div>
-          </p>
         </div>
 
         {/* Contact rapide */}
