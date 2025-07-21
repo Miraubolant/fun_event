@@ -271,7 +271,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
               </div>
               
               <div className="text-center group">
-                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
                   <Clock className="w-8 h-8 text-white animate-spin-slow" />
                 </div>
                 <h3 className="text-3xl font-bold mb-2 text-gray-900">7j/7</h3>
@@ -280,7 +280,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
               </div>
               
               <div className="text-center group">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
                   <Star className="w-8 h-8 text-white animate-twinkle" />
                 </div>
                 <h3 className="text-3xl font-bold mb-2 text-gray-900">5★</h3>
