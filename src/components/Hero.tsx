@@ -18,8 +18,36 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   const availableStructures = structures.filter(s => s.available);
   
   // Nombre d'éléments par slide selon la taille d'écran
-  const itemsPerSlide = 3;
-  const totalSlides = Math.ceil(availableStructures.length / itemsPerSlide);
+  const [itemsPerSlide, setItemsPerSlide] = React.useState(3);
+  const [totalSlides, setTotalSlides] = React.useState(Math.ceil(availableStructures.length / itemsPerSlide));
+  
+  // Fonction pour détecter la taille d'écran et ajuster le carrousel
+  React.useEffect(() => {
+    const updateItemsPerSlide = () => {
+      const width = window.innerWidth;
+      let items;
+      if (width < 768) {
+        items = 1; // Mobile: 1 élément par slide
+      } else if (width < 1024) {
+        items = 2; // Tablet: 2 éléments par slide
+      } else {
+        items = 3; // Desktop: 3 éléments par slide
+      }
+      setItemsPerSlide(items);
+      setTotalSlides(Math.ceil(availableStructures.length / items));
+      
+      // Réajuster currentSlide si nécessaire
+      const maxSlide = Math.ceil(availableStructures.length / items) - 1;
+      if (currentSlide > maxSlide) {
+        setCurrentSlide(0);
+      }
+    };
+    
+    updateItemsPerSlide();
+    window.addEventListener('resize', updateItemsPerSlide);
+    
+    return () => window.removeEventListener('resize', updateItemsPerSlide);
+  }, [availableStructures.length, currentSlide]);
   
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % totalSlides);
@@ -85,15 +113,15 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                   <>
                     <button
                       onClick={prevSlide}
-                      className="absolute -left-6 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all hover:scale-110 border-2 border-gray-100"
+                      className="absolute -left-4 sm:-left-6 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all hover:scale-110 border-2 border-gray-100"
                     >
-                      <ChevronLeft className="w-7 h-7 text-gray-600" />
+                      <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7 text-gray-600" />
                     </button>
                     <button
                       onClick={nextSlide}
-                      className="absolute -right-6 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all hover:scale-110 border-2 border-gray-100"
+                      className="absolute -right-4 sm:-right-6 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all hover:scale-110 border-2 border-gray-100"
                     >
-                      <ChevronRight className="w-7 h-7 text-gray-600" />
+                      <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7 text-gray-600" />
                     </button>
                   </>
                 )}
@@ -101,24 +129,28 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 {/* Carrousel Content */}
                 <div className="overflow-hidden rounded-2xl">
                   <div 
-                    className="flex transition-transform duration-500 ease-in-out"
+                    className="flex transition-transform duration-500 ease-in-out gap-4 md:gap-8"
                     style={{ transform: `translateX(-${currentSlide * 100}%)` }}
                   >
                     {Array.from({ length: totalSlides }).map((_, slideIndex) => (
                       <div key={slideIndex} className="w-full flex-shrink-0">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
+                        <div className={`grid gap-4 md:gap-8 px-4 ${
+                          itemsPerSlide === 1 ? 'grid-cols-1' :
+                          itemsPerSlide === 2 ? 'grid-cols-2' :
+                          'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                        }`}>
                           {availableStructures
                             .slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide)
                             .map((structure, index) => (
                             <div 
                               key={structure.id}
-                              className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 animate-fade-in-up overflow-hidden cursor-pointer"
+                              className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 animate-fade-in-up overflow-hidden cursor-pointer w-full"
                               style={{ animationDelay: `${index * 0.1}s` }}
                               onClick={() => openModal(structure)}
                             >
                               {/* Image en bulle */}
                               <div className="relative p-6 pb-0">
-                                <div className="relative w-40 h-40 mx-auto mb-4">
+                                <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-4">
                                   <div className="w-full h-full rounded-full overflow-hidden shadow-xl border-4 border-white group-hover:border-blue-200 transition-all duration-300">
                                     <img 
                                       src={structure.image} 
@@ -139,26 +171,26 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
 
                               {/* Description */}
                               <div className="px-6 pb-6">
-                                <h3 className="text-xl font-bold text-gray-900 mb-3 text-center group-hover:text-blue-600 transition-colors">
+                                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 text-center group-hover:text-blue-600 transition-colors">
                                   {structure.name}
                                 </h3>
                                 
                                 <div className="space-y-2 mb-4">
-                                  <div className="flex items-center text-sm text-gray-600">
+                                  <div className="flex items-center text-xs sm:text-sm text-gray-600">
                                     <Ruler className="w-4 h-4 mr-2 text-blue-500" />
                                     <span>{structure.size}</span>
                                   </div>
-                                  <div className="flex items-center text-sm text-gray-600">
+                                  <div className="flex items-center text-xs sm:text-sm text-gray-600">
                                     <Users className="w-4 h-4 mr-2 text-orange-500" />
                                     <span>{structure.capacity}</span>
                                   </div>
-                                  <div className="flex items-center text-sm text-gray-600">
+                                  <div className="flex items-center text-xs sm:text-sm text-gray-600">
                                     <Heart className="w-4 h-4 mr-2 text-pink-500" />
                                     <span>{structure.age}</span>
                                   </div>
                                 </div>
 
-                                <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                                <p className="text-gray-600 text-xs sm:text-sm mb-4 line-clamp-3">
                                   {structure.description.length > 100 
                                     ? structure.description.substring(0, 100) + '...' 
                                     : structure.description
@@ -180,7 +212,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                       <button
                         key={index}
                         onClick={() => goToSlide(index)}
-                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                        className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
                           currentSlide === index
                             ? 'bg-gradient-to-r from-blue-500 to-orange-500 scale-125'
                             : 'bg-gray-300 hover:bg-gray-400'
