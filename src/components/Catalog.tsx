@@ -43,7 +43,7 @@ const Catalog: React.FC = () => {
             <p className="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium max-w-4xl mx-auto">
               🎪 Découvrez notre <span className="font-bold" style={{color: '#0F97F6'}}>large gamme</span> de structures gonflables 
               <span className="font-bold text-orange-500"> premium</span> pour tous les âges et tous les 
-              <span className="font-bold" style={{color: '#0F97F6'}}>événements</span> 🎉
+              <span className="font-bold" style={{color: '#0F97F6'}}> événements</span> 🎉
             </p>
           </div>
         </div>
