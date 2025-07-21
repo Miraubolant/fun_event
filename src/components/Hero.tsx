@@ -77,7 +77,6 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
     if (index >= 0 && index <= maxSlide) {
       setCurrentSlide(index);
     }
-  }, [availableStructures.length, itemsPerSlide, currentSlide, totalSlides]);
   };
 
   // Recalcul du nombre total de slides
