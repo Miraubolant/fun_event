@@ -28,9 +28,6 @@ const StructureModal: React.FC<StructureModalProps> = ({ structure, isOpen, onCl
             className="w-full h-64 md:h-80 object-cover rounded-t-xl"
           />
           
-          <div className="absolute bottom-4 left-4 bg-gradient-to-r from-blue-500 to-orange-500 text-white px-4 py-2 rounded-full font-bold text-lg">
-            À partir de {structure.price}€
-          </div>
         </div>
         
         <div className="p-6 md:p-8">
@@ -108,20 +105,14 @@ const StructureModal: React.FC<StructureModalProps> = ({ structure, isOpen, onCl
             </div>
           )}
           
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex justify-center">
             <a
               href="https://wa.me/33663528072"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 bg-gradient-to-r from-blue-500 to-orange-500 text-white py-4 px-6 rounded-lg font-bold text-center hover:from-blue-600 hover:to-orange-600 transition-all transform hover:scale-105 shadow-lg"
+              className="bg-gradient-to-r from-blue-500 to-orange-500 text-white py-4 px-8 rounded-lg font-bold text-center hover:from-blue-600 hover:to-orange-600 transition-all transform hover:scale-105 shadow-lg"
             >
               Réserver via WhatsApp
-            </a>
-            <a
-              href="tel:0663528072"
-              className="flex-1 border-2 border-blue-500 text-blue-500 py-4 px-6 rounded-lg font-bold text-center hover:bg-blue-500 hover:text-white transition-all"
-            >
-              Appeler maintenant
             </a>
           </div>
         </div>
