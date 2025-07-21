@@ -121,7 +121,6 @@ const FAQ: React.FC = () => {
               <span className="font-bold text-orange-500">services</span> et nos <span className="font-bold" style={{color: '#0F97F6'}}>structures</span> 💡
             </p>
           </div>
-          </p>
         </div>
 
         {/* FAQ par catégories */}
