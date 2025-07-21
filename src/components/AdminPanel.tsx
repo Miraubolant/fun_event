@@ -96,7 +96,7 @@ const AdminPanel: React.FC = () => {
               </h1>
               <p className="text-lg md:text-xl text-gray-700 font-medium">
                 🛠️ Gérez vos <span className="font-bold" style={{color: '#0F97F6'}}>structures</span> et 
-                <span className="font-bold text-orange-500">tarifs</span>
+                <span className="font-bold text-orange-500"> tarifs</span>
               </p>
             </div>
           </div>
