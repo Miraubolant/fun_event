@@ -106,9 +106,21 @@ const FAQ: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-900 mb-6">Questions Fréquentes</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Trouvez rapidement les réponses à vos questions sur nos services
+          <div className="animate-fade-in">
+            <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
+              <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
+                Questions
+              </span>
+              <br />
+              <span className="bg-gradient-to-r text-transparent bg-clip-text animate-pulse" style={{backgroundImage: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
+                Fréquentes ❓
+              </span>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium max-w-4xl mx-auto mb-8">
+              🔍 Trouvez <span className="font-bold" style={{color: '#0F97F6'}}>rapidement</span> les réponses à vos questions sur nos 
+              <span className="font-bold text-orange-500">services</span> et nos <span className="font-bold" style={{color: '#0F97F6'}}>structures</span> 💡
+            </p>
+          </div>
           </p>
         </div>
 

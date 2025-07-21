@@ -30,9 +30,23 @@ const Catalog: React.FC = () => {
     <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Notre Catalogue</h1>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Découvrez notre large gamme de structures gonflables pour tous les âges et tous les événements
+          <div className="animate-fade-in">
+            <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
+              <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
+                Notre
+              </span>
+              <br />
+              <span className="bg-gradient-to-r text-transparent bg-clip-text animate-pulse" style={{backgroundImage: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
+                Catalogue ✨
+              </span>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium max-w-4xl mx-auto">
+              🎪 Découvrez notre <span className="font-bold" style={{color: '#0F97F6'}}>large gamme</span> de structures gonflables 
+              <span className="font-bold text-orange-500"> premium</span> pour tous les âges et tous les 
+              <span className="font-bold" style={{color: '#0F97F6'}}>événements</span> 🎉
+            </p>
+          </div>
+        </div>
           </p>
         </div>
 

@@ -92,9 +92,22 @@ const Contact: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-900 mb-6">Contactez-nous</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Une question ? Un projet ? Notre équipe est là pour vous accompagner
+          <div className="animate-fade-in">
+            <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
+              <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
+                Contactez
+              </span>
+              <br />
+              <span className="bg-gradient-to-r text-transparent bg-clip-text animate-pulse" style={{backgroundImage: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
+                Nous 📞
+              </span>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium max-w-4xl mx-auto">
+              💬 Une <span className="font-bold" style={{color: '#0F97F6'}}>question</span> ? Un 
+              <span className="font-bold text-orange-500">projet</span> ? Notre équipe est là pour vous 
+              <span className="font-bold" style={{color: '#0F97F6'}}>accompagner</span> 🤝
+            </p>
+          </div>
           </p>
         </div>
 

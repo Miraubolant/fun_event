@@ -84,8 +84,21 @@ const AdminPanel: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Panneau d'Administration</h1>
-            <p className="text-lg text-gray-600">Gérez vos structures et tarifs</p>
+            <div className="animate-fade-in">
+              <h1 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
+                <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
+                  Panneau
+                </span>
+                <br />
+                <span className="bg-gradient-to-r text-transparent bg-clip-text animate-pulse" style={{backgroundImage: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
+                  d'Administration ⚙️
+                </span>
+              </h1>
+              <p className="text-lg md:text-xl text-gray-700 font-medium">
+                🛠️ Gérez vos <span className="font-bold" style={{color: '#0F97F6'}}>structures</span> et 
+                <span className="font-bold text-orange-500">tarifs</span>
+              </p>
+            </div>
           </div>
           <div className="flex gap-4">
             <button

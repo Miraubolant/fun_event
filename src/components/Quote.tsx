@@ -152,9 +152,22 @@ const Quote: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gray-900 mb-6">Demande de Devis</h1>
-          <p className="text-xl text-gray-600">
-            Obtenez un devis personnalisé en 3 étapes simples
+          <div className="animate-fade-in">
+            <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
+              <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
+                Demande de
+              </span>
+              <br />
+              <span className="bg-gradient-to-r text-transparent bg-clip-text animate-pulse" style={{backgroundImage: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
+                Devis ✨
+              </span>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium max-w-4xl mx-auto">
+              📋 Obtenez un <span className="font-bold" style={{color: '#0F97F6'}}>devis personnalisé</span> en 
+              <span className="font-bold text-orange-500">3 étapes simples</span> et 
+              <span className="font-bold" style={{color: '#0F97F6'}}>gratuit</span> 🎯
+            </p>
+          </div>
           </p>
         </div>
 
