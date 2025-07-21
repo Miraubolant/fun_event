@@ -1,0 +1,164 @@
+import React, { useState } from 'react';
+import { Users, Ruler, Heart, Eye, Euro } from 'lucide-react';
+import { useStructures } from '../contexts/StructuresContext';
+import StructureModal from './StructureModal';
+import { Structure } from '../types';
+
+const Catalog: React.FC = () => {
+  const [activeCategory, setActiveCategory] = useState('tous');
+  const [selectedStructure, setSelectedStructure] = useState<Structure | null>(null);
+  const { structures, categories } = useStructures();
+
+  const allCategories = [
+    { id: 'tous', label: 'Tous', icon: '🎪' },
+    ...categories
+  ];
+
+  const filteredStructures = activeCategory === 'tous'
+    ? structures.filter(s => s.available)
+    : structures.filter(s => s.category === activeCategory && s.available);
+
+  const openModal = (structure: Structure) => {
+    setSelectedStructure(structure);
+  };
+
+  const closeModal = () => {
+    setSelectedStructure(null);
+  };
+
+  return (
+    <section className="py-16 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Notre Catalogue</h1>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            Découvrez notre large gamme de structures gonflables pour tous les âges et tous les événements
+          </p>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-4 mb-12">
+          {allCategories.map((category) => {
+            return (
+              <button
+                key={category.id}
+                onClick={() => setActiveCategory(category.id)}
+                className={`flex items-center px-6 py-3 rounded-full font-semibold transition-all transform hover:scale-105 ${
+                  activeCategory === category.id
+                    ? 'bg-gradient-to-r from-blue-500 to-orange-500 text-white shadow-lg'
+                    : 'bg-white text-gray-700 hover:bg-blue-50 hover:text-blue-600 shadow'
+                }`}
+                style={activeCategory === category.id ? { background: 'linear-gradient(to right, #2196F3, #FF5722)' } : {}}
+              >
+                <span className="text-xl mr-2">{category.icon}</span>
+                {category.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredStructures.map((structure) => (
+            <div 
+              key={structure.id} 
+              className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all transform hover:scale-102 group"
+            >
+              <div className="relative">
+                <img 
+                  src={structure.image} 
+                  alt={structure.name}
+                  className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute top-4 right-4 bg-gradient-to-r from-blue-500 to-orange-500 text-white px-4 py-2 rounded-full font-bold shadow-lg"
+                     style={{ background: 'linear-gradient(to right, #2196F3, #FF5722)' }}>
+                  <div className="flex items-center">
+                    <Euro className="w-4 h-4 mr-1" />
+                    {structure.price}€
+                  </div>
+                </div>
+                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                  <button
+                    onClick={() => openModal(structure)}
+                    className="opacity-0 group-hover:opacity-100 bg-white text-blue-600 px-6 py-3 rounded-full font-bold transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  >
+                    <Eye className="w-5 h-5 inline mr-2" />
+                    Voir les détails
+                  </button>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{structure.name}</h3>
+                <p className="text-gray-600 mb-4 line-clamp-3">
+                  {structure.description.length > 120 
+                    ? structure.description.substring(0, 120) + '...' 
+                    : structure.description
+                  }
+                </p>
+                
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center text-sm text-gray-700 bg-gray-50 p-2 rounded-lg">
+                    <Ruler className="w-4 h-4 mr-2 text-blue-500" />
+                    <span className="font-medium">Dimensions:</span>
+                    <span className="ml-1">{structure.size}</span>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-700 bg-gray-50 p-2 rounded-lg">
+                    <Users className="w-4 h-4 mr-2 text-orange-500" />
+                    <span className="font-medium">Capacité:</span>
+                    <span className="ml-1">{structure.capacity}</span>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-700 bg-gray-50 p-2 rounded-lg">
+                    <Heart className="w-4 h-4 mr-2 text-pink-500" />
+                    <span className="font-medium">Âge:</span>
+                    <span className="ml-1">{structure.age}</span>
+                  </div>
+                </div>
+                
+                <div className="flex gap-3">
+                  <button 
+                    onClick={() => openModal(structure)}
+                    className="flex-1 text-white py-3 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
+                    style={{ background: 'linear-gradient(to right, #2196F3, #FF5722)' }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #1976D2, #E64A19)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #2196F3, #FF5722)'}
+                  >
+                    <Eye className="w-4 h-4 inline mr-2" />
+                    Voir plus
+                  </button>
+                  <a
+                    href="https://wa.me/33663528072"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-3 border-2 border-blue-500 text-blue-500 rounded-lg font-semibold hover:bg-blue-500 hover:text-white transition-all"
+                    style={{ borderColor: '#2196F3', color: '#2196F3' }}
+                  >
+                    💬
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {filteredStructures.length === 0 && (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">🎪</div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Aucune structure trouvée</h3>
+            <p className="text-gray-600">
+              Aucune structure n'est disponible dans cette catégorie pour le moment.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {selectedStructure && (
+        <StructureModal
+          structure={selectedStructure}
+          isOpen={!!selectedStructure}
+          onClose={closeModal}
+        />
+      )}
+    </section>
+  );
+};
+
+export default Catalog;
