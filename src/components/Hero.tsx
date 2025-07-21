@@ -91,7 +91,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         setCurrentSlide(0);
       }
     }
-  }, [availableStructures.length, itemsPerSlide, currentSlide, totalSlides]);
+  }, [availableStructures.length, itemsPerSlide, totalSlides, currentSlide]);
 
   const openModal = (structure: Structure) => {
     setSelectedStructure(structure);
