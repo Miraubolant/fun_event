@@ -124,10 +124,7 @@ const Catalog: React.FC = () => {
                 <div className="flex gap-3">
                   <button 
                     onClick={() => openModal(structure)}
-                    className="flex-1 text-white py-3 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
-                    style={{ background: 'linear-gradient(to right, #2196F3, #FF5722)' }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #1976D2, #E64A19)'}
-                    onMouseLeave={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #2196F3, #FF5722)'}
+                    className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg hover:shadow-xl hover:from-orange-600 hover:to-orange-700"
                   >
                     <Eye className="w-4 h-4 inline mr-2" />
                     Voir plus
@@ -136,8 +133,7 @@ const Catalog: React.FC = () => {
                     href="https://wa.me/33663528072"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-3 border-2 border-blue-500 text-blue-500 rounded-lg font-semibold hover:bg-blue-500 hover:text-white transition-all"
-                    style={{ borderColor: '#2196F3', color: '#2196F3' }}
+                    className="px-4 py-3 border-2 border-orange-500 text-orange-500 rounded-lg font-semibold hover:bg-orange-500 hover:text-white transition-all"
                   </a>
                 </div>
               </div>
