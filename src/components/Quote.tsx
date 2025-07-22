@@ -195,7 +195,7 @@ const Quote: React.FC = () => {
         setTimeout(() => {
           const structuresSection = document.getElementById('structures-section');
           if (structuresSection) {
-            structuresSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            structuresSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
         }, 100);
       } else {
