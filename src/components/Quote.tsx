@@ -4,7 +4,7 @@ import { useCart } from '../contexts/CartContext';
 import { useStructures } from '../contexts/StructuresContext';
 
 const Quote: React.FC = () => {
-  const { items: cartItems, clearCart, getTotalPrice } = useCart();
+  const { items: cartItems, clearCart, getTotalPrice, updateDuration: updateCartDuration } = useCart();
   const { structures: allStructures, categories } = useStructures();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -87,12 +87,19 @@ const Quote: React.FC = () => {
   };
 
   const handleDurationChange = (structureId: string, duration: '1day' | '2days') => {
+    // Mettre à jour l'état local du formulaire
     setFormData(prev => ({
       ...prev,
       structures: prev.structures.map(item =>
         item.id === structureId ? { ...item, duration } : item
       )
     }));
+    
+    // Si la structure est dans le panier, mettre à jour le panier aussi
+    const isInCart = cartItems.some(item => item.structure.id === structureId);
+    if (isInCart) {
+      updateCartDuration(structureId, duration);
+    }
   };
 
   const calculateEstimate = () => {
@@ -469,8 +476,7 @@ const Quote: React.FC = () => {
                           <select
                             value={currentDuration}
                             onChange={(e) => handleDurationChange(structure.id, e.target.value as '1day' | '2days')}
-                            disabled={isFromCart}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                             onClick={(e) => e.stopPropagation()}
                           >
                             <option value="1day">1 jour - {structure.price}€</option>
@@ -479,8 +485,8 @@ const Quote: React.FC = () => {
                             )}
                           </select>
                           {isFromCart && (
-                            <p className="text-xs text-gray-500 mt-1">
-                              Durée définie dans le panier
+                            <p className="text-xs text-green-600 mt-1 font-medium">
+                              ✓ Modification synchronisée avec le panier
                             </p>
                           )}
                         </div>
