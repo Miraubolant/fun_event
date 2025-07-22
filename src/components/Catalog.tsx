@@ -9,7 +9,7 @@ const Catalog: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('tous');
   const [selectedStructure, setSelectedStructure] = useState<Structure | null>(null);
   const { structures, categories } = useStructures();
-  const { addToCart } = useCart();
+  const { addToCart, items } = useCart();
 
   const allCategories = [
     { id: 'tous', label: 'Tous', icon: '🎪' },
@@ -20,6 +20,16 @@ const Catalog: React.FC = () => {
     ? structures.filter(s => s.available)
     : structures.filter(s => s.category === activeCategory && s.available);
 
+  // Vérifier si une structure est dans le panier
+  const isInCart = (structureId: string) => {
+    return items.some(item => item.structure.id === structureId);
+  };
+
+  // Obtenir la quantité d'une structure dans le panier
+  const getCartQuantity = (structureId: string) => {
+    const item = items.find(item => item.structure.id === structureId);
+    return item ? item.quantity : 0;
+  };
   const openModal = (structure: Structure) => {
     setSelectedStructure(structure);
   };
@@ -131,13 +141,24 @@ const Catalog: React.FC = () => {
                     <Eye className="w-4 h-4 inline mr-2" />
                     Voir plus
                   </button>
-                  <button
-                    onClick={() => addToCart(structure)}
-                    className="px-4 py-3 border-2 border-blue-500 text-blue-500 rounded-lg font-semibold hover:bg-blue-500 hover:text-white transition-all"
-                    title="Ajouter au panier"
-                  >
-                    <ShoppingCart className="w-4 h-4 inline" />
-                  </button>
+                  <div className="relative">
+                    <button
+                      onClick={() => addToCart(structure)}
+                      className={`relative px-4 py-3 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg ${
+                        isInCart(structure.id)
+                          ? 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700'
+                          : 'border-2 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white'
+                      }`}
+                      title={isInCart(structure.id) ? "Ajouter une autre" : "Ajouter au panier"}
+                    >
+                      <ShoppingCart className="w-4 h-4 inline" />
+                    </button>
+                    {isInCart(structure.id) && (
+                      <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold shadow-lg animate-pulse">
+                        {getCartQuantity(structure.id)}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

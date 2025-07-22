@@ -102,12 +102,27 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
           </div>
 
           {/* Menu mobile */}
-          <button
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X className="w-6 h-6 text-gray-700" /> : <Menu className="w-6 h-6 text-gray-700" />}
-          </button>
+          <div className="md:hidden flex items-center space-x-2">
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="relative flex items-center text-gray-600 hover:text-gray-800 transition-colors p-2 rounded-lg hover:bg-gray-100"
+              title="Panier"
+            >
+              <ShoppingCart className="w-5 h-5" />
+              {getItemCount() > 0 && (
+                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                  {getItemCount()}
+                </span>
+              )}
+            </button>
+            
+            <button
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X className="w-6 h-6 text-gray-700" /> : <Menu className="w-6 h-6 text-gray-700" />}
+            </button>
+          </div>
         </div>
 
         {/* Menu mobile ouvert */}
@@ -145,17 +160,6 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                     <span>Déconnexion</span>
                   </button>
                 )}
-                
-                <button
-                  onClick={() => {
-                    setIsCartOpen(true);
-                    setIsMenuOpen(false);
-                  }}
-                  className="flex items-center text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors w-full"
-                >
-                  <ShoppingCart className="w-4 h-4 mr-2" />
-                  <span>Panier ({getItemCount()})</span>
-                </button>
                 
                 <button 
                   onClick={() => {
