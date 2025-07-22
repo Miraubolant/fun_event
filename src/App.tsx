@@ -56,7 +56,7 @@ const AppContent: React.FC = () => {
       {!isAdmin && (
         <button
           onClick={() => setShowAdminLogin(true)}
-          className="fixed bottom-4 left-4 w-12 h-12 bg-gradient-to-r from-blue-500 to-orange-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all z-40 flex items-center justify-center"
+          className="hidden md:flex fixed bottom-4 left-4 w-12 h-12 bg-gradient-to-r from-blue-500 to-orange-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all z-40 items-center justify-center"
           title="Administration"
         >
           <Settings className="w-5 h-5" />
