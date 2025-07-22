@@ -484,11 +484,6 @@ const Quote: React.FC = () => {
                               <option value="2days">2 jours - {structure.price2Days}€</option>
                             )}
                           </select>
-                          {isFromCart && (
-                            <p className="text-xs text-green-600 mt-1 font-medium">
-                              ✓ Modification synchronisée avec le panier
-                            </p>
-                          )}
                         </div>
                       )}
                     </label>
