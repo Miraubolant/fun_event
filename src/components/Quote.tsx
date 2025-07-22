@@ -218,7 +218,7 @@ const Quote: React.FC = () => {
                 href="https://wa.me/33663528072"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-gradient-to-r from-blue-500 to-orange-500 text-white px-8 py-4 rounded-full font-bold hover:shadow-xl transition-all"
+                className="bg-gradient-to-r from-blue-500 to-orange-500 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full font-bold hover:shadow-xl transition-all transform hover:scale-105 text-sm sm:text-base"
               >
                 Nous contacter sur WhatsApp
               </a>
@@ -231,7 +231,7 @@ const Quote: React.FC = () => {
                     structures: [], name: '', email: '', phone: '', message: ''
                   });
                 }}
-                className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-full font-bold hover:bg-gray-50 transition-all"
+                className="border-2 border-gray-300 text-gray-700 px-6 py-3 sm:px-8 sm:py-4 rounded-full font-bold hover:bg-gray-50 transition-all transform hover:scale-105 text-sm sm:text-base"
               >
                 Nouvelle demande
               </button>
@@ -317,7 +317,7 @@ const Quote: React.FC = () => {
                     {eventTypes.map(type => (
                       <label 
                         key={type.id}
-                        className={`flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                        className={`flex items-center p-3 sm:p-4 border-2 rounded-xl cursor-pointer transition-all transform hover:scale-105 ${
                           formData.eventType === type.id
                             ? 'border-blue-500 bg-blue-50'
                             : 'border-gray-200 hover:border-blue-300'
@@ -331,8 +331,8 @@ const Quote: React.FC = () => {
                           onChange={handleInputChange}
                           className="sr-only"
                         />
-                        <span className="text-2xl mr-3">{type.icon}</span>
-                        <span className="font-medium">{type.label}</span>
+                        <span className="text-xl sm:text-2xl mr-2 sm:mr-3">{type.icon}</span>
+                        <span className="font-medium text-sm sm:text-base">{type.label}</span>
                       </label>
                     ))}
                   </div>
@@ -349,7 +349,7 @@ const Quote: React.FC = () => {
                       value={formData.date}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      className="w-full px-3 py-3 sm:px-4 sm:py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm sm:text-base"
                     />
                   </div>
 
@@ -364,7 +364,7 @@ const Quote: React.FC = () => {
                       onChange={handleInputChange}
                       required
                       placeholder="ex: 25"
-                      className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      className="w-full px-3 py-3 sm:px-4 sm:py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm sm:text-base"
                     />
                   </div>
                 </div>
@@ -377,7 +377,7 @@ const Quote: React.FC = () => {
                     {durations.map(duration => (
                       <label 
                         key={duration.id}
-                        className={`flex items-center justify-center p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                        className={`flex items-center justify-center p-3 sm:p-4 border-2 rounded-xl cursor-pointer transition-all transform hover:scale-105 ${
                           formData.duration === duration.id
                             ? 'border-blue-500 bg-blue-50'
                             : 'border-gray-200 hover:border-blue-300'
@@ -391,7 +391,7 @@ const Quote: React.FC = () => {
                           onChange={handleInputChange}
                           className="sr-only"
                         />
-                        <span className="font-medium text-center">{duration.label}</span>
+                        <span className="font-medium text-center text-sm sm:text-base">{duration.label}</span>
                       </label>
                     ))}
                   </div>
@@ -406,7 +406,7 @@ const Quote: React.FC = () => {
                     value={formData.location}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    className="w-full px-3 py-3 sm:px-4 sm:py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm sm:text-base"
                   >
                     <option value="">Sélectionnez votre département</option>
                     {zones.map(zone => (
@@ -437,7 +437,7 @@ const Quote: React.FC = () => {
                     return (
                     <label 
                       key={structure.id}
-                      className={`group flex flex-col p-6 border-2 rounded-xl cursor-pointer transition-all ${
+                      className={`group flex flex-col p-4 sm:p-6 border-2 rounded-xl cursor-pointer transition-all transform hover:scale-105 ${
                         isSelected || isFromCart
                           ? 'border-blue-500 bg-blue-50'
                           : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
@@ -446,17 +446,17 @@ const Quote: React.FC = () => {
                       <div className="flex items-center mb-4">
                         <input
                           type="checkbox"
-                          className="w-5 h-5 text-blue-500 rounded focus:ring-blue-500 mr-4"
+                          className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 rounded focus:ring-blue-500 mr-3 sm:mr-4"
                           onChange={(e) => handleStructureChange(structure.id, e.target.checked, currentDuration)}
                           checked={isSelected || isFromCart}
                           disabled={isFromCart}
                         />
                         <div className="flex-1">
                           <div className="flex items-center">
-                            <span className="text-2xl mr-3">{structure.icon}</span>
+                            <span className="text-xl sm:text-2xl mr-2 sm:mr-3">{structure.icon}</span>
                             <div>
-                              <h3 className="font-bold text-gray-900">{structure.name}</h3>
-                              <p className="text-blue-600 font-bold">
+                              <h3 className="font-bold text-gray-900 text-sm sm:text-base">{structure.name}</h3>
+                              <p className="text-blue-600 font-bold text-xs sm:text-sm">
                                 1 jour: {structure.price}€
                                 {structure.price2Days && ` • 2 jours: ${structure.price2Days}€`}
                               </p>
@@ -476,7 +476,7 @@ const Quote: React.FC = () => {
                           <select
                             value={currentDuration}
                             onChange={(e) => handleDurationChange(structure.id, e.target.value as '1day' | '2days')}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                            className="w-full px-2 py-2 sm:px-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-xs sm:text-sm"
                             onClick={(e) => e.stopPropagation()}
                           >
                             <option value="1day">1 jour - {structure.price}€</option>
@@ -523,7 +523,7 @@ const Quote: React.FC = () => {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      className="w-full px-3 py-3 sm:px-4 sm:py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm sm:text-base"
                       placeholder="Votre nom"
                     />
                   </div>
@@ -538,7 +538,7 @@ const Quote: React.FC = () => {
                       value={formData.phone}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                      className="w-full px-3 py-3 sm:px-4 sm:py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm sm:text-base"
                       placeholder="06 XX XX XX XX"
                     />
                   </div>
@@ -554,7 +554,7 @@ const Quote: React.FC = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    className="w-full px-3 py-3 sm:px-4 sm:py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm sm:text-base"
                     placeholder="votre@email.com"
                   />
                 </div>
@@ -569,7 +569,7 @@ const Quote: React.FC = () => {
                     onChange={handleInputChange}
                     rows={4}
                     placeholder="Précisez vos besoins spécifiques, contraintes, etc."
-                    className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
+                    className="w-full px-3 py-3 sm:px-4 sm:py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none text-sm sm:text-base"
                   ></textarea>
                 </div>
               </div>
@@ -580,7 +580,7 @@ const Quote: React.FC = () => {
               <button
                 type="button"
                 onClick={prevStep}
-                className={`px-8 py-4 rounded-xl font-bold transition-all ${
+                className={`px-4 py-3 sm:px-8 sm:py-4 rounded-xl font-bold transition-all text-sm sm:text-base ${
                   currentStep === 1 
                     ? 'invisible' 
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -593,10 +593,10 @@ const Quote: React.FC = () => {
                 <button
                   type="button"
                   onClick={nextStep}
-                  className="bg-gradient-to-r from-blue-500 to-orange-500 text-white px-8 py-4 rounded-xl font-bold hover:shadow-xl transition-all flex items-center"
+                  className="bg-gradient-to-r from-blue-500 to-orange-500 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-xl font-bold hover:shadow-xl transition-all transform hover:scale-105 flex items-center text-sm sm:text-base"
                 >
                   Suivant
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
                 </button>
               ) : (
                 <button
