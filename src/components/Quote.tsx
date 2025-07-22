@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Calendar, MapPin, Users, Clock, Calculator, CheckCircle, ArrowRight } from 'lucide-react';
+import { useCart } from '../contexts/CartContext';
 
 const Quote: React.FC = () => {
+  const { items: cartItems, clearCart } = useCart();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     eventType: '',
@@ -18,6 +20,17 @@ const Quote: React.FC = () => {
 
   const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Initialiser les structures depuis le panier au chargement
+  React.useEffect(() => {
+    if (cartItems.length > 0) {
+      const cartStructureIds = cartItems.map(item => item.structure.id);
+      setFormData(prev => ({
+        ...prev,
+        structures: cartStructureIds
+      }));
+    }
+  }, [cartItems]);
 
   const eventTypes = [
     { id: 'anniversaire', label: 'Anniversaire enfant', icon: '🎂' },
@@ -90,6 +103,8 @@ const Quote: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     calculateEstimate();
+    // Vider le panier après soumission du devis
+    clearCart();
     setIsSubmitted(true);
   };
 
@@ -336,7 +351,7 @@ const Quote: React.FC = () => {
                     <label 
                       key={structure.id}
                       className={`group flex items-center p-6 border-2 rounded-xl cursor-pointer transition-all ${
-                        formData.structures.includes(structure.id)
+                        formData.structures.includes(structure.id) || cartItems.some(item => item.structure.id === structure.id)
                           ? 'border-blue-500 bg-blue-50'
                           : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
                       }`}
@@ -345,7 +360,8 @@ const Quote: React.FC = () => {
                         type="checkbox"
                         className="w-5 h-5 text-blue-500 rounded focus:ring-blue-500 mr-4"
                         onChange={(e) => handleStructureChange(structure.id, e.target.checked)}
-                        checked={formData.structures.includes(structure.id)}
+                        checked={formData.structures.includes(structure.id) || cartItems.some(item => item.structure.id === structure.id)}
+                        disabled={cartItems.some(item => item.structure.id === structure.id)}
                       />
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
@@ -354,6 +370,9 @@ const Quote: React.FC = () => {
                             <div>
                               <h3 className="font-bold text-gray-900">{structure.name}</h3>
                               <p className="text-blue-600 font-bold">À partir de {structure.price}€</p>
+                              {cartItems.some(item => item.structure.id === structure.id) && (
+                                <p className="text-xs text-green-600 font-medium">✓ Ajouté depuis le panier</p>
+                              )}
                             </div>
                           </div>
                         </div>

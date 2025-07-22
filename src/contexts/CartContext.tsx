@@ -12,6 +12,7 @@ interface CartContextType {
   addToCart: (structure: Structure, duration?: '1day' | '2days') => void;
   removeFromCart: (structureId: string) => void;
   updateQuantity: (structureId: string, quantity: number) => void;
+  updateDuration: (structureId: string, duration: '1day' | '2days') => void;
   clearCart: () => void;
   getTotalPrice: () => number;
   getItemCount: () => number;
@@ -71,6 +72,16 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     );
   };
 
+  const updateDuration = (structureId: string, duration: '1day' | '2days') => {
+    setItems(prev =>
+      prev.map(item =>
+        item.structure.id === structureId
+          ? { ...item, duration }
+          : item
+      )
+    );
+  };
+
   const clearCart = () => {
     setItems([]);
   };
@@ -94,6 +105,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       addToCart,
       removeFromCart,
       updateQuantity,
+      updateDuration,
       clearCart,
       getTotalPrice,
       getItemCount

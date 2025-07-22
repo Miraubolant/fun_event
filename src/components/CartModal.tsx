@@ -1,14 +1,15 @@
 import React from 'react';
-import { X, Plus, Minus, Trash2, ShoppingCart, MessageCircle } from 'lucide-react';
+import { X, Plus, Minus, Trash2, ShoppingCart, MessageCircle, FileText } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 
 interface CartModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onNavigateToQuote?: () => void;
 }
 
-const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
-  const { items, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart();
+const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onNavigateToQuote }) => {
+  const { items, removeFromCart, updateQuantity, updateDuration, clearCart, getTotalPrice } = useCart();
 
   if (!isOpen) return null;
 
@@ -34,6 +35,12 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
     
     const encodedMessage = encodeURIComponent(message);
     window.open(`https://wa.me/33663528072?text=${encodedMessage}`, '_blank');
+  };
+
+  const handleGoToQuote = () => {
+    if (onNavigateToQuote) {
+      onNavigateToQuote();
+    }
   };
 
   return (
@@ -76,9 +83,17 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                       />
                       <div className="flex-1">
                         <h3 className="font-semibold text-gray-900">{item.structure.name}</h3>
-                        <p className="text-sm text-gray-600 mb-2">
-                          Durée: {item.duration === '2days' ? '2 jours' : '1 jour'}
-                        </p>
+                        <div className="mb-2">
+                          <label className="block text-xs text-gray-500 mb-1">Durée:</label>
+                          <select
+                            value={item.duration}
+                            onChange={(e) => updateDuration(item.structure.id, e.target.value as '1day' | '2days')}
+                            className="text-sm border border-gray-300 rounded px-2 py-1 focus:border-blue-500 focus:outline-none"
+                          >
+                            <option value="1day">1 jour</option>
+                            <option value="2days">2 jours</option>
+                          </select>
+                        </div>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <button
@@ -130,11 +145,18 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose }) => {
                 Vider le panier
               </button>
               <button
+                onClick={handleGoToQuote}
+                className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all flex items-center justify-center"
+              >
+                <FileText className="w-5 h-5 mr-2" />
+                Faire un devis
+              </button>
+              <button
                 onClick={handleWhatsAppOrder}
-                className="flex-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center justify-center"
+                className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center justify-center"
               >
                 <MessageCircle className="w-5 h-5 mr-2" />
-                Commander via WhatsApp
+                WhatsApp
               </button>
             </div>
           </div>

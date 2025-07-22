@@ -173,7 +173,14 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
         )}
       </div>
       
-      <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <CartModal 
+        isOpen={isCartOpen} 
+        onClose={() => setIsCartOpen(false)}
+        onNavigateToQuote={() => {
+          setIsCartOpen(false);
+          onNavigate('devis');
+        }}
+      />
     </header>
   );
 };
