@@ -37,16 +37,18 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             className="flex items-center cursor-pointer group"
             onClick={() => onNavigate('accueil')}
           >
-            <div className="w-12 h-12 rounded-full flex items-center justify-center mr-3 shadow-md group-hover:shadow-lg transition-all" style={{background: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mr-4 shadow-lg group-hover:shadow-xl transition-all transform group-hover:scale-105" style={{background: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
               <img 
                 src="https://i.imgur.com/gfhDZfm.png" 
                 alt="Fun Event Logo" 
-                className="w-10 h-10 rounded-full object-cover"
+                className="w-14 h-14 rounded-full object-cover"
               />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Fun Event</h1>
-              <p className="text-sm text-gray-600">Location de structures gonflables</p>
+              <h1 className="text-2xl font-extrabold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
+                Fun Event ✨
+              </h1>
+              <p className="text-sm font-semibold text-gray-700">🎪 Location de structures gonflables premium</p>
             </div>
           </div>
 
