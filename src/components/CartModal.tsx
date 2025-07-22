@@ -79,48 +79,48 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onNavigateToQuot
                       <img 
                         src={item.structure.image} 
                         alt={item.structure.name}
-                        className="w-16 h-16 rounded-lg object-cover"
+                        className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover flex-shrink-0"
                       />
                       <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900">{item.structure.name}</h3>
+                        <h3 className="font-semibold text-gray-900 text-sm sm:text-base">{item.structure.name}</h3>
                         <div className="mb-2">
                           <label className="block text-xs text-gray-500 mb-1">Durée:</label>
                           <select
                             value={item.duration}
                             onChange={(e) => updateDuration(item.structure.id, e.target.value as '1day' | '2days')}
-                            className="text-sm border border-gray-300 rounded px-2 py-1 focus:border-blue-500 focus:outline-none"
+                            className="text-xs sm:text-sm border border-gray-300 rounded px-2 py-1 focus:border-blue-500 focus:outline-none w-full"
                           >
                             <option value="1day">1 jour</option>
                             <option value="2days">2 jours</option>
                           </select>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-1 sm:gap-2">
                             <button
                               onClick={() => updateQuantity(item.structure.id, item.quantity - 1)}
-                              className="w-8 h-8 rounded-full bg-white border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                              className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
                             >
-                              <Minus className="w-4 h-4" />
+                              <Minus className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
-                            <span className="w-8 text-center font-semibold">{item.quantity}</span>
+                            <span className="w-6 sm:w-8 text-center font-semibold text-sm sm:text-base">{item.quantity}</span>
                             <button
                               onClick={() => updateQuantity(item.structure.id, item.quantity + 1)}
-                              className="w-8 h-8 rounded-full bg-white border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                              className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
                             >
-                              <Plus className="w-4 h-4" />
+                              <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                           </div>
                           <div className="text-right">
-                            <p className="font-bold text-orange-600">{price * item.quantity}€</p>
+                            <p className="font-bold text-orange-600 text-sm sm:text-base">{price * item.quantity}€</p>
                             <p className="text-xs text-gray-500">{price}€ x {item.quantity}</p>
                           </div>
                         </div>
                       </div>
                       <button
                         onClick={() => removeFromCart(item.structure.id)}
-                        className="text-red-500 hover:text-red-700 transition-colors p-1"
+                        className="text-red-500 hover:text-red-700 transition-colors p-1 flex-shrink-0"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                       </button>
                     </div>
                   </div>
@@ -133,29 +133,29 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onNavigateToQuot
         {items.length > 0 && (
           <div className="border-t border-gray-200 p-6">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-xl font-bold text-gray-900">Total:</span>
-              <span className="text-2xl font-bold text-orange-600">{getTotalPrice()}€</span>
+              <span className="text-lg sm:text-xl font-bold text-gray-900">Total:</span>
+              <span className="text-xl sm:text-2xl font-bold text-orange-600">{getTotalPrice()}€</span>
             </div>
             
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <button
                 onClick={clearCart}
-                className="flex-1 bg-gray-500 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors"
+                className="flex-1 bg-gray-500 text-white py-2 sm:py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors text-sm sm:text-base"
               >
                 Vider le panier
               </button>
               <button
                 onClick={handleGoToQuote}
-                className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all flex items-center justify-center"
+                className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 sm:py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all flex items-center justify-center text-sm sm:text-base"
               >
-                <FileText className="w-5 h-5 mr-2" />
+                <FileText className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
                 Faire un devis
               </button>
               <button
                 onClick={handleWhatsAppOrder}
-                className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center justify-center"
+                className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-2 sm:py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center justify-center text-sm sm:text-base"
               >
-                <MessageCircle className="w-5 h-5 mr-2" />
+                <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
                 WhatsApp
               </button>
             </div>
