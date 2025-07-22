@@ -187,11 +187,19 @@ const Quote: React.FC = () => {
   };
 
   const nextStep = () => {
-    if (currentStep < 3) setCurrentStep(currentStep + 1);
+    if (currentStep < 3) {
+      setCurrentStep(currentStep + 1);
+      // Scroll automatiquement en haut de la page
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const prevStep = () => {
-    if (currentStep > 1) setCurrentStep(currentStep - 1);
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+      // Scroll automatiquement en haut de la page
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   if (isSubmitted) {
