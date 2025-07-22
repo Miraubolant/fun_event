@@ -11,6 +11,7 @@ import AdminPanel from './components/AdminPanel';
 import AdminLogin from './components/AdminLogin';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { StructuresProvider } from './contexts/StructuresContext';
+import { CartProvider } from './contexts/CartContext';
 import { Page } from './types';
 
 const AppContent: React.FC = () => {
@@ -75,9 +76,11 @@ const AppContent: React.FC = () => {
 function App() {
   return (
     <AuthProvider>
-      <StructuresProvider>
-        <AppContent />
-      </StructuresProvider>
+      <CartProvider>
+        <StructuresProvider>
+          <AppContent />
+        </StructuresProvider>
+      </CartProvider>
     </AuthProvider>
   );
 }

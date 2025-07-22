@@ -1,6 +1,7 @@
 import React from 'react';
-import { X, Users, Ruler, Heart, Weight, Shield, Clock } from 'lucide-react';
+import { X, Users, Ruler, Heart, Weight, Shield, Clock, ShoppingCart, MessageCircle } from 'lucide-react';
 import { Structure } from '../types';
+import { useCart } from '../contexts/CartContext';
 
 interface StructureModalProps {
   structure: Structure;
@@ -9,6 +10,8 @@ interface StructureModalProps {
 }
 
 const StructureModal: React.FC<StructureModalProps> = ({ structure, isOpen, onClose }) => {
+  const { addToCart } = useCart();
+  
   if (!isOpen) return null;
 
   return (
@@ -105,14 +108,25 @@ const StructureModal: React.FC<StructureModalProps> = ({ structure, isOpen, onCl
             </div>
           )}
           
-          <div className="flex justify-center">
+          <div className="flex gap-4 justify-center">
+            <button
+              onClick={() => {
+                addToCart(structure);
+                onClose();
+              }}
+              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 px-8 rounded-lg font-bold hover:from-orange-600 hover:to-orange-700 transition-all transform hover:scale-105 shadow-lg flex items-center"
+            >
+              <ShoppingCart className="w-5 h-5 mr-2" />
+              Ajouter au panier
+            </button>
             <a
               href="https://wa.me/33663528072"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-gradient-to-r from-blue-500 to-orange-500 text-white py-4 px-8 rounded-lg font-bold text-center hover:from-blue-600 hover:to-orange-600 transition-all transform hover:scale-105 shadow-lg"
+              className="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 px-8 rounded-lg font-bold hover:from-blue-600 hover:to-blue-700 transition-all transform hover:scale-105 shadow-lg flex items-center"
             >
-              Réserver via WhatsApp
+              <MessageCircle className="w-5 h-5 mr-2" />
+              Contact WhatsApp
             </a>
           </div>
         </div>

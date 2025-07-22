@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Users, Ruler, Heart, Eye, Euro } from 'lucide-react';
+import { Users, Ruler, Heart, Eye, ShoppingCart } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
+import { useCart } from '../contexts/CartContext';
 import StructureModal from './StructureModal';
 import { Structure } from '../types';
 
@@ -8,6 +9,7 @@ const Catalog: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('tous');
   const [selectedStructure, setSelectedStructure] = useState<Structure | null>(null);
   const { structures, categories } = useStructures();
+  const { addToCart } = useCart();
 
   const allCategories = [
     { id: 'tous', label: 'Tous', icon: '🎪' },
@@ -129,14 +131,13 @@ const Catalog: React.FC = () => {
                     <Eye className="w-4 h-4 inline mr-2" />
                     Voir plus
                   </button>
-                  <a
-                    href="https://wa.me/33663528072"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={() => addToCart(structure)}
                     className="px-4 py-3 border-2 border-orange-500 text-orange-500 rounded-lg font-semibold hover:bg-orange-500 hover:text-white transition-all"
+                    title="Ajouter au panier"
                   >
-                    <Euro className="w-4 h-4 inline" />
-                  </a>
+                    <ShoppingCart className="w-4 h-4 inline" />
+                  </button>
                 </div>
               </div>
             </div>

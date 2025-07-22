@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Menu, X, Phone, LogOut } from 'lucide-react';
+import { Menu, X, Phone, LogOut, ShoppingCart } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
+import CartModal from './CartModal';
 import { Page } from '../types';
 
 interface HeaderProps {
@@ -10,7 +12,9 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const { isAdmin, logout } = useAuth();
+  const { getItemCount } = useCart();
 
   const menuItems = [
     { id: 'accueil', label: 'Accueil' },
@@ -75,6 +79,19 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               </button>
             )}
             
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="relative flex items-center text-gray-600 hover:text-gray-800 transition-colors p-2 rounded-lg hover:bg-gray-100"
+              title="Panier"
+            >
+              <ShoppingCart className="w-5 h-5" />
+              {getItemCount() > 0 && (
+                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                  {getItemCount()}
+                </span>
+              )}
+            </button>
+            
             <button 
               onClick={() => onNavigate('devis')}
               className="text-white px-6 py-2 rounded-lg transition-all font-semibold shadow-md hover:shadow-lg"
@@ -129,6 +146,17 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                   </button>
                 )}
                 
+                <button
+                  onClick={() => {
+                    setIsCartOpen(true);
+                    setIsMenuOpen(false);
+                  }}
+                  className="flex items-center text-gray-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors w-full"
+                >
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  <span>Panier ({getItemCount()})</span>
+                </button>
+                
                 <button 
                   onClick={() => {
                     onNavigate('devis');
@@ -144,6 +172,8 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
           </div>
         )}
       </div>
+      
+      <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </header>
   );
 };
