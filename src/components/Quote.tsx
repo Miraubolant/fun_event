@@ -601,9 +601,9 @@ const Quote: React.FC = () => {
               ) : (
                 <button
                   type="submit"
-                  className="bg-gradient-to-r from-blue-500 to-orange-500 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold hover:shadow-xl transition-all transform hover:scale-105 flex items-center justify-center text-sm sm:text-base w-full sm:w-auto"
+                  className="bg-gradient-to-r from-blue-500 to-orange-500 text-white px-4 sm:px-8 py-2 sm:py-4 rounded-lg sm:rounded-xl font-semibold sm:font-bold hover:shadow-xl transition-all transform hover:scale-105 flex items-center justify-center text-xs sm:text-base w-auto"
                 >
-                  <Calculator className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  <Calculator className="w-3 h-3 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
                   Obtenir mon devis
                 </button>
               )}
