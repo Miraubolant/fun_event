@@ -19,11 +19,38 @@ const Contact: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
-    }, 3000);
+    
+    // Préparer les données pour Formspree
+    const formDataToSend = new FormData();
+    formDataToSend.append('name', formData.name);
+    formDataToSend.append('email', formData.email);
+    formDataToSend.append('phone', formData.phone);
+    formDataToSend.append('subject', formData.subject);
+    formDataToSend.append('message', formData.message);
+
+    // Envoyer à Formspree
+    fetch('https://formspree.io/f/myzpezbg', {
+      method: 'POST',
+      body: formDataToSend,
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        setIsSubmitted(true);
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+        }, 3000);
+      } else {
+        alert('Erreur lors de l\'envoi du message. Veuillez réessayer.');
+      }
+    })
+    .catch(error => {
+      console.error('Erreur:', error);
+      alert('Erreur lors de l\'envoi du message. Veuillez réessayer.');
+    });
   };
 
   const contactInfo = [

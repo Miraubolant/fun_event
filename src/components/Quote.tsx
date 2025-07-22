@@ -117,10 +117,66 @@ const Quote: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    calculateEstimate();
-    // Vider le panier après soumission du devis
-    clearCart();
-    setIsSubmitted(true);
+    
+    // Calculer l'estimation avant l'envoi
+    let total = 0;
+    formData.structures.forEach(structureItem => {
+      const structure = availableStructures.find(s => s.id === structureItem.id);
+      if (structure) {
+        const price = structureItem.duration === '2days' && structure.price2Days 
+          ? structure.price2Days 
+          : structure.price;
+        total += price;
+      }
+    });
+    const duration = durations.find(d => d.id === formData.duration);
+    const multiplier = duration?.multiplier || 1;
+    total *= multiplier;
+    const finalPrice = Math.round(total);
+    setEstimatedPrice(finalPrice);
+
+    // Préparer les données pour Formspree
+    const formDataToSend = new FormData();
+    formDataToSend.append('eventType', eventTypes.find(t => t.id === formData.eventType)?.label || formData.eventType);
+    formDataToSend.append('date', formData.date);
+    formDataToSend.append('duration', durations.find(d => d.id === formData.duration)?.label || formData.duration);
+    formDataToSend.append('location', formData.location);
+    formDataToSend.append('guests', formData.guests);
+    
+    // Ajouter les structures sélectionnées
+    const structuresDetails = formData.structures.map(structureItem => {
+      const structure = availableStructures.find(s => s.id === structureItem.id);
+      return structure ? `${structure.name} (${structureItem.duration === '2days' ? '2 jours' : '1 jour'})` : '';
+    }).filter(Boolean).join(', ');
+    formDataToSend.append('structures', structuresDetails);
+    
+    formDataToSend.append('name', formData.name);
+    formDataToSend.append('email', formData.email);
+    formDataToSend.append('phone', formData.phone);
+    formDataToSend.append('message', formData.message);
+    formDataToSend.append('estimatedPrice', `${finalPrice}€`);
+
+    // Envoyer à Formspree
+    fetch('https://formspree.io/f/myzpezbg', {
+      method: 'POST',
+      body: formDataToSend,
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        // Vider le panier après soumission réussie
+        clearCart();
+        setIsSubmitted(true);
+      } else {
+        alert('Erreur lors de l\'envoi du formulaire. Veuillez réessayer.');
+      }
+    })
+    .catch(error => {
+      console.error('Erreur:', error);
+      alert('Erreur lors de l\'envoi du formulaire. Veuillez réessayer.');
+    });
   };
 
   const nextStep = () => {
