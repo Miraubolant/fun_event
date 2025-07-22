@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Calendar, MapPin, Users, Clock, Calculator, CheckCircle, ArrowRight } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
+import { useStructures } from '../contexts/StructuresContext';
 
 const Quote: React.FC = () => {
-  const { items: cartItems, clearCart } = useCart();
+  const { items: cartItems, clearCart, getTotalPrice } = useCart();
+  const { structures: allStructures, categories } = useStructures();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     eventType: '',
@@ -11,7 +13,7 @@ const Quote: React.FC = () => {
     duration: '',
     location: '',
     guests: '',
-    structures: [],
+    structures: [] as Array<{id: string, duration: '1day' | '2days'}>,
     name: '',
     email: '',
     phone: '',
@@ -24,10 +26,13 @@ const Quote: React.FC = () => {
   // Initialiser les structures depuis le panier au chargement
   React.useEffect(() => {
     if (cartItems.length > 0) {
-      const cartStructureIds = cartItems.map(item => item.structure.id);
+      const cartStructures = cartItems.map(item => ({
+        id: item.structure.id,
+        duration: item.duration
+      }));
       setFormData(prev => ({
         ...prev,
-        structures: cartStructureIds
+        structures: cartStructures
       }));
     }
   }, [cartItems]);
@@ -58,38 +63,48 @@ const Quote: React.FC = () => {
     'Hauts-de-Seine (92)', 'Seine-Saint-Denis (93)', 'Val-de-Marne (94)', 'Val-d\'Oise (95)'
   ];
 
-  const structures = [
-    { id: 'gladiateurs', name: 'Instables Gladiateurs', price: 180, icon: '⚔️' },
-    { id: 'chateau-cirque', name: 'Château Cirque', price: 150, icon: '🎪' },
-    { id: 'toboggan-geant', name: 'Toboggan Géant', price: 180, icon: '🛝' },
-    { id: 'parcours-obstacles', name: 'Parcours d\'Obstacles', price: 160, icon: '🏃' },
-    { id: 'baby-foot-geant', name: 'Baby-foot Géant', price: 150, icon: '⚽' },
-    { id: 'terrain-foot', name: 'Terrain de Foot', price: 200, icon: '🥅' },
-    { id: 'piscine-gonflable', name: 'Piscine Gonflable', price: 100, icon: '🏊' },
-    { id: 'toboggan-aquatique', name: 'Toboggan Aquatique', price: 130, icon: '💦' }
-  ];
+  // Filtrer les structures disponibles et ajouter les icônes par catégorie
+  const availableStructures = allStructures.filter(s => s.available).map(structure => {
+    const category = categories.find(c => c.id === structure.category);
+    return {
+      ...structure,
+      icon: category?.icon || '🎪'
+    };
+  });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleStructureChange = (structureId: string, isChecked: boolean) => {
+  const handleStructureChange = (structureId: string, isChecked: boolean, duration: '1day' | '2days' = '1day') => {
     setFormData(prev => ({
       ...prev,
       structures: isChecked 
-        ? [...prev.structures, structureId]
-        : prev.structures.filter(id => id !== structureId)
+        ? [...prev.structures, { id: structureId, duration }]
+        : prev.structures.filter(item => item.id !== structureId)
+    }));
+  };
+
+  const handleDurationChange = (structureId: string, duration: '1day' | '2days') => {
+    setFormData(prev => ({
+      ...prev,
+      structures: prev.structures.map(item =>
+        item.id === structureId ? { ...item, duration } : item
+      )
     }));
   };
 
   const calculateEstimate = () => {
     let total = 0;
     
-    formData.structures.forEach(structureId => {
-      const structure = structures.find(s => s.id === structureId);
+    formData.structures.forEach(structureItem => {
+      const structure = availableStructures.find(s => s.id === structureItem.id);
       if (structure) {
-        total += structure.price;
+        const price = structureItem.duration === '2days' && structure.price2Days 
+          ? structure.price2Days 
+          : structure.price;
+        total += price;
       }
     });
 
@@ -130,7 +145,9 @@ const Quote: React.FC = () => {
               <div className="bg-gradient-to-r from-blue-500 to-orange-500 text-white p-6 rounded-xl mb-8">
                 <h3 className="text-2xl font-bold mb-2">Estimation de votre devis</h3>
                 <p className="text-4xl font-bold">{estimatedPrice}€</p>
-                <p className="text-sm opacity-90">Prix indicatif - Devis définitif sous 48h</p>
+                <p className="text-sm opacity-90">
+                  Prix indicatif basé sur {formData.structures.length} structure(s) - Devis définitif sous 48h
+                </p>
               </div>
             )}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -347,39 +364,85 @@ const Quote: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {structures.map(structure => (
+                  {availableStructures.map(structure => {
+                    const isFromCart = cartItems.some(item => item.structure.id === structure.id);
+                    const isSelected = formData.structures.some(item => item.id === structure.id);
+                    const selectedItem = formData.structures.find(item => item.id === structure.id);
+                    const cartItem = cartItems.find(item => item.structure.id === structure.id);
+                    const currentDuration = selectedItem?.duration || cartItem?.duration || '1day';
+                    
+                    return (
                     <label 
                       key={structure.id}
-                      className={`group flex items-center p-6 border-2 rounded-xl cursor-pointer transition-all ${
-                        formData.structures.includes(structure.id) || cartItems.some(item => item.structure.id === structure.id)
+                      className={`group flex flex-col p-6 border-2 rounded-xl cursor-pointer transition-all ${
+                        isSelected || isFromCart
                           ? 'border-blue-500 bg-blue-50'
                           : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
                       }`}
                     >
-                      <input
-                        type="checkbox"
-                        className="w-5 h-5 text-blue-500 rounded focus:ring-blue-500 mr-4"
-                        onChange={(e) => handleStructureChange(structure.id, e.target.checked)}
-                        checked={formData.structures.includes(structure.id) || cartItems.some(item => item.structure.id === structure.id)}
-                        disabled={cartItems.some(item => item.structure.id === structure.id)}
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
+                      <div className="flex items-center mb-4">
+                        <input
+                          type="checkbox"
+                          className="w-5 h-5 text-blue-500 rounded focus:ring-blue-500 mr-4"
+                          onChange={(e) => handleStructureChange(structure.id, e.target.checked, currentDuration)}
+                          checked={isSelected || isFromCart}
+                          disabled={isFromCart}
+                        />
+                        <div className="flex-1">
                           <div className="flex items-center">
                             <span className="text-2xl mr-3">{structure.icon}</span>
                             <div>
                               <h3 className="font-bold text-gray-900">{structure.name}</h3>
-                              <p className="text-blue-600 font-bold">À partir de {structure.price}€</p>
-                              {cartItems.some(item => item.structure.id === structure.id) && (
+                              <p className="text-blue-600 font-bold">
+                                1 jour: {structure.price}€
+                                {structure.price2Days && ` • 2 jours: ${structure.price2Days}€`}
+                              </p>
+                              {isFromCart && (
                                 <p className="text-xs text-green-600 font-medium">✓ Ajouté depuis le panier</p>
                               )}
                             </div>
                           </div>
                         </div>
                       </div>
+                      
+                      {(isSelected || isFromCart) && (
+                        <div className="mt-4 pt-4 border-t border-gray-200">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Durée de location:
+                          </label>
+                          <select
+                            value={currentDuration}
+                            onChange={(e) => handleDurationChange(structure.id, e.target.value as '1day' | '2days')}
+                            disabled={isFromCart}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <option value="1day">1 jour - {structure.price}€</option>
+                            {structure.price2Days && (
+                              <option value="2days">2 jours - {structure.price2Days}€</option>
+                            )}
+                          </select>
+                          {isFromCart && (
+                            <p className="text-xs text-gray-500 mt-1">
+                              Durée définie dans le panier
+                            </p>
+                          )}
+                        </div>
+                      )}
                     </label>
-                  ))}
+                  );
+                  })}
                 </div>
+                
+                {availableStructures.length === 0 && (
+                  <div className="text-center py-12">
+                    <div className="text-6xl mb-4">🎪</div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Aucune structure disponible</h3>
+                    <p className="text-gray-600">
+                      Toutes nos structures sont actuellement indisponibles.
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 
