@@ -133,7 +133,7 @@ const Catalog: React.FC = () => {
                   </button>
                   <button
                     onClick={() => addToCart(structure)}
-                    className="px-4 py-3 border-2 border-orange-500 text-orange-500 rounded-lg font-semibold hover:bg-orange-500 hover:text-white transition-all"
+                    className="px-4 py-3 border-2 border-blue-500 text-blue-500 rounded-lg font-semibold hover:bg-blue-500 hover:text-white transition-all"
                     title="Ajouter au panier"
                   >
                     <ShoppingCart className="w-4 h-4 inline" />
