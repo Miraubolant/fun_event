@@ -45,10 +45,8 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               />
             </div>
             <div>
-              <h1 className="text-2xl font-extrabold">
-                <span className="bg-gradient-to-r text-transparent bg-clip-text" style={{backgroundImage: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
-                  Fun Event ✨
-                </span>
+              <h1 className="text-2xl font-extrabold text-gray-900">
+                Fun Event ✨
               </h1>
               <p className="text-sm font-semibold text-gray-700">🎪 Location de structures gonflables premium</p>
             </div>
