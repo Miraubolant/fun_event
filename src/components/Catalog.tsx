@@ -146,7 +146,7 @@ const Catalog: React.FC = () => {
                       onClick={() => addToCart(structure)}
                       className={`relative px-4 py-3 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg ${
                         isInCart(structure.id)
-                          ? 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700'
+                          ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700'
                           : 'border-2 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white'
                       }`}
                       title={isInCart(structure.id) ? "Ajouter une autre" : "Ajouter au panier"}
