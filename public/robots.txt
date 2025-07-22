@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://funevent.fr/sitemap.xml
+
+# Disallow admin pages
+Disallow: /admin
+
+# Allow important pages
+Allow: /catalogue
+Allow: /devis
+Allow: /faq
+Allow: /contact

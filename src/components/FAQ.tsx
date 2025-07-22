@@ -102,12 +102,12 @@ const FAQ: React.FC = () => {
   })).filter(category => category.questions.length > 0);
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 bg-gray-50" itemScope itemType="https://schema.org/FAQPage">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
           <div className="animate-fade-in">
-            <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
+            <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight" itemProp="name">
               <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
                 Questions
               </span>
@@ -140,13 +140,13 @@ const FAQ: React.FC = () => {
                   const isOpen = openItems.includes(itemIndex);
                   
                   return (
-                    <div key={questionIndex}>
+                    <div key={questionIndex} itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
                       <button
                         onClick={() => toggleItem(itemIndex)}
                         className="w-full px-8 py-6 text-left hover:bg-gray-50 transition-colors focus:outline-none focus:bg-gray-50 group"
                       >
                         <div className="flex justify-between items-center">
-                          <h3 className="text-lg font-semibold text-gray-900 pr-4 group-hover:text-blue-600 transition-colors">
+                          <h3 className="text-lg font-semibold text-gray-900 pr-4 group-hover:text-blue-600 transition-colors" itemProp="name">
                             {item.question}
                           </h3>
                           <div className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`}>
@@ -157,8 +157,8 @@ const FAQ: React.FC = () => {
                       
                       {isOpen && (
                         <div className="px-8 pb-6 animate-fade-in">
-                          <div className="bg-gray-50 rounded-xl p-6">
-                            <p className="text-gray-700 leading-relaxed">
+                          <div className="bg-gray-50 rounded-xl p-6" itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
+                            <p className="text-gray-700 leading-relaxed" itemProp="text">
                               {item.answer}
                             </p>
                           </div>

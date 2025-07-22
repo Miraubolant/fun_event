@@ -83,7 +83,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   return (
     <>
       {/* Hero Principal */}
-      <section className="relative bg-white text-gray-900 overflow-hidden min-h-screen">
+      <main className="relative bg-white text-gray-900 overflow-hidden min-h-screen">
         
         {/* Animations de fond harmonisées */}
         <div className="absolute inset-0 overflow-hidden">
@@ -97,7 +97,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           {/* Section Titre et Présentation */}
           <div className="text-center mb-16">
             <div className="animate-fade-in">
-              <h1 className="text-5xl md:text-7xl font-extrabold mb-8 leading-tight">
+              <h1 className="text-5xl md:text-7xl font-extrabold mb-8 leading-tight" itemProp="headline">
                 <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
                   Créez des Moments
                 </span>
@@ -106,7 +106,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                   Magiques ✨
                 </span>
               </h1>
-              <p className="text-xl md:text-3xl mb-10 max-w-5xl mx-auto text-gray-700 leading-relaxed font-medium">
+              <p className="text-xl md:text-3xl mb-10 max-w-5xl mx-auto text-gray-700 leading-relaxed font-medium" itemProp="description">
                 🎪 Des structures gonflables <span className="font-bold" style={{color: '#0F97F6'}}>premium</span> pour des événements 
                 <span className="font-bold text-orange-500"> festifs</span> et <span className="font-bold" style={{color: '#0F97F6'}}>inoubliables </span> 
                  dans toute l'Île-de-France 🎉
@@ -293,7 +293,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         
         {/* Transition fluide vers la section suivante */}
         <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-gray-50 to-transparent"></div>
-      </section>
+      </main>
 
       {/* Message si aucune structure */}
       {availableStructures.length === 0 && (

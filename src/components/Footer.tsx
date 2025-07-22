@@ -7,7 +7,7 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
-    <footer className="relative overflow-hidden">
+    <footer className="relative overflow-hidden" itemScope itemType="https://schema.org/WPFooter">
       {/* Fond dégradé principal */}
       <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-orange-600 text-white">
         {/* Formes décoratives en arrière-plan */}
@@ -23,19 +23,20 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             {/* Logo et description */}
             <div className="lg:col-span-2">
               <div className="flex items-center mb-6">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mr-4 bg-white/20 backdrop-blur-sm border border-white/30 shadow-xl">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mr-4 bg-white/20 backdrop-blur-sm border border-white/30 shadow-xl" itemScope itemType="https://schema.org/Organization">
                   <img 
                     src="https://i.imgur.com/gfhDZfm.png" 
                     alt="Fun Event Logo" 
                     className="w-14 h-14 rounded-full object-cover"
+                    itemProp="logo"
                   />
                 </div>
                 <div>
-                  <h2 className="text-4xl font-bold text-white">Fun Event</h2>
-                  <p className="text-blue-100 text-lg">Location de structures gonflables</p>
+                  <h2 className="text-4xl font-bold text-white" itemProp="name">Fun Event</h2>
+                  <p className="text-blue-100 text-lg" itemProp="description">Location de structures gonflables</p>
                 </div>
               </div>
-              <p className="text-blue-50 mb-8 max-w-md leading-relaxed text-lg">
+              <p className="text-blue-50 mb-8 max-w-md leading-relaxed text-lg" itemProp="description">
                 🎪 Nous créons des moments magiques et festifs pour tous vos événements en Île-de-France. 
                 Des souvenirs inoubliables garantis ! ✨
               </p>
@@ -105,6 +106,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center text-blue-100 hover:text-white transition-all hover:translate-x-3 p-3 rounded-xl hover:bg-white/20 backdrop-blur-sm border border-white/20"
+                  itemProp="telephone"
                 >
                   <MessageSquare className="w-6 h-6 mr-3 text-green-400" />
                   <div>
@@ -115,6 +117,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 <a 
                   href="mailto:contact@funevent.fr"
                   className="flex items-center text-blue-100 hover:text-white transition-all hover:translate-x-3 p-3 rounded-xl hover:bg-white/20 backdrop-blur-sm border border-white/20"
+                  itemProp="email"
                 >
                   <Mail className="w-6 h-6 mr-3 text-blue-300" />
                   <div>
@@ -122,11 +125,11 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                     <div className="text-sm text-blue-200">Email</div>
                   </div>
                 </a>
-                <div className="flex items-start text-blue-100 p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20">
+                <div className="flex items-start text-blue-100 p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20" itemScope itemType="https://schema.org/PostalAddress">
                   <MapPin className="w-6 h-6 mr-3 mt-1 flex-shrink-0 text-orange-300" />
                   <div>
-                    <p className="font-semibold text-white">Toute l'Île-de-France</p>
-                    <p className="text-sm text-blue-200">75, 77, 78, 91, 92, 93, 94, 95</p>
+                    <p className="font-semibold text-white" itemProp="addressRegion">Toute l'Île-de-France</p>
+                    <p className="text-sm text-blue-200" itemProp="postalCode">75, 77, 78, 91, 92, 93, 94, 95</p>
                   </div>
                 </div>
               </div>

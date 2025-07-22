@@ -39,11 +39,11 @@ const Catalog: React.FC = () => {
   };
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 bg-gray-50" itemScope itemType="https://schema.org/ItemList">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="animate-fade-in">
-            <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
+            <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight" itemProp="name">
               <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
                 Notre
               </span>
@@ -52,7 +52,7 @@ const Catalog: React.FC = () => {
                 Catalogue ✨
               </span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium max-w-4xl mx-auto">
+            <p className="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium max-w-4xl mx-auto" itemProp="description">
               🎪 Découvrez notre <span className="font-bold" style={{color: '#0F97F6'}}>large gamme</span> de structures gonflables 
               <span className="font-bold text-orange-500"> premium</span> pour tous les âges et tous les 
               <span className="font-bold" style={{color: '#0F97F6'}}> événements</span> 🎉
@@ -85,15 +85,22 @@ const Catalog: React.FC = () => {
             <div 
               key={structure.id} 
               className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all transform hover:scale-102 group"
+              itemScope 
+              itemType="https://schema.org/Product"
+              itemProp="itemListElement"
             >
               <div className="relative">
                 <img 
                   src={structure.image} 
                   alt={structure.name}
                   className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
+                  itemProp="image"
                 />
                 <div className="absolute top-2 right-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
-                  {structure.price}€
+                  <span itemProp="offers" itemScope itemType="https://schema.org/Offer">
+                    <span itemProp="price">{structure.price}</span>
+                    <span itemProp="priceCurrency" content="EUR">€</span>
+                  </span>
                 </div>
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
                   <button
@@ -107,8 +114,8 @@ const Catalog: React.FC = () => {
               </div>
               
               <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{structure.name}</h3>
-                <p className="text-gray-600 mb-4 line-clamp-3">
+                <h3 className="text-xl font-bold text-gray-900 mb-2" itemProp="name">{structure.name}</h3>
+                <p className="text-gray-600 mb-4 line-clamp-3" itemProp="description">
                   {structure.description.length > 120 
                     ? structure.description.substring(0, 120) + '...' 
                     : structure.description

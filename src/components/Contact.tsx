@@ -115,12 +115,12 @@ const Contact: React.FC = () => {
   }
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 bg-gray-50" itemScope itemType="https://schema.org/ContactPage">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
           <div className="animate-fade-in">
-            <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
+            <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight" itemProp="name">
               <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
                 Contactez
               </span>
@@ -129,7 +129,7 @@ const Contact: React.FC = () => {
                 Nous 📞
               </span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium max-w-4xl mx-auto">
+            <p className="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium max-w-4xl mx-auto" itemProp="description">
               💬 Une <span className="font-bold" style={{color: '#0F97F6'}}>question</span> ? Un 
               <span className="font-bold text-orange-500"> projet</span> ? Notre équipe est là pour vous 
               <span className="font-bold" style={{color: '#0F97F6'}}> accompagner</span> 🤝
@@ -142,12 +142,12 @@ const Contact: React.FC = () => {
           {contactInfo.map((info, index) => {
             const IconComponent = info.icon;
             const content = (
-              <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all p-8 text-center transform hover:scale-105">
+              <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all p-8 text-center transform hover:scale-105" itemScope itemType="https://schema.org/ContactPoint">
                 <div className={`w-16 h-16 bg-gradient-to-r ${info.color} rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
                   <IconComponent className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{info.title}</h3>
-                <p className="text-lg text-gray-800 font-medium mb-1">{info.value}</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-2" itemProp="contactType">{info.title}</h3>
+                <p className="text-lg text-gray-800 font-medium mb-1" itemProp="telephone">{info.value}</p>
                 <p className="text-sm text-gray-600">{info.description}</p>
               </div>
             );
