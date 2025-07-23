@@ -160,7 +160,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                             >
                               {/* Image en bulle */}
                               <div className="relative p-6 pb-0">
-                                <div className="relative w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-4">
+                                <div className="relative w-40 h-40 sm:w-48 sm:h-48 mx-auto mb-4">
                                   <div className="w-full h-full rounded-full overflow-hidden shadow-xl border-4 border-white group-hover:border-blue-200 transition-all duration-300">
                                     <img 
                                       src={structure.image} 
