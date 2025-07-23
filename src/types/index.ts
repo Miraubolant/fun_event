@@ -27,3 +27,5 @@ export interface User {
 }
 
 export type Page = 'accueil' | 'catalogue' | 'faq' | 'devis' | 'contact' | 'admin';
+
+export type Page = 'accueil' | 'catalogue' | 'faq' | 'devis' | 'contact' | 'admin' | 'mentions-legales' | 'politique-confidentialite';

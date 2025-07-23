@@ -170,15 +170,18 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           
           {/* Liens légaux */}
           <div className="flex flex-wrap justify-center gap-8 text-lg mt-8 pt-6 border-t border-white/20">
-            <a href="#" className="text-blue-200 hover:text-white transition-colors hover:underline">
+            <button 
+              onClick={() => onNavigate('mentions-legales')}
+              className="text-blue-200 hover:text-white transition-colors hover:underline"
+            >
               Mentions légales
-            </a>
-            <a href="#" className="text-blue-200 hover:text-white transition-colors hover:underline">
-              CGV
-            </a>
-            <a href="#" className="text-blue-200 hover:text-white transition-colors hover:underline">
+            </button>
+            <button 
+              onClick={() => onNavigate('politique-confidentialite')}
+              className="text-blue-200 hover:text-white transition-colors hover:underline"
+            >
               Politique de confidentialité
-            </a>
+            </button>
           </div>
         </div>
       </div>

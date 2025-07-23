@@ -7,6 +7,8 @@ import FAQ from './components/FAQ';
 import Quote from './components/Quote';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import LegalNotice from './components/LegalNotice';
+import PrivacyPolicy from './components/PrivacyPolicy';
 import AdminPanel from './components/AdminPanel';
 import AdminLogin from './components/AdminLogin';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -41,6 +43,10 @@ const AppContent: React.FC = () => {
         return <Quote />;
       case 'contact':
         return <Contact />;
+      case 'mentions-legales':
+        return <LegalNotice />;
+      case 'politique-confidentialite':
+        return <PrivacyPolicy />;
       case 'admin':
         return isAdmin ? <AdminPanel /> : null;
       default:
