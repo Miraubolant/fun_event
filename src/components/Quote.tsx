@@ -189,19 +189,8 @@ const Quote: React.FC = () => {
   const nextStep = () => {
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
-      // Scroll vers la section appropriée
-      if (currentStep + 1 === 2) {
-        // À l'étape 2, scroll vers la section des structures
-        setTimeout(() => {
-          const structuresSection = document.getElementById('structures-section');
-          if (structuresSection) {
-            structuresSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }, 100);
-      } else {
-        // Pour les autres étapes, scroll en haut
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+      // Scroll automatiquement en haut de la page
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
