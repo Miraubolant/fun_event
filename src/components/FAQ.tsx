@@ -20,16 +20,20 @@ const FAQ: React.FC = () => {
       icon: '📅',
       questions: [
         {
-          question: 'Combien de temps avant mon événement dois-je réserver ?',
-          answer: 'Nous recommandons de réserver au moins 2 semaines avant votre événement, surtout en haute saison (printemps/été). Cependant, n\'hésitez pas à nous contacter même pour une demande de dernière minute, nous ferons notre possible pour vous satisfaire !'
+          question: 'Comment se déroule une réservation sur fun-event ?',
+          answer: 'Vous pouvez effectuer votre demande de réservation via notre site internet, par téléphone ou par email. Une fois votre demande reçue, nous vous enverrons un devis personnalisé. La réservation sera confirmée dès réception de votre accord écrit et du paiement de l\'acompte.'
         },
         {
-          question: 'Comment puis-je réserver une structure ?',
-          answer: 'Vous pouvez réserver directement via notre formulaire de devis en ligne, nous appeler au 06 63 52 80 72, ou nous contacter via WhatsApp. Nous vous confirmerons la disponibilité sous 48h maximum.'
+          question: 'Y a-t-il un acompte à déposer pour bloquer ma réservation ?',
+          answer: 'Vous pouvez effectuer votre demande de réservation via notre site internet, par téléphone ou par email. Une fois votre demande reçue, nous vous enverrons un devis personnalisé. La réservation sera confirmée dès réception de votre accord écrit et du paiement de l\'acompte.'
         },
         {
-          question: 'Puis-je modifier ou annuler ma réservation ?',
-          answer: 'Oui, vous pouvez modifier votre réservation jusqu\'à 72h avant la date prévue. Pour les annulations, elles sont possibles jusqu\'à 48h avant sans pénalités. Au-delà, des frais de 30% du montant total s\'appliqueront.'
+          question: 'Quels sont les délais pour annuler une réservation ?',
+          answer: 'Vous pouvez annuler votre réservation jusqu\'à 7 jours avant la date prévue sans frais. Passé ce délai, l\'acompte versé ne pourra pas être remboursé.'
+        },
+        {
+          question: 'Comment savoir si ma demande de devis a bien été prise en compte ?',
+          answer: 'Une fois votre demande envoyée, vous recevrez un accusé de réception par mail. Nous vous contacterons ensuite rapidement pour finaliser les détails et vous transmettre le devis.'
         }
       ]
     },
@@ -39,54 +43,27 @@ const FAQ: React.FC = () => {
       icon: '🚚',
       questions: [
         {
-          question: 'L\'installation est-elle comprise dans le prix ?',
-          answer: 'Oui, la livraison, l\'installation et le démontage sont toujours compris dans nos tarifs pour toute l\'Île-de-France. Notre équipe professionnelle s\'occupe de tout : montage, vérifications sécurité et nettoyage.'
-        },
-        {
-          question: 'Dans quelles zones livrez-vous ?',
-          answer: 'Nous livrons dans toute l\'Île-de-France : Paris (75), Seine-et-Marne (77), Yvelines (78), Essonne (91), Hauts-de-Seine (92), Seine-Saint-Denis (93), Val-de-Marne (94), Val-d\'Oise (95).'
-        },
-        {
-          question: 'Combien de temps prend l\'installation ?',
-          answer: 'L\'installation prend généralement entre 30 minutes et 1h30 selon la taille et le nombre de structures. Notre équipe arrive 2h avant le début de votre événement pour tout préparer.'
+          question: 'Assurez-vous la livraison et l\'installation ?',
+          answer: 'Oui, Fun Event propose un service de livraison, d\'installation et de démontage des structures gonflables et du matériel loué. Ce service est assuré par notre équipe et est facturé en supplément. Le tarif dépend de la distance et du type de matériel à installer. Tous les détails sont indiqués dans le devis personnalisé.'
         }
       ]
     },
     {
-      category: 'Sécurité & Météo',
+      category: 'Paiement & Caution',
       color: 'bg-gradient-to-r from-blue-500 to-orange-500',
-      icon: '🛡️',
+      icon: '💳',
       questions: [
         {
-          question: 'Vos structures sont-elles sécurisées ?',
-          answer: 'Absolument ! Toutes nos structures respectent les normes CE et sont certifiées AFNOR. Elles sont régulièrement contrôlées et entretenues. Nous fournissons également des consignes de sécurité détaillées.'
+          question: 'Y a-t-il une caution à verser ?',
+          answer: 'Oui, une caution est demandée le jour de la prestation ou à la livraison du matériel. Elle est restituée à la fin de la prestation après vérification du bon état du matériel.'
         },
         {
-          question: 'Que se passe-t-il en cas de mauvais temps ?',
-          answer: 'Nos structures gonflables résistent aux intempéries légères. En cas de vent fort (>40 km/h) ou d\'orage, nous pourrons reporter la livraison sans frais supplémentaires pour votre sécurité.'
+          question: 'Quels sont les moyens de paiement acceptés par Fun Event ?',
+          answer: 'Nous acceptons les paiements par virement bancaire, carte bancaire, ou espèces. Tous les détails sont indiqués sur le devis et la facture.'
         },
         {
-          question: 'Y a-t-il une surveillance nécessaire ?',
-          answer: 'Oui, un adulte responsable doit toujours surveiller les enfants pendant l\'utilisation des structures. Nous fournissons un guide de surveillance avec chaque location.'
-        }
-      ]
-    },
-    {
-      category: 'Tarifs & Paiement',
-      color: 'bg-gradient-to-r from-orange-500 to-blue-500',
-      icon: '💰',
-      questions: [
-        {
-          question: 'Comment sont calculés vos tarifs ?',
-          answer: 'Nos tarifs dépendent du type de structure, de la durée de location et de la zone de livraison. Tous nos prix incluent la livraison, l\'installation et le démontage en Île-de-France.'
-        },
-        {
-          question: 'Quels sont vos moyens de paiement ?',
-          answer: 'Nous acceptons les paiements par chèque, virement bancaire, espèces et cartes bancaires. Un acompte de 30% est demandé à la réservation, le solde étant dû le jour de la livraison.'
-        },
-        {
-          question: 'Y a-t-il des frais cachés ?',
-          answer: 'Non, nos prix sont transparents et tout compris pour l\'Île-de-France. Les seuls frais supplémentaires possibles concernent les demandes spéciales (nettoyage exceptionnel, heures supplémentaires, etc.) qui sont toujours annoncés à l\'avance.'
+          question: 'À quel moment le paiement doit-il être effectué ?',
+          answer: 'L\'acompte est à verser au moment de la réservation. Le solde peut être réglé soit avant la prestation, soit le jour même, avant l\'installation.'
         }
       ]
     }
