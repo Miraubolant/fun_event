@@ -33,25 +33,25 @@ interface StructuresProviderProps {
 }
 
 const initialCategories: Category[] = [
-  { id: 'gonflable', label: 'Location gonflable', icon: '🎪' },
-  { id: 'evenementiel', label: 'Évènementiel', icon: '🎭' },
-  { id: 'gourmandises', label: 'Gourmandises', icon: '🍭' },
+  { id: 'a1b2c3d4-e5f6-7890-1234-567890abcdef', label: 'Location gonflable', icon: '🎪' },
+  { id: 'b2c3d4e5-f6g7-8901-2345-678901bcdefg', label: 'Évènementiel', icon: '🎭' },
+  { id: 'c3d4e5f6-g7h8-9012-3456-789012cdefgh', label: 'Gourmandises', icon: '🍭' },
 ];
 
 const initialCarouselPhotos: CarouselPhoto[] = [
-  { id: '1', url: 'https://i.imgur.com/kA2Secn.png', alt: 'Structure gonflable 1', title: 'Anniversaire Magique', location: 'Paris 15ème', order: 1 },
-  { id: '2', url: 'https://i.imgur.com/yj3D8xk.png', alt: 'Structure gonflable 2', title: 'Fête d\'École', location: 'Boulogne-Billancourt', order: 2 },
-  { id: '3', url: 'https://i.imgur.com/eJrSzxS.png', alt: 'Structure gonflable 3', title: 'Kermesse Paroissiale', location: 'Versailles', order: 3 },
-  { id: '4', url: 'https://i.imgur.com/PpYERbM.png', alt: 'Structure gonflable 4', title: 'Team Building', location: 'La Défense', order: 4 },
-  { id: '5', url: 'https://i.imgur.com/AdHVFs4.png', alt: 'Structure gonflable 5', title: 'Mariage Champêtre', location: 'Fontainebleau', order: 5 },
-  { id: '6', url: 'https://i.imgur.com/6qMhuOF.png', alt: 'Structure gonflable 6', title: 'Fête de Quartier', location: 'Créteil', order: 6 },
+  { id: 'd4e5f6g7-h8i9-0123-4567-890123defghi', url: 'https://i.imgur.com/kA2Secn.png', alt: 'Structure gonflable 1', title: 'Anniversaire Magique', location: 'Paris 15ème', order: 1 },
+  { id: 'e5f6g7h8-i9j0-1234-5678-901234efghij', url: 'https://i.imgur.com/yj3D8xk.png', alt: 'Structure gonflable 2', title: 'Fête d\'École', location: 'Boulogne-Billancourt', order: 2 },
+  { id: 'f6g7h8i9-j0k1-2345-6789-012345fghijk', url: 'https://i.imgur.com/eJrSzxS.png', alt: 'Structure gonflable 3', title: 'Kermesse Paroissiale', location: 'Versailles', order: 3 },
+  { id: 'g7h8i9j0-k1l2-3456-7890-123456ghijkl', url: 'https://i.imgur.com/PpYERbM.png', alt: 'Structure gonflable 4', title: 'Team Building', location: 'La Défense', order: 4 },
+  { id: 'h8i9j0k1-l2m3-4567-8901-234567hijklm', url: 'https://i.imgur.com/AdHVFs4.png', alt: 'Structure gonflable 5', title: 'Mariage Champêtre', location: 'Fontainebleau', order: 5 },
+  { id: 'i9j0k1l2-m3n4-5678-9012-345678ijklmn', url: 'https://i.imgur.com/6qMhuOF.png', alt: 'Structure gonflable 6', title: 'Fête de Quartier', location: 'Créteil', order: 6 },
 ];
 
 const initialStructures: Structure[] = [
   {
-    id: '1',
+    id: 'j0k1l2m3-n4o5-6789-0123-456789jklmno',
     name: 'Instables Gladiateurs',
-    category: 'gonflable',
+    category: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
     size: '7,7m x 6,6m x 1,5m',
     capacity: '2 personnes max',
     age: '3-77 ans',
@@ -63,9 +63,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '2',
+    id: 'k1l2m3n4-o5p6-7890-1234-567890klmnop',
     name: 'Château Cirque',
-    category: 'gonflable',
+    category: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
     size: '3,8m x 2,8m x 2,8m',
     capacity: '12 personnes max',
     age: '3-77 ans',
@@ -77,9 +77,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '3',
+    id: 'l2m3n4o5-p6q7-8901-2345-678901lmnopq',
     name: 'Multiplay Jurassic World',
-    category: 'gonflable',
+    category: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
     size: '5m x 5,5m x 4,30m',
     capacity: '12 personnes max',
     age: '3-77 ans',
@@ -91,9 +91,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '4',
+    id: 'm3n4o5p6-q7r8-9012-3456-789012mnopqr',
     name: 'Le Monde Marin',
-    category: 'gonflable',
+    category: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
     size: '3,8m x 9,5m x 5,80m',
     capacity: '8 personnes max',
     age: '3-77 ans',
@@ -105,9 +105,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '5',
+    id: 'n4o5p6q7-r8s9-0123-4567-890123nopqrs',
     name: 'Sumo adulte',
-    category: 'gonflable',
+    category: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
     size: 'Tapis : 25m²',
     capacity: '2 personnes max',
     age: '3-77 ans',
@@ -119,9 +119,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '6',
+    id: 'o5p6q7r8-s9t0-1234-5678-901234opqrst',
     name: 'Machine à coup de poing',
-    category: 'gonflable',
+    category: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
     size: '1,2m x 0,7m x 2,1m',
     capacity: '1 personne max',
     age: '3-77 ans',
@@ -133,9 +133,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '7',
+    id: 'p6q7r8s9-t0u1-2345-6789-012345pqrstu',
     name: 'Pêche aux canards',
-    category: 'gonflable',
+    category: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
     size: '1,5m x 3,4m x 1,3m',
     capacity: '12 personnes max',
     age: '3-77 ans',
@@ -147,9 +147,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '8',
+    id: 'q7r8s9t0-u1v2-3456-7890-123456qrstuv',
     name: 'Piscine à balles',
-    category: 'gonflable',
+    category: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
     size: '4,4m x 3,5m x 2,4m',
     capacity: '12 personnes max',
     age: '3-77 ans',
@@ -161,9 +161,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '9',
+    id: 'r8s9t0u1-v2w3-4567-8901-234567rstuvw',
     name: 'Sumo enfant',
-    category: 'gonflable',
+    category: 'a1b2c3d4-e5f6-7890-1234-567890abcdef',
     size: 'Tapis : 25m²',
     capacity: '2 personnes max',
     age: '3-77 ans',
@@ -176,9 +176,9 @@ const initialStructures: Structure[] = [
   },
   // Catégorie Gourmandises
   {
-    id: '10',
+    id: 's9t0u1v2-w3x4-5678-9012-345678stuvwx',
     name: 'Machine à Barbe à Papa',
-    category: 'gourmandises',
+    category: 'c3d4e5f6-g7h8-9012-3456-789012cdefgh',
     size: 'Machine professionnelle',
     capacity: 'Illimité',
     age: 'Tous âges',
@@ -189,9 +189,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '11',
+    id: 't0u1v2w3-x4y5-6789-0123-456789tuvwxy',
     name: 'Machine à pop-corn',
-    category: 'gourmandises',
+    category: 'c3d4e5f6-g7h8-9012-3456-789012cdefgh',
     size: 'Machine professionnelle',
     capacity: 'Illimité',
     age: 'Tous âges',
@@ -202,9 +202,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '12',
+    id: 'u1v2w3x4-y5z6-7890-1234-567890uvwxyz',
     name: 'Machine à gaufres',
-    category: 'gourmandises',
+    category: 'c3d4e5f6-g7h8-9012-3456-789012cdefgh',
     size: 'Machine professionnelle',
     capacity: 'Illimité',
     age: 'Tous âges',
@@ -215,9 +215,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '13',
+    id: 'v2w3x4y5-z6a7-8901-2345-678901vwxyza',
     name: 'Machine à crêpes',
-    category: 'gourmandises',
+    category: 'c3d4e5f6-g7h8-9012-3456-789012cdefgh',
     size: 'Machine professionnelle',
     capacity: 'Illimité',
     age: 'Tous âges',
@@ -229,9 +229,9 @@ const initialStructures: Structure[] = [
   },
   // Catégorie Évènementiel
   {
-    id: '14',
+    id: 'w3x4y5z6-a7b8-9012-3456-789012wxyzab',
     name: 'Magicien',
-    category: 'evenementiel',
+    category: 'b2c3d4e5-f6g7-8901-2345-678901bcdefg',
     size: 'Prestation sur mesure',
     capacity: 'Jusqu\'à 50 personnes',
     age: 'Tous âges',
@@ -242,9 +242,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '15',
+    id: 'x4y5z6a7-b8c9-0123-4567-890123xyzabc',
     name: 'Sculpteur de ballons',
-    category: 'evenementiel',
+    category: 'b2c3d4e5-f6g7-8901-2345-678901bcdefg',
     size: 'Animation mobile',
     capacity: 'Jusqu\'à 30 enfants/heure',
     age: '3-12 ans',
@@ -255,9 +255,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '16',
+    id: 'y5z6a7b8-c9d0-1234-5678-901234yzabcd',
     name: 'Maquilleuse',
-    category: 'evenementiel',
+    category: 'b2c3d4e5-f6g7-8901-2345-678901bcdefg',
     size: 'Poste de maquillage',
     capacity: '15-20 enfants/heure',
     age: '3-12 ans',
@@ -268,9 +268,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '17',
+    id: 'z6a7b8c9-d0e1-2345-6789-012345zabcde',
     name: 'Mascotte',
-    category: 'evenementiel',
+    category: 'b2c3d4e5-f6g7-8901-2345-678901bcdefg',
     size: 'Animation interactive',
     capacity: 'Tous publics',
     age: 'Tous âges',
