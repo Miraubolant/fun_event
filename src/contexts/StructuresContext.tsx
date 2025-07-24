@@ -294,77 +294,6 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       try {
         console.log('🔄 Chargement des données depuis Supabase...');
         
-        // Fonction pour insérer les données par défaut si les tables sont vides
-        const insertDefaultData = async () => {
-          console.log('📥 Insertion des données par défaut...');
-          
-          // Insérer les catégories par défaut
-          for (const category of initialCategories) {
-            const { error } = await supabase
-              .from('categories')
-              .upsert({
-                id: category.id,
-                label: category.label,
-                icon: category.icon
-              }, { onConflict: 'id' });
-            
-            if (error) {
-              console.error('❌ Erreur insertion catégorie:', category.label, error);
-            } else {
-              console.log('✅ Catégorie insérée:', category.label);
-            }
-          }
-          
-          // Insérer les structures par défaut
-          for (const structure of initialStructures) {
-            const { error } = await supabase
-              .from('structures')
-              .upsert({
-                id: structure.id,
-                name: structure.name,
-                category_id: structure.category,
-                size: structure.size,
-                capacity: structure.capacity,
-                age: structure.age,
-                price: structure.price,
-                price_2_days: structure.price2Days || null,
-                max_weight: structure.maxWeight || null,
-                services: structure.services || null,
-                image: structure.image,
-                description: structure.description,
-                available: structure.available
-              }, { onConflict: 'id' });
-            
-            if (error) {
-              console.error('❌ Erreur insertion structure:', structure.name, error);
-            } else {
-              console.log('✅ Structure insérée:', structure.name);
-            }
-          }
-          
-          // Insérer les photos par défaut
-          for (const photo of initialCarouselPhotos) {
-            const { error } = await supabase
-              .from('carousel_photos')
-              .upsert({
-                id: photo.id,
-                url: photo.url,
-                alt: photo.alt,
-                title: photo.title || null,
-                location: photo.location || null,
-                order_position: photo.order
-              }, { onConflict: 'id' });
-            
-            if (error) {
-              console.error('❌ Erreur insertion photo:', photo.alt, error);
-            } else {
-              console.log('✅ Photo insérée:', photo.alt);
-            }
-          }
-          
-          console.log('✅ Insertion des données par défaut terminée');
-        };
-        
         // Charger les catégories
         const { data: categoriesData, error: categoriesError } = await supabase
           .from('categories')
@@ -373,15 +302,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
 
         if (categoriesError) {
           console.error('❌ Erreur lors du chargement des catégories:', categoriesError);
-          console.log('📋 Tentative d\'insertion des données par défaut...');
-          await insertDefaultData();
+          console.log('📋 Utilisation des données par défaut');
+          setCategories(initialCategories);
         } else {
           console.log('✅ Catégories chargées:', categoriesData?.length || 0);
-          if (categoriesData && categoriesData.length === 0) {
-            console.log('📋 Tables vides, insertion des données par défaut...');
-            await insertDefaultData();
-          }
-          
           if (categoriesData && categoriesData.length > 0) {
             const mappedCategories: Category[] = categoriesData.map(cat => ({
               id: cat.id,
@@ -390,20 +314,8 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
             }));
             setCategories(mappedCategories);
           } else {
-            // Recharger après insertion
-            const { data: newCategoriesData } = await supabase
-              .from('categories')
-              .select('*')
-              .order('label');
-            
-            if (newCategoriesData && newCategoriesData.length > 0) {
-              const mappedCategories: Category[] = newCategoriesData.map(cat => ({
-                id: cat.id,
-                label: cat.label,
-                icon: cat.icon
-              }));
-              setCategories(mappedCategories);
-            }
+            console.log('📋 Aucune catégorie trouvée, utilisation des données par défaut');
+            setCategories(initialCategories);
           }
         }
 
@@ -415,6 +327,8 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
 
         if (structuresError) {
           console.error('❌ Erreur lors du chargement des structures:', structuresError);
+          console.log('📋 Utilisation des données par défaut');
+          setStructures(initialStructures);
         } else {
           console.log('✅ Structures chargées:', structuresData?.length || 0);
           if (structuresData && structuresData.length > 0) {
@@ -435,30 +349,8 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
             }));
             setStructures(mappedStructures);
           } else {
-            // Recharger après insertion
-            const { data: newStructuresData } = await supabase
-              .from('structures')
-              .select('*')
-              .order('name');
-            
-            if (newStructuresData && newStructuresData.length > 0) {
-              const mappedStructures: Structure[] = newStructuresData.map(struct => ({
-                id: struct.id,
-                name: struct.name,
-                category: struct.category_id,
-                size: struct.size,
-                capacity: struct.capacity,
-                age: struct.age,
-                price: struct.price,
-                price2Days: struct.price_2_days || undefined,
-                maxWeight: struct.max_weight || undefined,
-                services: struct.services || undefined,
-                image: struct.image,
-                description: struct.description,
-                available: struct.available
-              }));
-              setStructures(mappedStructures);
-            }
+            console.log('📋 Aucune structure trouvée, utilisation des données par défaut');
+            setStructures(initialStructures);
           }
         }
 
@@ -470,6 +362,8 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
 
         if (photosError) {
           console.error('❌ Erreur lors du chargement des photos:', photosError);
+          console.log('📋 Utilisation des données par défaut');
+          setCarouselPhotos(initialCarouselPhotos);
         } else {
           console.log('✅ Photos chargées:', photosData?.length || 0);
           if (photosData && photosData.length > 0) {
@@ -483,29 +377,17 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
             }));
             setCarouselPhotos(mappedPhotos);
           } else {
-            // Recharger après insertion
-            const { data: newPhotosData } = await supabase
-              .from('carousel_photos')
-              .select('*')
-              .order('order_position');
-            
-            if (newPhotosData && newPhotosData.length > 0) {
-              const mappedPhotos: CarouselPhoto[] = newPhotosData.map(photo => ({
-                id: photo.id,
-                url: photo.url,
-                alt: photo.alt,
-                title: photo.title || undefined,
-                location: photo.location || undefined,
-                order: photo.order_position
-              }));
-              setCarouselPhotos(mappedPhotos);
-            }
+            console.log('📋 Aucune photo trouvée, utilisation des données par défaut');
+            setCarouselPhotos(initialCarouselPhotos);
           }
         }
 
       } catch (error) {
         console.error('❌ Erreur générale lors du chargement:', error);
         console.log('📋 Les données par défaut seront utilisées');
+        setCategories(initialCategories);
+        setStructures(initialStructures);
+        setCarouselPhotos(initialCarouselPhotos);
       } finally {
         console.log('✅ Chargement terminé');
         setLoading(false);
