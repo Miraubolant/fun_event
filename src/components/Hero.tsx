@@ -291,6 +291,9 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           </div>
         </div>
         
+        {/* Carrousel de photos */}
+        <PhotoCarousel />
+        
         {/* Transition fluide vers la section suivante */}
         <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-gray-50 to-transparent"></div>
       </main>
@@ -409,6 +412,170 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         />
       )}
     </>
+  );
+};
+
+// Composant PhotoCarousel
+const PhotoCarousel: React.FC = () => {
+  const { carouselPhotos } = useStructures();
+  const [currentSlide, setCurrentSlide] = React.useState(0);
+  const [itemsPerSlide, setItemsPerSlide] = React.useState(3);
+  
+  // Trier les photos par ordre
+  const sortedPhotos = [...carouselPhotos].sort((a, b) => a.order - b.order);
+  
+  // Fonction pour détecter la taille d'écran et ajuster le carrousel
+  React.useEffect(() => {
+    const updateItemsPerSlide = () => {
+      const width = window.innerWidth;
+      let items;
+      if (width < 768) {
+        items = 1; // Mobile: 1 élément par slide
+      } else if (width < 1024) {
+        items = 2; // Tablet: 2 éléments par slide
+      } else {
+        items = 3; // Desktop: 3 éléments par slide
+      }
+      
+      setItemsPerSlide(items);
+      setCurrentSlide(0); // Reset à chaque changement de taille
+    };
+    
+    updateItemsPerSlide();
+    window.addEventListener('resize', updateItemsPerSlide);
+    
+    return () => window.removeEventListener('resize', updateItemsPerSlide);
+  }, []);
+  
+  // Reset du carrousel quand les photos changent
+  React.useEffect(() => {
+    setCurrentSlide(0);
+  }, [sortedPhotos.length]);
+  
+  // Calcul du nombre total de slides
+  const totalSlides = Math.max(1, Math.ceil(sortedPhotos.length / itemsPerSlide));
+  
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % totalSlides);
+  };
+  
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+  };
+  
+  const goToSlide = (index: number) => {
+    if (index >= 0 && index < totalSlides) {
+      setCurrentSlide(index);
+    }
+  };
+  
+  // S'assurer que currentSlide reste valide
+  React.useEffect(() => {
+    if (currentSlide >= totalSlides) {
+      setCurrentSlide(0);
+    }
+  }, [currentSlide, totalSlides]);
+
+  if (sortedPhotos.length === 0) return null;
+
+  return (
+    <section className="py-16 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
+            <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
+              Nos Structures
+            </span>
+            <br />
+            <span className="bg-gradient-to-r text-transparent bg-clip-text animate-pulse" style={{backgroundImage: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
+              en Action 📸
+            </span>
+          </h2>
+          <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-3xl mx-auto">
+            🎪 Découvrez nos structures gonflables <span className="font-bold" style={{color: '#0F97F6'}}>en situation</span> lors d'événements 
+            <span className="font-bold text-orange-500"> réels</span> ! 🎉
+          </p>
+        </div>
+
+        {/* Carrousel Container */}
+        <div className="relative max-w-6xl mx-auto">
+          {/* Navigation Buttons */}
+          {totalSlides > 1 && (
+            <>
+              <button
+                onClick={prevSlide}
+                className="absolute -left-4 sm:-left-6 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all hover:scale-110 border-2 border-gray-100"
+              >
+                <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7 text-gray-600" />
+              </button>
+              <button
+                onClick={nextSlide}
+                className="absolute -right-4 sm:-right-6 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all hover:scale-110 border-2 border-gray-100"
+              >
+                <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7 text-gray-600" />
+              </button>
+            </>
+          )}
+          
+          {/* Carrousel Content */}
+          <div className="overflow-hidden rounded-2xl">
+            <div 
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+            >
+              {Array.from({ length: totalSlides }, (_, slideIndex) => (
+                <div key={slideIndex} className="w-full flex-shrink-0 px-4">
+                  <div className={`grid gap-4 md:gap-8 ${
+                    itemsPerSlide === 1 ? 'grid-cols-1' :
+                    itemsPerSlide === 2 ? 'grid-cols-2' :
+                    'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                  }`}>
+                    {sortedPhotos
+                      .slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide)
+                      .map((photo) => (
+                      <div 
+                        key={photo.id}
+                        className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 overflow-hidden w-full"
+                      >
+                        <div className="relative">
+                          <img 
+                            src={photo.url} 
+                            alt={photo.alt}
+                            className="w-full h-64 sm:h-80 object-cover group-hover:scale-110 transition-transform duration-500"
+                            loading="lazy"
+                            onError={(e) => {
+                              e.currentTarget.src = 'https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=400';
+                            }}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Dots Indicators */}
+          {totalSlides > 1 && (
+            <div className="flex justify-center mt-8 space-x-2">
+              {Array.from({ length: totalSlides }, (_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToSlide(index)}
+                  className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
+                    currentSlide === index
+                      ? 'bg-gradient-to-r from-blue-500 to-orange-500 scale-125'
+                      : 'bg-gray-300 hover:bg-gray-400'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
   );
 };
 

@@ -26,6 +26,13 @@ export interface User {
   role: 'admin' | 'user';
 }
 
+export interface CarouselPhoto {
+  id: string;
+  url: string;
+  alt: string;
+  order: number;
+}
+
 export type Page = 'accueil' | 'catalogue' | 'faq' | 'devis' | 'contact' | 'admin';
 
 export type Page = 'accueil' | 'catalogue' | 'faq' | 'devis' | 'contact' | 'admin' | 'mentions-legales' | 'politique-confidentialite';

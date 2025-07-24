@@ -1,18 +1,34 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Save, X, Package, DollarSign, Tag, Image } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, X, Package, DollarSign, Tag, Image, Camera, ArrowUp, ArrowDown } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
 import { useAuth } from '../contexts/AuthContext';
-import { Structure, Category } from '../types';
+import { Structure, Category, CarouselPhoto } from '../types';
 
 const AdminPanel: React.FC = () => {
-  const { structures, categories, addStructure, updateStructure, deleteStructure, addCategory, updateCategory, deleteCategory } = useStructures();
+  const { 
+    structures, 
+    categories, 
+    carouselPhotos,
+    addStructure, 
+    updateStructure, 
+    deleteStructure, 
+    addCategory, 
+    updateCategory, 
+    deleteCategory,
+    addCarouselPhoto,
+    updateCarouselPhoto,
+    deleteCarouselPhoto,
+    reorderCarouselPhotos
+  } = useStructures();
   const { logout } = useAuth();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showCategoryForm, setShowCategoryForm] = useState(false);
+  const [showPhotoForm, setShowPhotoForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [formData, setFormData] = useState<Partial<Structure>>({});
   const [categoryData, setCategoryData] = useState<Partial<Category>>({});
+  const [photoData, setPhotoData] = useState<Partial<CarouselPhoto>>({});
 
   const handleEdit = (structure: Structure) => {
     setShowEditForm(true);
@@ -59,12 +75,27 @@ const AdminPanel: React.FC = () => {
     }
   };
 
+  const handleAddPhoto = () => {
+    if (photoData.url && photoData.alt) {
+      const maxOrder = Math.max(...carouselPhotos.map(p => p.order), 0);
+      addCarouselPhoto({
+        url: photoData.url,
+        alt: photoData.alt,
+        order: photoData.order || maxOrder + 1
+      });
+      setShowPhotoForm(false);
+      setPhotoData({});
+    }
+  };
+
   const handleCancel = () => {
     setShowAddForm(false);
     setShowEditForm(false);
     setShowCategoryForm(false);
+    setShowPhotoForm(false);
     setFormData({});
     setCategoryData({});
+    setPhotoData({});
   };
 
   const handleDelete = (id: string) => {
@@ -76,6 +107,31 @@ const AdminPanel: React.FC = () => {
   const handleDeleteCategory = (id: string) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
       deleteCategory(id);
+    }
+  };
+
+  const handleDeletePhoto = (id: string) => {
+    if (window.confirm('Êtes-vous sûr de vouloir supprimer cette photo ?')) {
+      deleteCarouselPhoto(id);
+    }
+  };
+
+  const movePhoto = (id: string, direction: 'up' | 'down') => {
+    const sortedPhotos = [...carouselPhotos].sort((a, b) => a.order - b.order);
+    const currentIndex = sortedPhotos.findIndex(p => p.id === id);
+    
+    if (direction === 'up' && currentIndex > 0) {
+      const newPhotos = [...sortedPhotos];
+      [newPhotos[currentIndex], newPhotos[currentIndex - 1]] = [newPhotos[currentIndex - 1], newPhotos[currentIndex]];
+      newPhotos.forEach((photo, index) => {
+        updateCarouselPhoto(photo.id, { order: index + 1 });
+      });
+    } else if (direction === 'down' && currentIndex < sortedPhotos.length - 1) {
+      const newPhotos = [...sortedPhotos];
+      [newPhotos[currentIndex], newPhotos[currentIndex + 1]] = [newPhotos[currentIndex + 1], newPhotos[currentIndex]];
+      newPhotos.forEach((photo, index) => {
+        updateCarouselPhoto(photo.id, { order: index + 1 });
+      });
     }
   };
 
@@ -114,6 +170,13 @@ const AdminPanel: React.FC = () => {
             >
               <Tag className="w-5 h-5 mr-2" />
               Gérer Catégories
+            </button>
+            <button
+              onClick={() => setShowPhotoForm(true)}
+             className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center"
+            >
+              <Camera className="w-5 h-5 mr-2" />
+              Gérer Photos
             </button>
             <button
               onClick={logout}
@@ -157,7 +220,125 @@ const AdminPanel: React.FC = () => {
               </div>
             </div>
           </div>
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <div className="flex items-center">
+              <Camera className="w-8 h-8 text-purple-500 mr-3" />
+              <div>
+                <p className="text-sm text-gray-600">Photos Carrousel</p>
+                <p className="text-2xl font-bold text-gray-900">{carouselPhotos.length}</p>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Gestion des photos du carrousel */}
+        {showPhotoForm && (
+          <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Gérer les Photos du Carrousel</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  URL de l'image *
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://i.imgur.com/example.png"
+                  value={photoData.url || ''}
+                  onChange={(e) => setPhotoData({...photoData, url: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Description (Alt text) *
+                </label>
+                <input
+                  type="text"
+                  placeholder="Description de l'image"
+                  value={photoData.alt || ''}
+                  onChange={(e) => setPhotoData({...photoData, alt: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-blue-500"
+                />
+              </div>
+            </div>
+            
+            {photoData.url && (
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Aperçu :</label>
+                <img 
+                  src={photoData.url} 
+                  alt="Aperçu" 
+                  className="w-48 h-32 object-cover rounded-lg border-2 border-gray-200"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
+            
+            <div className="flex gap-3 mb-6">
+              <button
+                onClick={handleAddPhoto}
+               className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center"
+              >
+                <Save className="w-5 h-5 mr-2" />
+                Ajouter Photo
+              </button>
+              <button
+                onClick={handleCancel}
+                className="bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center"
+              >
+                <X className="w-5 h-5 mr-2" />
+                Annuler
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">Photos actuelles :</h3>
+              {[...carouselPhotos].sort((a, b) => a.order - b.order).map((photo, index) => (
+                <div key={photo.id} className="bg-gray-50 p-4 rounded-lg flex items-center justify-between">
+                  <div className="flex items-center">
+                    <img 
+                      src={photo.url} 
+                      alt={photo.alt}
+                      className="w-16 h-12 object-cover rounded mr-4"
+                    />
+                    <div>
+                      <p className="font-medium">{photo.alt}</p>
+                      <p className="text-sm text-gray-500">Position: {index + 1}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => movePhoto(photo.id, 'up')}
+                      disabled={index === 0}
+                      className="p-2 text-blue-600 hover:text-blue-800 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+                      title="Monter"
+                    >
+                      <ArrowUp className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => movePhoto(photo.id, 'down')}
+                      disabled={index === carouselPhotos.length - 1}
+                      className="p-2 text-blue-600 hover:text-blue-800 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+                      title="Descendre"
+                    >
+                      <ArrowDown className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDeletePhoto(photo.id)}
+                      className="p-2 text-red-600 hover:text-red-800 transition-colors"
+                      title="Supprimer"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Gestion des catégories */}
         {showCategoryForm && (

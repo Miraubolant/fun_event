@@ -1,15 +1,20 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Structure, Category } from '../types';
+import { Structure, Category, CarouselPhoto } from '../types';
 
 interface StructuresContextType {
   structures: Structure[];
   categories: Category[];
+  carouselPhotos: CarouselPhoto[];
   addStructure: (structure: Omit<Structure, 'id'>) => void;
   updateStructure: (id: string, structure: Partial<Structure>) => void;
   deleteStructure: (id: string) => void;
   addCategory: (category: Omit<Category, 'id'>) => void;
   updateCategory: (id: string, category: Partial<Category>) => void;
   deleteCategory: (id: string) => void;
+  addCarouselPhoto: (photo: Omit<CarouselPhoto, 'id'>) => void;
+  updateCarouselPhoto: (id: string, photo: Partial<CarouselPhoto>) => void;
+  deleteCarouselPhoto: (id: string) => void;
+  reorderCarouselPhotos: (photos: CarouselPhoto[]) => void;
 }
 
 const StructuresContext = createContext<StructuresContextType | undefined>(undefined);
@@ -30,6 +35,15 @@ const initialCategories: Category[] = [
   { id: 'gonflable', label: 'Location gonflable', icon: '🎪' },
   { id: 'evenementiel', label: 'Évènementiel', icon: '🎭' },
   { id: 'gourmandises', label: 'Gourmandises', icon: '🍭' },
+];
+
+const initialCarouselPhotos: CarouselPhoto[] = [
+  { id: '1', url: 'https://i.imgur.com/kA2Secn.png', alt: 'Structure gonflable 1', order: 1 },
+  { id: '2', url: 'https://i.imgur.com/yj3D8xk.png', alt: 'Structure gonflable 2', order: 2 },
+  { id: '3', url: 'https://i.imgur.com/eJrSzxS.png', alt: 'Structure gonflable 3', order: 3 },
+  { id: '4', url: 'https://i.imgur.com/PpYERbM.png', alt: 'Structure gonflable 4', order: 4 },
+  { id: '5', url: 'https://i.imgur.com/AdHVFs4.png', alt: 'Structure gonflable 5', order: 5 },
+  { id: '6', url: 'https://i.imgur.com/6qMhuOF.png', alt: 'Structure gonflable 6', order: 6 },
 ];
 
 const initialStructures: Structure[] = [
@@ -270,6 +284,7 @@ const initialStructures: Structure[] = [
 export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children }) => {
   const [structures, setStructures] = useState<Structure[]>(initialStructures);
   const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [carouselPhotos, setCarouselPhotos] = useState<CarouselPhoto[]>(initialCarouselPhotos);
 
   const addStructure = (newStructure: Omit<Structure, 'id'>) => {
     const structure: Structure = {
@@ -311,16 +326,45 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
     setCategories(prev => prev.filter(category => category.id !== id));
   };
 
+  const addCarouselPhoto = (newPhoto: Omit<CarouselPhoto, 'id'>) => {
+    const photo: CarouselPhoto = {
+      ...newPhoto,
+      id: Date.now().toString()
+    };
+    setCarouselPhotos(prev => [...prev, photo].sort((a, b) => a.order - b.order));
+  };
+
+  const updateCarouselPhoto = (id: string, updatedPhoto: Partial<CarouselPhoto>) => {
+    setCarouselPhotos(prev => 
+      prev.map(photo => 
+        photo.id === id ? { ...photo, ...updatedPhoto } : photo
+      ).sort((a, b) => a.order - b.order)
+    );
+  };
+
+  const deleteCarouselPhoto = (id: string) => {
+    setCarouselPhotos(prev => prev.filter(photo => photo.id !== id));
+  };
+
+  const reorderCarouselPhotos = (photos: CarouselPhoto[]) => {
+    setCarouselPhotos(photos);
+  };
+
   return (
     <StructuresContext.Provider value={{ 
       structures, 
       categories, 
+      carouselPhotos,
       addStructure, 
       updateStructure, 
       deleteStructure,
       addCategory,
       updateCategory,
-      deleteCategory
+      deleteCategory,
+      addCarouselPhoto,
+      updateCarouselPhoto,
+      deleteCarouselPhoto,
+      reorderCarouselPhotos
     }}>
       {children}
     </StructuresContext.Provider>
