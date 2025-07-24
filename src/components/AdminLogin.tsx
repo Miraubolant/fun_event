@@ -38,6 +38,13 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
     setLoading(true);
     setError('');
 
+    // Validation côté client
+    if (password.length < 6) {
+      setError('Le mot de passe doit contenir au moins 6 caractères');
+      setLoading(false);
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError('Les mots de passe ne correspondent pas');
       setLoading(false);
@@ -54,19 +61,31 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
       if (signUpError) throw signUpError;
 
       if (data.user) {
-        // Ajouter l'utilisateur à la table admin_users
-        const { error: adminError } = await supabase
-          .from('admin_users')
-          .insert({
-            id: data.user.id,
-            email: data.user.email || email,
-            role: 'admin'
-          });
+        // Attendre que l'utilisateur soit authentifié avant d'insérer dans admin_users
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session) {
+          // Ajouter l'utilisateur à la table admin_users avec l'utilisateur authentifié
+          const { error: adminError } = await supabase
+            .from('admin_users')
+            .insert({
+              id: data.user.id,
+              email: data.user.email || email,
+              role: 'admin'
+            });
 
-        if (adminError) throw adminError;
-
-        setError('');
-        alert('Compte administrateur créé avec succès ! Vous pouvez maintenant vous connecter.');
+          if (adminError) {
+            console.error('Admin user creation error:', adminError);
+            // Si l'insertion échoue, on peut quand même considérer que le compte est créé
+            setError('Compte créé mais erreur lors de l\'ajout des permissions admin. Contactez l\'administrateur.');
+          } else {
+            setError('');
+            alert('Compte administrateur créé avec succès ! Vous pouvez maintenant vous connecter.');
+          }
+        } else {
+          setError('Compte créé mais session non établie. Essayez de vous connecter.');
+        }
+        
         setShowSignup(false);
         setEmail('');
         setPassword('');
@@ -74,7 +93,13 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
       }
     } catch (error: any) {
       console.error('Signup error:', error);
-      setError(error.message || 'Erreur lors de la création du compte');
+      if (error.message?.includes('weak_password')) {
+        setError('Le mot de passe doit contenir au moins 6 caractères');
+      } else if (error.message?.includes('User already registered')) {
+        setError('Un compte avec cet email existe déjà');
+      } else {
+        setError(error.message || 'Erreur lors de la création du compte');
+      }
     }
     
     setLoading(false);
