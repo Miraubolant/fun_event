@@ -47,38 +47,6 @@ const Events: React.FC = () => {
             </div>
           </div>
 
-          {/* Statistiques des événements */}
-          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-3xl shadow-2xl p-8 max-w-4xl mx-auto mb-16 animate-fade-in-up">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="text-center group">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                  <Camera className="w-8 h-8 text-white animate-pulse" />
-                </div>
-                <h3 className="text-3xl font-bold mb-2 text-gray-900">✨</h3>
-                <p className="text-lg font-semibold text-gray-800 mb-1">Moments</p>
-                <p className="text-sm text-gray-600">Magiques capturés</p>
-              </div>
-              
-              <div className="text-center group">
-                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                  <Calendar className="w-8 h-8 text-white animate-bounce" />
-                </div>
-                <h3 className="text-3xl font-bold mb-2 text-gray-900">100+</h3>
-                <p className="text-lg font-semibold text-gray-800 mb-1">Événements</p>
-                <p className="text-sm text-gray-600">Organisés avec succès</p>
-              </div>
-              
-              <div className="text-center group">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                  <Users className="w-8 h-8 text-white animate-spin-slow" />
-                </div>
-                <h3 className="text-3xl font-bold mb-2 text-gray-900">1000+</h3>
-                <p className="text-lg font-semibold text-gray-800 mb-1">Participants</p>
-                <p className="text-sm text-gray-600">Moments de joie partagés</p>
-              </div>
-            </div>
-          </div>
-
           {/* Galerie de photos */}
           {sortedPhotos.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
