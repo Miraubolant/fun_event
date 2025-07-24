@@ -78,10 +78,6 @@ const Events: React.FC = () => {
                         <span>{photo.location || 'Île-de-France'}</span>
                       </div>
                     </div>
-                    {/* Badge numéro */}
-                    <div className="absolute top-4 right-4 bg-gradient-to-r from-blue-500 to-orange-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
-                      {index + 1}
-                    </div>
                   </div>
                 </div>
               ))}
