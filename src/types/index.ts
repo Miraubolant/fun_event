@@ -30,6 +30,8 @@ export interface CarouselPhoto {
   id: string;
   url: string;
   alt: string;
+  title?: string;
+  location?: string;
   order: number;
 }
 

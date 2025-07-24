@@ -38,12 +38,12 @@ const initialCategories: Category[] = [
 ];
 
 const initialCarouselPhotos: CarouselPhoto[] = [
-  { id: '1', url: 'https://i.imgur.com/kA2Secn.png', alt: 'Structure gonflable 1', order: 1 },
-  { id: '2', url: 'https://i.imgur.com/yj3D8xk.png', alt: 'Structure gonflable 2', order: 2 },
-  { id: '3', url: 'https://i.imgur.com/eJrSzxS.png', alt: 'Structure gonflable 3', order: 3 },
-  { id: '4', url: 'https://i.imgur.com/PpYERbM.png', alt: 'Structure gonflable 4', order: 4 },
-  { id: '5', url: 'https://i.imgur.com/AdHVFs4.png', alt: 'Structure gonflable 5', order: 5 },
-  { id: '6', url: 'https://i.imgur.com/6qMhuOF.png', alt: 'Structure gonflable 6', order: 6 },
+  { id: '1', url: 'https://i.imgur.com/kA2Secn.png', alt: 'Structure gonflable 1', title: 'Anniversaire Magique', location: 'Paris 15ème', order: 1 },
+  { id: '2', url: 'https://i.imgur.com/yj3D8xk.png', alt: 'Structure gonflable 2', title: 'Fête d\'École', location: 'Boulogne-Billancourt', order: 2 },
+  { id: '3', url: 'https://i.imgur.com/eJrSzxS.png', alt: 'Structure gonflable 3', title: 'Kermesse Paroissiale', location: 'Versailles', order: 3 },
+  { id: '4', url: 'https://i.imgur.com/PpYERbM.png', alt: 'Structure gonflable 4', title: 'Team Building', location: 'La Défense', order: 4 },
+  { id: '5', url: 'https://i.imgur.com/AdHVFs4.png', alt: 'Structure gonflable 5', title: 'Mariage Champêtre', location: 'Fontainebleau', order: 5 },
+  { id: '6', url: 'https://i.imgur.com/6qMhuOF.png', alt: 'Structure gonflable 6', title: 'Fête de Quartier', location: 'Créteil', order: 6 },
 ];
 
 const initialStructures: Structure[] = [

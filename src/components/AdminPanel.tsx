@@ -261,6 +261,30 @@ const AdminPanel: React.FC = () => {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-blue-500"
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Titre de l'événement
+                </label>
+                <input
+                  type="text"
+                  placeholder="ex: Anniversaire Magique"
+                  value={photoData.title || ''}
+                  onChange={(e) => setPhotoData({...photoData, title: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Localisation
+                </label>
+                <input
+                  type="text"
+                  placeholder="ex: Paris 15ème"
+                  value={photoData.location || ''}
+                  onChange={(e) => setPhotoData({...photoData, location: e.target.value})}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-blue-500"
+                />
+              </div>
             </div>
             
             {photoData.url && (
@@ -305,7 +329,10 @@ const AdminPanel: React.FC = () => {
                       className="w-16 h-12 object-cover rounded mr-4"
                     />
                     <div>
-                      <p className="font-medium">{photo.alt}</p>
+                      <p className="font-medium">{photo.title || photo.alt}</p>
+                      {photo.location && (
+                        <p className="text-sm text-blue-600">📍 {photo.location}</p>
+                      )}
                       <p className="text-sm text-gray-500">Position: {index + 1}</p>
                     </div>
                   </div>

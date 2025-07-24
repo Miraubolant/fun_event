@@ -104,10 +104,10 @@ const Events: React.FC = () => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="absolute bottom-4 left-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <h3 className="text-lg font-bold mb-1" itemProp="name">{photo.alt}</h3>
+                      <h3 className="text-lg font-bold mb-1" itemProp="name">{photo.title || photo.alt}</h3>
                       <div className="flex items-center text-sm">
                         <MapPin className="w-4 h-4 mr-1" />
-                        <span>Île-de-France</span>
+                        <span>{photo.location || 'Île-de-France'}</span>
                       </div>
                     </div>
                     {/* Badge numéro */}
