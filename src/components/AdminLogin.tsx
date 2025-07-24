@@ -19,19 +19,12 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
     setLoading(true);
     setError('');
 
-    try {
-      await login(email, password);
+    const success = await login(email, password);
+    
+    if (success) {
       onClose();
-    } catch (error: any) {
-      const errorMessage = error.message;
-      
-      if (errorMessage === 'User is not an admin') {
-        setError('Accès refusé. Seuls les administrateurs peuvent se connecter.');
-      } else if (errorMessage.includes('Invalid login credentials')) {
-        setError('Email ou mot de passe incorrect');
-      } else {
-        setError(errorMessage || 'Erreur lors de la connexion');
-      }
+    } else {
+      setError('Email ou mot de passe incorrect');
     }
     
     setLoading(false);
@@ -44,15 +37,8 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
           <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
             <Lock className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900">
-            Connexion Admin
-          </h2>
-          <p className="text-gray-600">
-            Accédez au panneau d'administration
-          </p>
-          <p className="text-sm text-blue-600 mt-2">
-            Email: admin@funevent.fr | Mot de passe: Aqsze188665
-          </p>
+          <h2 className="text-2xl font-bold text-gray-900">Connexion Admin</h2>
+          <p className="text-gray-600">Accédez au panneau d'administration</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -120,6 +106,12 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
             </button>
           </div>
         </form>
+
+        <div className="mt-6 text-center text-sm text-gray-500">
+          <p>Identifiants de test :</p>
+          <p>Email: admin@funevent.fr</p>
+          <p>Mot de passe: admin123</p>
+        </div>
       </div>
     </div>
   );

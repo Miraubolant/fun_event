@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { supabase } from '../lib/supabase';
 import { Structure, Category, CarouselPhoto } from '../types';
 
 interface StructuresContextType {
@@ -33,25 +32,25 @@ interface StructuresProviderProps {
 }
 
 const initialCategories: Category[] = [
-  { id: 'a1b2c3d4-e5f6-4890-a234-567890abcdef', label: 'Location gonflable', icon: 'circus' },
-  { id: 'b2c3d4e5-f6a7-4801-a345-678901bcdefb', label: 'Évènementiel', icon: 'theater' },
-  { id: 'c3d4e5f6-a7b8-4012-a456-789012cdefab', label: 'Gourmandises', icon: 'candy' },
+  { id: 'gonflable', label: 'Location gonflable', icon: '🎪' },
+  { id: 'evenementiel', label: 'Évènementiel', icon: '🎭' },
+  { id: 'gourmandises', label: 'Gourmandises', icon: '🍭' },
 ];
 
 const initialCarouselPhotos: CarouselPhoto[] = [
-  { id: 'd4e5f6a7-b8c9-4123-a567-890123defabc', url: 'https://i.imgur.com/kA2Secn.png', alt: 'Structure gonflable 1', title: 'Anniversaire Magique', location: 'Paris 15ème', order: 1 },
-  { id: 'e5f6a7b8-c9d0-4234-a678-901234efabcd', url: 'https://i.imgur.com/yj3D8xk.png', alt: 'Structure gonflable 2', title: 'Fête d\'École', location: 'Boulogne-Billancourt', order: 2 },
-  { id: 'f6a7b8c9-d0e1-4345-a789-012345fabcde', url: 'https://i.imgur.com/eJrSzxS.png', alt: 'Structure gonflable 3', title: 'Kermesse Paroissiale', location: 'Versailles', order: 3 },
-  { id: 'a7b8c9d0-e1f2-4456-a890-123456abcdef', url: 'https://i.imgur.com/PpYERbM.png', alt: 'Structure gonflable 4', title: 'Team Building', location: 'La Défense', order: 4 },
-  { id: 'b8c9d0e1-f2a3-4567-a901-234567bcdefb', url: 'https://i.imgur.com/AdHVFs4.png', alt: 'Structure gonflable 5', title: 'Mariage Champêtre', location: 'Fontainebleau', order: 5 },
-  { id: 'c9d0e1f2-a3b4-4678-a012-345678cdefab', url: 'https://i.imgur.com/6qMhuOF.png', alt: 'Structure gonflable 6', title: 'Fête de Quartier', location: 'Créteil', order: 6 },
+  { id: '1', url: 'https://i.imgur.com/kA2Secn.png', alt: 'Structure gonflable 1', title: 'Anniversaire Magique', location: 'Paris 15ème', order: 1 },
+  { id: '2', url: 'https://i.imgur.com/yj3D8xk.png', alt: 'Structure gonflable 2', title: 'Fête d\'École', location: 'Boulogne-Billancourt', order: 2 },
+  { id: '3', url: 'https://i.imgur.com/eJrSzxS.png', alt: 'Structure gonflable 3', title: 'Kermesse Paroissiale', location: 'Versailles', order: 3 },
+  { id: '4', url: 'https://i.imgur.com/PpYERbM.png', alt: 'Structure gonflable 4', title: 'Team Building', location: 'La Défense', order: 4 },
+  { id: '5', url: 'https://i.imgur.com/AdHVFs4.png', alt: 'Structure gonflable 5', title: 'Mariage Champêtre', location: 'Fontainebleau', order: 5 },
+  { id: '6', url: 'https://i.imgur.com/6qMhuOF.png', alt: 'Structure gonflable 6', title: 'Fête de Quartier', location: 'Créteil', order: 6 },
 ];
 
 const initialStructures: Structure[] = [
   {
-    id: '10203040-5060-4789-a123-456789abcdef',
+    id: '1',
     name: 'Instables Gladiateurs',
-    category: 'a1b2c3d4-e5f6-4890-a234-567890abcdef',
+    category: 'gonflable',
     size: '7,7m x 6,6m x 1,5m',
     capacity: '2 personnes max',
     age: '3-77 ans',
@@ -63,9 +62,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '20304050-6070-4890-a234-567890bcdefb',
+    id: '2',
     name: 'Château Cirque',
-    category: 'a1b2c3d4-e5f6-4890-a234-567890abcdef',
+    category: 'gonflable',
     size: '3,8m x 2,8m x 2,8m',
     capacity: '12 personnes max',
     age: '3-77 ans',
@@ -77,9 +76,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '30405060-7080-4901-a345-678901cdefab',
+    id: '3',
     name: 'Multiplay Jurassic World',
-    category: 'a1b2c3d4-e5f6-4890-a234-567890abcdef',
+    category: 'gonflable',
     size: '5m x 5,5m x 4,30m',
     capacity: '12 personnes max',
     age: '3-77 ans',
@@ -91,9 +90,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '40506070-8090-4012-a456-789012defabc',
+    id: '4',
     name: 'Le Monde Marin',
-    category: 'a1b2c3d4-e5f6-4890-a234-567890abcdef',
+    category: 'gonflable',
     size: '3,8m x 9,5m x 5,80m',
     capacity: '8 personnes max',
     age: '3-77 ans',
@@ -105,9 +104,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '50607080-9010-4123-a567-890123efabcd',
+    id: '5',
     name: 'Sumo adulte',
-    category: 'a1b2c3d4-e5f6-4890-a234-567890abcdef',
+    category: 'gonflable',
     size: 'Tapis : 25m²',
     capacity: '2 personnes max',
     age: '3-77 ans',
@@ -119,9 +118,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '60708090-1020-4234-a678-901234fabcde',
+    id: '6',
     name: 'Machine à coup de poing',
-    category: 'a1b2c3d4-e5f6-4890-a234-567890abcdef',
+    category: 'gonflable',
     size: '1,2m x 0,7m x 2,1m',
     capacity: '1 personne max',
     age: '3-77 ans',
@@ -133,9 +132,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '70809010-2030-4345-a789-012345abcdef',
+    id: '7',
     name: 'Pêche aux canards',
-    category: 'a1b2c3d4-e5f6-4890-a234-567890abcdef',
+    category: 'gonflable',
     size: '1,5m x 3,4m x 1,3m',
     capacity: '12 personnes max',
     age: '3-77 ans',
@@ -147,9 +146,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '80901020-3040-4456-a890-123456bcdefb',
+    id: '8',
     name: 'Piscine à balles',
-    category: 'a1b2c3d4-e5f6-4890-a234-567890abcdef',
+    category: 'gonflable',
     size: '4,4m x 3,5m x 2,4m',
     capacity: '12 personnes max',
     age: '3-77 ans',
@@ -161,9 +160,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '90102030-4050-4567-a901-234567cdefab',
+    id: '9',
     name: 'Sumo enfant',
-    category: 'a1b2c3d4-e5f6-4890-a234-567890abcdef',
+    category: 'gonflable',
     size: 'Tapis : 25m²',
     capacity: '2 personnes max',
     age: '3-77 ans',
@@ -176,9 +175,9 @@ const initialStructures: Structure[] = [
   },
   // Catégorie Gourmandises
   {
-    id: '01020304-0506-4678-a012-345678defabc',
+    id: '10',
     name: 'Machine à Barbe à Papa',
-    category: 'c3d4e5f6-a7b8-4012-a456-789012cdefab',
+    category: 'gourmandises',
     size: 'Machine professionnelle',
     capacity: 'Illimité',
     age: 'Tous âges',
@@ -189,9 +188,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '11213141-5161-4789-a123-456789efabcd',
+    id: '11',
     name: 'Machine à pop-corn',
-    category: 'c3d4e5f6-a7b8-4012-a456-789012cdefab',
+    category: 'gourmandises',
     size: 'Machine professionnelle',
     capacity: 'Illimité',
     age: 'Tous âges',
@@ -202,9 +201,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '21314151-6171-4890-a234-567890fabcde',
+    id: '12',
     name: 'Machine à gaufres',
-    category: 'c3d4e5f6-a7b8-4012-a456-789012cdefab',
+    category: 'gourmandises',
     size: 'Machine professionnelle',
     capacity: 'Illimité',
     age: 'Tous âges',
@@ -215,9 +214,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '31415161-7181-4901-a345-678901abcdef',
+    id: '13',
     name: 'Machine à crêpes',
-    category: 'c3d4e5f6-a7b8-4012-a456-789012cdefab',
+    category: 'gourmandises',
     size: 'Machine professionnelle',
     capacity: 'Illimité',
     age: 'Tous âges',
@@ -229,9 +228,9 @@ const initialStructures: Structure[] = [
   },
   // Catégorie Évènementiel
   {
-    id: '41516171-8191-4012-a456-789012bcdefb',
+    id: '14',
     name: 'Magicien',
-    category: 'b2c3d4e5-f6a7-4801-a345-678901bcdefb',
+    category: 'evenementiel',
     size: 'Prestation sur mesure',
     capacity: 'Jusqu\'à 50 personnes',
     age: 'Tous âges',
@@ -242,9 +241,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '51617181-9101-4123-a567-890123cdefab',
+    id: '15',
     name: 'Sculpteur de ballons',
-    category: 'b2c3d4e5-f6a7-4801-a345-678901bcdefb',
+    category: 'evenementiel',
     size: 'Animation mobile',
     capacity: 'Jusqu\'à 30 enfants/heure',
     age: '3-12 ans',
@@ -255,9 +254,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '61718191-0111-4234-a678-901234defabc',
+    id: '16',
     name: 'Maquilleuse',
-    category: 'b2c3d4e5-f6a7-4801-a345-678901bcdefb',
+    category: 'evenementiel',
     size: 'Poste de maquillage',
     capacity: '15-20 enfants/heure',
     age: '3-12 ans',
@@ -268,9 +267,9 @@ const initialStructures: Structure[] = [
     available: true
   },
   {
-    id: '71819101-1121-4345-a789-012345efabcd',
+    id: '17',
     name: 'Mascotte',
-    category: 'b2c3d4e5-f6a7-4801-a345-678901bcdefb',
+    category: 'evenementiel',
     size: 'Animation interactive',
     capacity: 'Tous publics',
     age: 'Tous âges',
@@ -286,431 +285,70 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   const [structures, setStructures] = useState<Structure[]>(initialStructures);
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [carouselPhotos, setCarouselPhotos] = useState<CarouselPhoto[]>(initialCarouselPhotos);
-  const [loading, setLoading] = useState(true);
-
-  // Charger les données depuis Supabase
-  React.useEffect(() => {
-    const loadData = async () => {
-      try {
-        console.log('🔄 Chargement des données depuis Supabase...');
-        
-        // Charger les catégories
-        console.log('📂 Chargement des catégories...');
-        const { data: categoriesData, error: categoriesError } = await supabase
-          .from('categories')
-          .select('*')
-          .order('label');
-
-        if (categoriesError) {
-          console.error('❌ Erreur chargement catégories:', categoriesError.message);
-          setCategories(initialCategories);
-        } else {
-          console.log('✅ Catégories chargées:', categoriesData?.length || 0);
-          if (categoriesData && categoriesData.length > 0) {
-            const mappedCategories: Category[] = categoriesData.map(cat => ({
-              id: cat.id,
-              label: cat.label,
-              icon: cat.icon
-            }));
-            setCategories(mappedCategories);
-          } else {
-            console.log('⚠️ Aucune catégorie trouvée - Utilisez la migration SQL');
-            setCategories(initialCategories);
-          }
-        }
-
-        // Charger les structures
-        console.log('🏗️ Chargement des structures...');
-        const { data: structuresData, error: structuresError } = await supabase
-          .from('structures')
-          .select('*')
-          .order('name');
-
-        if (structuresError) {
-          console.error('❌ Erreur chargement structures:', structuresError.message);
-          setStructures(initialStructures);
-        } else {
-          console.log('✅ Structures chargées:', structuresData?.length || 0);
-          if (structuresData && structuresData.length > 0) {
-            const mappedStructures: Structure[] = structuresData.map(struct => ({
-              id: struct.id,
-              name: struct.name,
-              category: struct.category_id,
-              size: struct.size,
-              capacity: struct.capacity,
-              age: struct.age,
-              price: struct.price,
-              price2Days: struct.price_2_days || undefined,
-              maxWeight: struct.max_weight || undefined,
-              services: struct.services || undefined,
-              image: struct.image,
-              description: struct.description,
-              available: struct.available
-            }));
-            setStructures(mappedStructures);
-          } else {
-            console.log('⚠️ Aucune structure trouvée - Utilisez la migration SQL');
-            setStructures(initialStructures);
-          }
-        }
-
-        // Charger les photos du carrousel
-        console.log('📸 Chargement des photos...');
-        const { data: photosData, error: photosError } = await supabase
-          .from('carousel_photos')
-          .select('*')
-          .order('order_position');
-
-        if (photosError) {
-          console.error('❌ Erreur chargement photos:', photosError.message);
-          setCarouselPhotos(initialCarouselPhotos);
-        } else {
-          console.log('✅ Photos chargées:', photosData?.length || 0);
-          if (photosData && photosData.length > 0) {
-            const mappedPhotos: CarouselPhoto[] = photosData.map(photo => ({
-              id: photo.id,
-              url: photo.url,
-              alt: photo.alt,
-              title: photo.title || undefined,
-              location: photo.location || undefined,
-              order: photo.order_position
-            }));
-            setCarouselPhotos(mappedPhotos);
-          } else {
-            console.log('⚠️ Aucune photo trouvée - Utilisez la migration SQL');
-            setCarouselPhotos(initialCarouselPhotos);
-          }
-        }
-
-      } catch (error) {
-        console.error('❌ Erreur générale:', error);
-        console.log('📋 Utilisation des données par défaut');
-        setCategories(initialCategories);
-        setStructures(initialStructures);
-        setCarouselPhotos(initialCarouselPhotos);
-      } finally {
-        console.log('🏁 Chargement terminé');
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
 
   const addStructure = (newStructure: Omit<Structure, 'id'>) => {
-    const addToSupabase = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('structures')
-          .insert({
-            name: newStructure.name,
-            category_id: newStructure.category,
-            size: newStructure.size,
-            capacity: newStructure.capacity,
-            age: newStructure.age,
-            price: newStructure.price,
-            price_2_days: newStructure.price2Days || null,
-            max_weight: newStructure.maxWeight || null,
-            services: newStructure.services || null,
-            image: newStructure.image,
-            description: newStructure.description,
-            available: newStructure.available
-          })
-          .select()
-          .single();
-
-        if (error) throw error;
-
-        const structure: Structure = {
-          id: data.id,
-          name: data.name,
-          category: data.category_id,
-          size: data.size,
-          capacity: data.capacity,
-          age: data.age,
-          price: data.price,
-          price2Days: data.price_2_days || undefined,
-          maxWeight: data.max_weight || undefined,
-          services: data.services || undefined,
-          image: data.image,
-          description: data.description,
-          available: data.available
-        };
-        setStructures(prev => [...prev, structure]);
-      } catch (error) {
-        console.error('Error adding structure:', error);
-      }
+    const structure: Structure = {
+      ...newStructure,
+      id: Date.now().toString()
     };
-
-    addToSupabase();
+    setStructures(prev => [...prev, structure]);
   };
 
   const updateStructure = (id: string, updatedStructure: Partial<Structure>) => {
-    const updateInSupabase = async () => {
-      try {
-        const updateData: any = {};
-        if (updatedStructure.name !== undefined) updateData.name = updatedStructure.name;
-        if (updatedStructure.category !== undefined) updateData.category_id = updatedStructure.category;
-        if (updatedStructure.size !== undefined) updateData.size = updatedStructure.size;
-        if (updatedStructure.capacity !== undefined) updateData.capacity = updatedStructure.capacity;
-        if (updatedStructure.age !== undefined) updateData.age = updatedStructure.age;
-        if (updatedStructure.price !== undefined) updateData.price = updatedStructure.price;
-        if (updatedStructure.price2Days !== undefined) updateData.price_2_days = updatedStructure.price2Days;
-        if (updatedStructure.maxWeight !== undefined) updateData.max_weight = updatedStructure.maxWeight;
-        if (updatedStructure.services !== undefined) updateData.services = updatedStructure.services;
-        if (updatedStructure.image !== undefined) updateData.image = updatedStructure.image;
-        if (updatedStructure.description !== undefined) updateData.description = updatedStructure.description;
-        if (updatedStructure.available !== undefined) updateData.available = updatedStructure.available;
-
-        const { error } = await supabase
-          .from('structures')
-          .update(updateData)
-          .eq('id', id);
-
-        if (error) throw error;
-
-        setStructures(prev => 
-          prev.map(structure => 
-            structure.id === id ? { ...structure, ...updatedStructure } : structure
-          )
-        );
-      } catch (error) {
-        console.error('Error updating structure:', error);
-      }
-    };
-
-    updateInSupabase();
+    setStructures(prev => 
+      prev.map(structure => 
+        structure.id === id ? { ...structure, ...updatedStructure } : structure
+      )
+    );
   };
 
   const deleteStructure = (id: string) => {
-    const deleteFromSupabase = async () => {
-      try {
-        const { error } = await supabase
-          .from('structures')
-          .delete()
-          .eq('id', id);
-
-        if (error) throw error;
-
-        setStructures(prev => prev.filter(structure => structure.id !== id));
-      } catch (error) {
-        console.error('Error deleting structure:', error);
-      }
-    };
-
-    deleteFromSupabase();
+    setStructures(prev => prev.filter(structure => structure.id !== id));
   };
 
   const addCategory = (newCategory: Omit<Category, 'id'>) => {
-    const addToSupabase = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('categories')
-          .insert({
-            label: newCategory.label,
-            icon: newCategory.icon
-          })
-          .select()
-          .single();
-
-        if (error) throw error;
-
-        const category: Category = {
-          id: data.id,
-          label: data.label,
-          icon: data.icon
-        };
-        setCategories(prev => [...prev, category]);
-      } catch (error) {
-        console.error('Error adding category:', error);
-      }
+    const category: Category = {
+      ...newCategory,
+      id: Date.now().toString()
     };
-
-    addToSupabase();
+    setCategories(prev => [...prev, category]);
   };
 
   const updateCategory = (id: string, updatedCategory: Partial<Category>) => {
-    const updateInSupabase = async () => {
-      try {
-        const updateData: any = {};
-        if (updatedCategory.label !== undefined) updateData.label = updatedCategory.label;
-        if (updatedCategory.icon !== undefined) updateData.icon = updatedCategory.icon;
-
-        const { error } = await supabase
-          .from('categories')
-          .update(updateData)
-          .eq('id', id);
-
-        if (error) throw error;
-
-        setCategories(prev => 
-          prev.map(category => 
-            category.id === id ? { ...category, ...updatedCategory } : category
-          )
-        );
-      } catch (error) {
-        console.error('Error updating category:', error);
-      }
-    };
-
-    updateInSupabase();
+    setCategories(prev => 
+      prev.map(category => 
+        category.id === id ? { ...category, ...updatedCategory } : category
+      )
+    );
   };
 
   const deleteCategory = (id: string) => {
-    const deleteFromSupabase = async () => {
-      try {
-        const { error } = await supabase
-          .from('categories')
-          .delete()
-          .eq('id', id);
-
-        if (error) throw error;
-
-        setCategories(prev => prev.filter(category => category.id !== id));
-      } catch (error) {
-        console.error('Error deleting category:', error);
-      }
-    };
-
-    deleteFromSupabase();
+    setCategories(prev => prev.filter(category => category.id !== id));
   };
 
   const addCarouselPhoto = (newPhoto: Omit<CarouselPhoto, 'id'>) => {
-    const addToSupabase = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('carousel_photos')
-          .insert({
-            url: newPhoto.url,
-            alt: newPhoto.alt,
-            title: newPhoto.title || null,
-            location: newPhoto.location || null,
-            order_position: newPhoto.order
-          })
-          .select()
-          .single();
-
-        if (error) throw error;
-
-        const photo: CarouselPhoto = {
-          id: data.id,
-          url: data.url,
-          alt: data.alt,
-          title: data.title || undefined,
-          location: data.location || undefined,
-          order: data.order_position
-        };
-        setCarouselPhotos(prev => [...prev, photo].sort((a, b) => a.order - b.order));
-      } catch (error) {
-        console.error('Error adding carousel photo:', error);
-      }
+    const photo: CarouselPhoto = {
+      ...newPhoto,
+      id: Date.now().toString()
     };
-
-    addToSupabase();
+    setCarouselPhotos(prev => [...prev, photo].sort((a, b) => a.order - b.order));
   };
 
   const updateCarouselPhoto = (id: string, updatedPhoto: Partial<CarouselPhoto>) => {
-    const updateInSupabase = async () => {
-      try {
-        const updateData: any = {};
-        if (updatedPhoto.url !== undefined) updateData.url = updatedPhoto.url;
-        if (updatedPhoto.alt !== undefined) updateData.alt = updatedPhoto.alt;
-        if (updatedPhoto.title !== undefined) updateData.title = updatedPhoto.title;
-        if (updatedPhoto.location !== undefined) updateData.location = updatedPhoto.location;
-        if (updatedPhoto.order !== undefined) updateData.order_position = updatedPhoto.order;
-
-        const { error } = await supabase
-          .from('carousel_photos')
-          .update(updateData)
-          .eq('id', id);
-
-        if (error) throw error;
-
-        setCarouselPhotos(prev => 
-          prev.map(photo => 
-            photo.id === id ? { ...photo, ...updatedPhoto } : photo
-          ).sort((a, b) => a.order - b.order)
-        );
-      } catch (error) {
-        console.error('Error updating carousel photo:', error);
-      }
-    };
-
-    updateInSupabase();
+    setCarouselPhotos(prev => 
+      prev.map(photo => 
+        photo.id === id ? { ...photo, ...updatedPhoto } : photo
+      ).sort((a, b) => a.order - b.order)
+    );
   };
 
   const deleteCarouselPhoto = (id: string) => {
-    const deleteFromSupabase = async () => {
-      try {
-        const { error } = await supabase
-          .from('carousel_photos')
-          .delete()
-          .eq('id', id);
-
-        if (error) throw error;
-
-        setCarouselPhotos(prev => prev.filter(photo => photo.id !== id));
-      } catch (error) {
-        console.error('Error deleting carousel photo:', error);
-      }
-    };
-
-    deleteFromSupabase();
+    setCarouselPhotos(prev => prev.filter(photo => photo.id !== id));
   };
 
   const reorderCarouselPhotos = (photos: CarouselPhoto[]) => {
-    const updateOrderInSupabase = async () => {
-      try {
-        // Mettre à jour l'ordre de toutes les photos
-        const updates = photos.map((photo, index) => 
-          supabase
-            .from('carousel_photos')
-            .update({ order_position: index + 1 })
-            .eq('id', photo.id)
-        );
-
-        await Promise.all(updates);
-        
-        // Mettre à jour l'état local avec les nouveaux ordres
-        const updatedPhotos = photos.map((photo, index) => ({
-          ...photo,
-          order: index + 1
-        }));
-        setCarouselPhotos(updatedPhotos);
-      } catch (error) {
-        console.error('Error reordering carousel photos:', error);
-      }
-    };
-
-    updateOrderInSupabase();
+    setCarouselPhotos(photos);
   };
-
-  if (loading) {
-    return (
-      <StructuresContext.Provider value={{ 
-        structures: [], 
-        categories: [], 
-        carouselPhotos: [],
-        addStructure: () => {}, 
-        updateStructure: () => {}, 
-        deleteStructure: () => {},
-        addCategory: () => {},
-        updateCategory: () => {},
-        deleteCategory: () => {},
-        addCarouselPhoto: () => {},
-        updateCarouselPhoto: () => {},
-        deleteCarouselPhoto: () => {},
-        reorderCarouselPhotos: () => {}
-      }}>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p className="text-gray-600">Chargement des données...</p>
-          </div>
-        </div>
-      </StructuresContext.Provider>
-    );
-  }
 
   return (
     <StructuresContext.Provider value={{ 
