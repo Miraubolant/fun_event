@@ -54,9 +54,9 @@ const Events: React.FC = () => {
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
                   <Camera className="w-8 h-8 text-white animate-pulse" />
                 </div>
-                <h3 className="text-3xl font-bold mb-2 text-gray-900">{sortedPhotos.length}</h3>
-                <p className="text-lg font-semibold text-gray-800 mb-1">Photos</p>
-                <p className="text-sm text-gray-600">Événements capturés</p>
+                <h3 className="text-3xl font-bold mb-2 text-gray-900">✨</h3>
+                <p className="text-lg font-semibold text-gray-800 mb-1">Moments</p>
+                <p className="text-sm text-gray-600">Magiques capturés</p>
               </div>
               
               <div className="text-center group">
