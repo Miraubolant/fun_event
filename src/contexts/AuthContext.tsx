@@ -101,7 +101,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (error) {
         console.error('Login error:', error);
-        return false;
+        throw new Error(error.message);
       }
 
       if (data.user) {
@@ -123,14 +123,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         } else {
           // Déconnecter si pas admin
           await supabase.auth.signOut();
-          return false;
+          throw new Error('User is not an admin');
         }
       }
       
-      return false;
+      throw new Error('Authentication failed');
     } catch (error) {
       console.error('Login error:', error);
-      return false;
+      throw error;
     }
   };
 

@@ -22,12 +22,21 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
     setLoading(true);
     setError('');
 
-    const success = await login(email, password);
-    
-    if (success) {
+    try {
+      await login(email, password);
       onClose();
-    } else {
-      setError('Email ou mot de passe incorrect');
+    } catch (error: any) {
+      const errorMessage = error.message;
+      
+      if (errorMessage === 'Email not confirmed') {
+        setError('Veuillez vérifier votre email et cliquer sur le lien de confirmation avant de vous connecter.');
+      } else if (errorMessage === 'User is not an admin') {
+        setError('Accès refusé. Seuls les administrateurs peuvent se connecter.');
+      } else if (errorMessage.includes('Invalid login credentials')) {
+        setError('Email ou mot de passe incorrect');
+      } else {
+        setError(errorMessage || 'Erreur lors de la connexion');
+      }
     }
     
     setLoading(false);
