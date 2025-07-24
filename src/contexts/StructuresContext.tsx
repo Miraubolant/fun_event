@@ -33,9 +33,9 @@ interface StructuresProviderProps {
 }
 
 const initialCategories: Category[] = [
-  { id: 'a1b2c3d4-e5f6-4890-a234-567890abcdef', label: 'Location gonflable', icon: '🎪' },
-  { id: 'b2c3d4e5-f6a7-4801-a345-678901bcdefb', label: 'Évènementiel', icon: '🎭' },
-  { id: 'c3d4e5f6-a7b8-4012-a456-789012cdefab', label: 'Gourmandises', icon: '🍭' },
+  { id: 'a1b2c3d4-e5f6-4890-a234-567890abcdef', label: 'Location gonflable', icon: 'circus' },
+  { id: 'b2c3d4e5-f6a7-4801-a345-678901bcdefb', label: 'Évènementiel', icon: 'theater' },
+  { id: 'c3d4e5f6-a7b8-4012-a456-789012cdefab', label: 'Gourmandises', icon: 'candy' },
 ];
 
 const initialCarouselPhotos: CarouselPhoto[] = [
