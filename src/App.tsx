@@ -3,6 +3,7 @@ import { Settings } from 'lucide-react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Catalog from './components/Catalog';
+import Events from './components/Events';
 import FAQ from './components/FAQ';
 import Quote from './components/Quote';
 import Contact from './components/Contact';
@@ -37,6 +38,8 @@ const AppContent: React.FC = () => {
         );
       case 'catalogue':
         return <Catalog />;
+      case 'evenements':
+        return <Events />;
       case 'faq':
         return <FAQ />;
       case 'devis':
