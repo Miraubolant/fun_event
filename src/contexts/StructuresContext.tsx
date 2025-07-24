@@ -292,41 +292,20 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   React.useEffect(() => {
     const loadData = async () => {
       try {
-        console.log('🔄 Début du chargement des données depuis Supabase...');
-        console.log('📍 URL Supabase:', import.meta.env.VITE_SUPABASE_URL);
-        console.log('🔑 Clé Supabase présente:', !!import.meta.env.VITE_SUPABASE_ANON_KEY);
+        console.log('🔄 Chargement des données depuis Supabase...');
         
         // Charger les catégories
-        console.log('📂 Tentative de chargement des catégories...');
+        console.log('📂 Chargement des catégories...');
         const { data: categoriesData, error: categoriesError } = await supabase
           .from('categories')
           .select('*')
           .order('label');
 
         if (categoriesError) {
-          console.error('❌ ERREUR CATEGORIES:', categoriesError);
-          console.error('❌ Code erreur:', categoriesError.code);
-          console.error('❌ Message:', categoriesError.message);
-          console.error('❌ Détails:', categoriesError.details);
-          
-          // Tenter d'insérer les catégories par défaut
-          console.log('🔄 Tentative d\'insertion des catégories par défaut...');
-          const { data: insertResult, error: insertError } = await supabase
-            .from('categories')
-            .upsert(initialCategories, { onConflict: 'id' })
-            .select();
-          
-          if (insertError) {
-            console.error('❌ ERREUR INSERTION CATEGORIES:', insertError);
-            console.error('❌ Code:', insertError.code);
-            console.error('❌ Message:', insertError.message);
-          } else {
-            console.log('✅ Catégories insérées avec succès:', insertResult?.length);
-          }
-          
+          console.error('❌ Erreur chargement catégories:', categoriesError.message);
           setCategories(initialCategories);
         } else {
-          console.log('✅ Catégories chargées depuis DB:', categoriesData?.length || 0);
+          console.log('✅ Catégories chargées:', categoriesData?.length || 0);
           if (categoriesData && categoriesData.length > 0) {
             const mappedCategories: Category[] = categoriesData.map(cat => ({
               id: cat.id,
@@ -335,70 +314,23 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
             }));
             setCategories(mappedCategories);
           } else {
-            console.log('📋 Aucune catégorie trouvée, insertion des données par défaut...');
-            
-            // Insérer les catégories par défaut
-            const { data: insertResult, error: insertError } = await supabase
-              .from('categories')
-              .upsert(initialCategories, { onConflict: 'id' })
-              .select();
-            
-            if (insertError) {
-              console.error('❌ ERREUR INSERTION CATEGORIES:', insertError);
-            } else {
-              console.log('✅ Catégories insérées:', insertResult?.length);
-            }
-            
+            console.log('⚠️ Aucune catégorie trouvée - Utilisez la migration SQL');
             setCategories(initialCategories);
           }
         }
 
         // Charger les structures
-        console.log('🏗️ Tentative de chargement des structures...');
+        console.log('🏗️ Chargement des structures...');
         const { data: structuresData, error: structuresError } = await supabase
           .from('structures')
           .select('*')
           .order('name');
 
         if (structuresError) {
-          console.error('❌ ERREUR STRUCTURES:', structuresError);
-          console.error('❌ Code erreur:', structuresError.code);
-          console.error('❌ Message:', structuresError.message);
-          
-          // Tenter d'insérer les structures par défaut
-          console.log('🔄 Tentative d\'insertion des structures par défaut...');
-          const structuresToInsert = initialStructures.map(s => ({
-            id: s.id,
-            name: s.name,
-            category_id: s.category,
-            size: s.size,
-            capacity: s.capacity,
-            age: s.age,
-            price: s.price,
-            price_2_days: s.price2Days || null,
-            max_weight: s.maxWeight || null,
-            services: s.services || null,
-            image: s.image,
-            description: s.description,
-            available: s.available
-          }));
-          
-          const { data: insertResult, error: insertError } = await supabase
-            .from('structures')
-            .upsert(structuresToInsert, { onConflict: 'id' })
-            .select();
-          
-          if (insertError) {
-            console.error('❌ ERREUR INSERTION STRUCTURES:', insertError);
-            console.error('❌ Code:', insertError.code);
-            console.error('❌ Message:', insertError.message);
-          } else {
-            console.log('✅ Structures insérées avec succès:', insertResult?.length);
-          }
-          
+          console.error('❌ Erreur chargement structures:', structuresError.message);
           setStructures(initialStructures);
         } else {
-          console.log('✅ Structures chargées depuis DB:', structuresData?.length || 0);
+          console.log('✅ Structures chargées:', structuresData?.length || 0);
           if (structuresData && structuresData.length > 0) {
             const mappedStructures: Structure[] = structuresData.map(struct => ({
               id: struct.id,
@@ -417,78 +349,23 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
             }));
             setStructures(mappedStructures);
           } else {
-            console.log('📋 Aucune structure trouvée, insertion des données par défaut...');
-            
-            const structuresToInsert = initialStructures.map(s => ({
-              id: s.id,
-              name: s.name,
-              category_id: s.category,
-              size: s.size,
-              capacity: s.capacity,
-              age: s.age,
-              price: s.price,
-              price_2_days: s.price2Days || null,
-              max_weight: s.maxWeight || null,
-              services: s.services || null,
-              image: s.image,
-              description: s.description,
-              available: s.available
-            }));
-            
-            const { data: insertResult, error: insertError } = await supabase
-              .from('structures')
-              .upsert(structuresToInsert, { onConflict: 'id' })
-              .select();
-            
-            if (insertError) {
-              console.error('❌ ERREUR INSERTION STRUCTURES:', insertError);
-            } else {
-              console.log('✅ Structures insérées:', insertResult?.length);
-            }
-            
+            console.log('⚠️ Aucune structure trouvée - Utilisez la migration SQL');
             setStructures(initialStructures);
           }
         }
 
         // Charger les photos du carrousel
-        console.log('📸 Tentative de chargement des photos...');
+        console.log('📸 Chargement des photos...');
         const { data: photosData, error: photosError } = await supabase
           .from('carousel_photos')
           .select('*')
           .order('order_position');
 
         if (photosError) {
-          console.error('❌ ERREUR PHOTOS:', photosError);
-          console.error('❌ Code erreur:', photosError.code);
-          console.error('❌ Message:', photosError.message);
-          
-          // Tenter d'insérer les photos par défaut
-          console.log('🔄 Tentative d\'insertion des photos par défaut...');
-          const photosToInsert = initialCarouselPhotos.map(p => ({
-            id: p.id,
-            url: p.url,
-            alt: p.alt,
-            title: p.title || null,
-            location: p.location || null,
-            order_position: p.order
-          }));
-          
-          const { data: insertResult, error: insertError } = await supabase
-            .from('carousel_photos')
-            .upsert(photosToInsert, { onConflict: 'id' })
-            .select();
-          
-          if (insertError) {
-            console.error('❌ ERREUR INSERTION PHOTOS:', insertError);
-            console.error('❌ Code:', insertError.code);
-            console.error('❌ Message:', insertError.message);
-          } else {
-            console.log('✅ Photos insérées avec succès:', insertResult?.length);
-          }
-          
+          console.error('❌ Erreur chargement photos:', photosError.message);
           setCarouselPhotos(initialCarouselPhotos);
         } else {
-          console.log('✅ Photos chargées depuis DB:', photosData?.length || 0);
+          console.log('✅ Photos chargées:', photosData?.length || 0);
           if (photosData && photosData.length > 0) {
             const mappedPhotos: CarouselPhoto[] = photosData.map(photo => ({
               id: photo.id,
@@ -500,41 +377,19 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
             }));
             setCarouselPhotos(mappedPhotos);
           } else {
-            console.log('📋 Aucune photo trouvée, insertion des données par défaut...');
-            
-            const photosToInsert = initialCarouselPhotos.map(p => ({
-              id: p.id,
-              url: p.url,
-              alt: p.alt,
-              title: p.title || null,
-              location: p.location || null,
-              order_position: p.order
-            }));
-            
-            const { data: insertResult, error: insertError } = await supabase
-              .from('carousel_photos')
-              .upsert(photosToInsert, { onConflict: 'id' })
-              .select();
-            
-            if (insertError) {
-              console.error('❌ ERREUR INSERTION PHOTOS:', insertError);
-            } else {
-              console.log('✅ Photos insérées:', insertResult?.length);
-            }
-            
+            console.log('⚠️ Aucune photo trouvée - Utilisez la migration SQL');
             setCarouselPhotos(initialCarouselPhotos);
           }
         }
 
       } catch (error) {
-        console.error('❌ ERREUR GENERALE:', error);
-        console.error('❌ Stack:', error.stack);
-        console.log('📋 Utilisation des données par défaut en fallback');
+        console.error('❌ Erreur générale:', error);
+        console.log('📋 Utilisation des données par défaut');
         setCategories(initialCategories);
         setStructures(initialStructures);
         setCarouselPhotos(initialCarouselPhotos);
       } finally {
-        console.log('🏁 Chargement terminé - Vérifiez les logs ci-dessus');
+        console.log('🏁 Chargement terminé');
         setLoading(false);
       }
     };
