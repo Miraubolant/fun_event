@@ -68,14 +68,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         .single();
 
       if (error) {
-        console.error('Error checking admin status:', error);
+        console.log('Supabase non configuré ou utilisateur non admin');
         setIsAdmin(false);
         return;
       }
 
       setIsAdmin(data?.role === 'admin');
     } catch (error) {
-      console.error('Error checking admin status:', error);
+      console.log('Supabase non configuré');
       setIsAdmin(false);
     }
   };

@@ -2,6 +2,66 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { supabase } from '../lib/supabase';
 import { Structure, Category, CarouselPhoto } from '../types';
 
+const initialCategories: Category[] = [
+  { id: 'gonflable', label: 'Location gonflable', icon: '🎪' },
+  { id: 'evenementiel', label: 'Évènementiel', icon: '🎭' },
+  { id: 'gourmandises', label: 'Gourmandises', icon: '🍭' },
+];
+
+const initialCarouselPhotos: CarouselPhoto[] = [
+  { id: '1', url: 'https://i.imgur.com/kA2Secn.png', alt: 'Structure gonflable 1', title: 'Anniversaire Magique', location: 'Paris 15ème', order: 1 },
+  { id: '2', url: 'https://i.imgur.com/yj3D8xk.png', alt: 'Structure gonflable 2', title: 'Fête d\'École', location: 'Boulogne-Billancourt', order: 2 },
+  { id: '3', url: 'https://i.imgur.com/eJrSzxS.png', alt: 'Structure gonflable 3', title: 'Kermesse Paroissiale', location: 'Versailles', order: 3 },
+  { id: '4', url: 'https://i.imgur.com/PpYERbM.png', alt: 'Structure gonflable 4', title: 'Team Building', location: 'La Défense', order: 4 },
+  { id: '5', url: 'https://i.imgur.com/AdHVFs4.png', alt: 'Structure gonflable 5', title: 'Mariage Champêtre', location: 'Fontainebleau', order: 5 },
+  { id: '6', url: 'https://i.imgur.com/6qMhuOF.png', alt: 'Structure gonflable 6', title: 'Fête de Quartier', location: 'Créteil', order: 6 },
+];
+
+const initialStructures: Structure[] = [
+  {
+    id: '1',
+    name: 'Instables Gladiateurs',
+    category: 'gonflable',
+    size: '7,7m x 6,6m x 1,5m',
+    capacity: '2 personnes max',
+    age: '3-77 ans',
+    price: 180,
+    image: 'https://i.imgur.com/fLqAlJ1.png',
+    description: 'Entrez dans l\'arène et relevez le défi des gladiateurs ! ⚔🔥\n\nAffrontez vos amis, votre famille ou vos collègues dans un duel d\'équilibre et de stratégie !\nSur cette plateforme gonflable, les gladiateurs doivent se battre pour rester debout tout en tentant de déséquilibrer leur adversaire.\n\n💪 Un jeu fun et compétitif : testez votre agilité, votre force et votre ruse pour triompher.\n🎭 Une animation garantie : fous rires et suspense assurés pour les joueurs comme pour les spectateurs !\n🌟 Idéal pour tous vos événements : anniversaires, team-building, kermesses, enterrements de vie de célibataire…\n\n👑 Qui restera le dernier debout ? Montez sur la plateforme et prouvez que vous êtes le véritable champion des gladiateurs !\n📅 Réservez dès maintenant pour un maximum de fun et de défis ! 🎉🔥',
+    maxWeight: 100,
+    services: 'Livraison 7 jours / 7 jours, Enrouleurs électrique inclus, Structures nettoyées entre chaque location',
+    available: true
+  },
+  {
+    id: '2',
+    name: 'Château Cirque',
+    category: 'gonflable',
+    size: '3,8m x 2,8m x 2,8m',
+    capacity: '12 personnes max',
+    age: '3-77 ans',
+    price: 150,
+    maxWeight: 70,
+    services: 'Conforme EN 14960, Livraison 7 jours / 7 jours, Enrouleurs électrique inclus, Structures nettoyées entre chaque location',
+    image: 'https://i.imgur.com/XcGSPl6.png',
+    description: '🤹 Toute la Magie du Cirque dans un Château Gonflable ! 🎪\n\n✨ Offrez aux enfants un moment de purement magique et fun avec notre château gonflable sur le thème du cirque ! 🤩\nIls pourront sauter, bondir, faire des galipettes et des cabrioles dans un espace entièrement sécurisé, rempli de multiples obstacles gonflés pour encore plus de défis et d\'amusement ! 🎈\n🔥 Pourquoi choisir cette structure gonflable ?\n\n✅ Un véritable parc d\'attractions miniature : Obstacles, espaces de saut et un super toboggan pour une sortie spectaculaire ! 🎢\n✅ Sécurité optimale : Conçu pour les jeunes enfants avec des matériaux résistants et un sol amortissant.\n✅ Un univers captivant : Plongez dans l\'ambiance magique du cirque et laissez les enfants devenir de vrais petits acrobates ! 🎭🤹\n✅ Parfait pour tous vos événements : Anniversaires, fêtes d\'école, kermesses, événements privés… 🥳\n📅 Ajoutez une touche de magie à votre événement, réservez dès maintenant !',
+    available: true
+  },
+  {
+    id: '3',
+    name: 'Multiplay Jurassic World',
+    category: 'gonflable',
+    size: '5m x 5,5m x 4,30m',
+    capacity: '12 personnes max',
+    age: '3-77 ans',
+    price: 200,
+    maxWeight: 160,
+    services: 'Conforme EN 14960, Livraison 7 jours / 7 jours, Enrouleurs électrique inclus, Structures nettoyées entre chaque location',
+    image: 'https://i.imgur.com/dyYum3x.png',
+    description: 'Partez à l\'aventure avec la structure gonflable Multiplay Jurassic World\n\nOffrez à vos invités une expérience inoubliable en les plongeant au coeur de l\'ère préhistorique avec la structure gonflable Multiplay Jurassic World. Inspirée de l\'univers fascinant des dinosaures, cette structure gonflable unique vous invite à explorer un monde jurassique peuplé de créatures gigantesques et d\'aventures palpitantes.\n\nImaginez un décor spectaculaire avec des dinosaures en 3D réalistes et des obstacles colorés qui captivent l\'imagination des enfants. Avec son toboggan impressionnant, ses zones de jeu interactives et ses designs inspirants, la structure Multiplay Jurassic World permet aux petits aventuriers de sauter, grimper et glisser tout en découvrant un univers préhistorique excitant.\n\nQue ce soit pour un anniversaire à thème, une fête d\'école ou un événement spécial, cette structure gonflable fera voyager les enfants à travers le temps et les emportera dans une aventure jurassique pleine de rires et de joie.\n\nN\'attendez plus, rendez chaque événement encore plus magique avec cette attraction hors du commun et faites vivre à vos invités un moment d\'évasion inoubliable !',
+    available: true
+  }
+];
+
 interface StructuresContextType {
   structures: Structure[];
   categories: Category[];
@@ -192,76 +252,25 @@ const initialStructures: Structure[] = [
     id: '11',
     name: 'Machine à pop-corn',
     category: 'gourmandises',
-    size: 'Machine professionnelle',
-    capacity: 'Illimité',
-    age: 'Tous âges',
-    price: 50,
-    services: 'Livraison 7 jours / 7 jours, Machine nettoyée entre chaque location',
-    image: 'https://i.imgur.com/noA5nmd.png',
-    description: 'Offrez aux enfants un moment de purement magique et fun avec notre château gonflable sur le thème du cirque !',
-    available: true
-  },
-  {
-    id: '12',
-    name: 'Machine à gaufres',
-    category: 'gourmandises',
-    size: 'Machine professionnelle',
-    capacity: 'Illimité',
-    age: 'Tous âges',
-    price: 60,
-    services: 'Livraison 7 jours / 7 jours, Machine nettoyée entre chaque location',
-    image: 'https://i.imgur.com/fHdP8HH.png',
-    description: 'Offrez à vos invités une expérience inoubliable en les plongeant au cœur de l\'ère préhistorique avec la structure gonflable Multiplay Jurassic World.',
-    available: true
-  },
-  {
-    id: '13',
-    name: 'Machine à crêpes',
-    category: 'gourmandises',
-    size: 'Machine professionnelle',
-    capacity: 'Illimité',
-    age: 'Tous âges',
-    price: 60,
-    services: 'Livraison 7 jours / 7 jours, Machine nettoyée entre chaque location',
-    image: 'https://i.imgur.com/SM4tkzP.png',
-    description: 'Offrez à vos petits aventuriers un voyage sous-marin rempli de fun et de défis avec notre parcours gonflable Monde Marin de 9 mètres de long !',
-    available: true
-  },
-  // Catégorie Évènementiel
-  {
-    id: '14',
-    name: 'Magicien',
-    category: 'evenementiel',
-    size: 'Prestation sur mesure',
-    capacity: 'Jusqu\'à 50 personnes',
-    age: 'Tous âges',
-    price: 0, // Sur devis
-    services: 'Prestation personnalisée, Matériel inclus, Déplacement en Île-de-France',
-    image: 'https://i.imgur.com/kTXIuZD.png',
-    description: 'Émerveillez vos invités avec un spectacle de magie professionnel ! Notre magicien expérimenté propose des tours adaptés à tous les âges, des illusions fascinantes aux numéros interactifs. Parfait pour anniversaires, événements d\'entreprise et fêtes familiales.',
-    available: true
-  },
-  {
-    id: '15',
-    name: 'Sculpteur de ballons',
-    category: 'evenementiel',
-    size: 'Animation mobile',
-    capacity: 'Jusqu\'à 30 enfants/heure',
-    age: '3-12 ans',
-    price: 0, // Sur devis
-  }
-]
-
 export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children }) => {
-  const [structures, setStructures] = useState<Structure[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [carouselPhotos, setCarouselPhotos] = useState<CarouselPhoto[]>([]);
+  const [structures, setStructures] = useState<Structure[]>(initialStructures);
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [carouselPhotos, setCarouselPhotos] = useState<CarouselPhoto[]>(initialCarouselPhotos);
 
   // Charger les données depuis Supabase
   useEffect(() => {
-    fetchCategories();
-    fetchStructures();
-    fetchCarouselPhotos();
+    // Essayer de charger depuis Supabase, mais utiliser les données par défaut si ça échoue
+    const loadData = async () => {
+      try {
+        await fetchCategories();
+        await fetchStructures();
+        await fetchCarouselPhotos();
+      } catch (error) {
+        console.log('Utilisation des données par défaut (Supabase non configuré)');
+      }
+    };
+    
+    loadData();
   }, []);
 
   const fetchCategories = async () => {
@@ -272,13 +281,15 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
         .order('created_at', { ascending: true });
 
       if (error) {
-        console.error('Error fetching categories:', error);
+        console.log('Supabase non configuré, utilisation des données par défaut');
         return;
       }
 
-      setCategories(data || []);
+      if (data && data.length > 0) {
+        setCategories(data);
+      }
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.log('Supabase non configuré, utilisation des données par défaut');
     }
   };
 
