@@ -18,16 +18,12 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
-    console.log('🔐 Début de la tentative de connexion admin');
 
     const success = await login(email, password);
     
     if (success) {
-      console.log('✅ Connexion admin réussie');
       onClose();
     } else {
-      console.log('❌ Échec de la connexion admin');
       setError('Email ou mot de passe incorrect');
     }
     
@@ -112,7 +108,9 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
         </form>
 
         <div className="mt-6 text-center text-sm text-gray-500">
-          <p>Connectez-vous avec votre compte administrateur Supabase</p>
+          <p>Identifiants de test :</p>
+          <p>Email: admin@funevent.fr</p>
+          <p>Mot de passe: admin123</p>
         </div>
       </div>
     </div>
