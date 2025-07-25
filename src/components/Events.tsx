@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Camera, Calendar, MapPin, Users, X } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
+import SEOHead from './SEOHead';
 
 const Events: React.FC = () => {
   const { carouselPhotos } = useStructures();
@@ -25,6 +26,32 @@ const Events: React.FC = () => {
 
   return (
     <>
+      <SEOHead
+        title="Galerie Événements - Fun Event | Photos Structures Gonflables en Action"
+        description="📸 Découvrez nos structures gonflables en action lors d'événements réels : anniversaires, mariages, fêtes d'entreprise. Inspiration pour votre prochain événement en Île-de-France."
+        keywords="galerie événements structures gonflables, photos châteaux gonflables anniversaire, événements Fun Event Paris, inspiration fête enfant, structures gonflables mariage, animation entreprise Île-de-France"
+        ogTitle="Galerie Photos - Événements Fun Event en Île-de-France"
+        ogDescription="Laissez-vous inspirer par nos plus beaux événements ! Structures gonflables premium en action lors d'anniversaires, mariages et fêtes."
+        canonicalUrl="https://funevent.fr/evenements"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "ImageGallery",
+          "name": "Galerie Événements Fun Event",
+          "description": "Collection de photos d'événements avec structures gonflables premium",
+          "provider": {
+            "@type": "Organization",
+            "name": "Fun Event",
+            "url": "https://funevent.fr"
+          },
+          "image": sortedPhotos.slice(0, 6).map(photo => ({
+            "@type": "ImageObject",
+            "url": photo.url,
+            "name": photo.title || photo.alt,
+            "description": photo.alt,
+            "contentLocation": photo.location || "Île-de-France"
+          }))
+        }}
+      />
       <section className="py-16 bg-gray-50" itemScope itemType="https://schema.org/ImageGallery">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}

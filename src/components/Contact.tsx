@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Clock, Send, MessageCircle, CheckCircle } from 'lucide-react';
+import SEOHead from './SEOHead';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -116,6 +117,39 @@ const Contact: React.FC = () => {
 
   return (
     <section className="py-16 bg-gray-50" itemScope itemType="https://schema.org/ContactPage">
+      <SEOHead
+        title="Contact Fun Event - Location Structures Gonflables Île-de-France | 06 63 52 80 72"
+        description="📞 Contactez Fun Event pour vos événements ! Téléphone, WhatsApp, email. Service client 7j/7 de 8h à 20h. Réponse rapide garantie en Île-de-France."
+        keywords="contact Fun Event, téléphone location structures gonflables, WhatsApp château gonflable Paris, email devis toboggan gonflable, service client 7j/7 Île-de-France"
+        ogTitle="Contactez Fun Event - Service Client 7j/7"
+        ogDescription="Équipe disponible 7j/7 pour vos projets d'événements. Téléphone, WhatsApp, email - Réponse rapide garantie !"
+        canonicalUrl="https://funevent.fr/contact"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "ContactPage",
+          "mainEntity": {
+            "@type": "Organization",
+            "name": "Fun Event",
+            "telephone": "+33663528072",
+            "email": "contact@funevent.fr",
+            "address": {
+              "@type": "PostalAddress",
+              "addressRegion": "Île-de-France",
+              "addressCountry": "FR"
+            },
+            "openingHours": "Mo-Su 08:00-20:00",
+            "contactPoint": [
+              {
+                "@type": "ContactPoint",
+                "telephone": "+33663528072",
+                "contactType": "customer service",
+                "availableLanguage": "French",
+                "areaServed": "FR"
+              }
+            ]
+          }
+        }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">

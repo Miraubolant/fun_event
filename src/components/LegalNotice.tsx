@@ -1,9 +1,16 @@
 import React from 'react';
 import { Scale, Building, Shield, Mail, Phone } from 'lucide-react';
+import SEOHead from './SEOHead';
 
 const LegalNotice: React.FC = () => {
   return (
     <section className="py-16 bg-gray-50 min-h-screen">
+      <SEOHead
+        title="Mentions Légales - Fun Event | Informations Légales et Réglementaires"
+        description="📋 Mentions légales de Fun Event, spécialiste location structures gonflables Île-de-France. Informations légales, SIRET, hébergement, propriété intellectuelle."
+        keywords="mentions légales Fun Event, SIRET location structures gonflables, informations légales château gonflable Paris, réglementation location matériel festif"
+        canonicalUrl="https://funevent.fr/mentions-legales"
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">

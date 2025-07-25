@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Calendar, MapPin, Users, Clock, Calculator, CheckCircle, ArrowRight } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { useStructures } from '../contexts/StructuresContext';
+import SEOHead from './SEOHead';
 
 const Quote: React.FC = () => {
   const { items: cartItems, clearCart, getTotalPrice, updateDuration: updateCartDuration } = useCart();
@@ -252,6 +253,36 @@ const Quote: React.FC = () => {
 
   return (
     <section className="py-16 bg-gray-50 min-h-screen" itemScope itemType="https://schema.org/Service">
+      <SEOHead
+        title="Devis Gratuit Structures Gonflables - Fun Event | Estimation Immédiate"
+        description="💰 Obtenez votre devis gratuit en 3 étapes simples ! Estimation immédiate pour location structures gonflables en Île-de-France. Réponse sous 48h garantie."
+        keywords="devis gratuit structures gonflables, estimation location château gonflable, prix toboggan gonflable Paris, tarif animation enfant Île-de-France, devis événement Fun Event"
+        ogTitle="Devis Gratuit et Rapide - Structures Gonflables Fun Event"
+        ogDescription="Formulaire simple en 3 étapes pour obtenir votre devis personnalisé. Estimation immédiate et réponse garantie sous 48h."
+        canonicalUrl="https://funevent.fr/devis"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "Service",
+          "name": "Devis Gratuit Structures Gonflables",
+          "description": "Service de devis gratuit et personnalisé pour location de structures gonflables",
+          "provider": {
+            "@type": "Organization",
+            "name": "Fun Event",
+            "telephone": "+33663528072",
+            "email": "contact@funevent.fr"
+          },
+          "areaServed": {
+            "@type": "AdministrativeArea",
+            "name": "Île-de-France"
+          },
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "EUR",
+            "description": "Devis gratuit sous 48h"
+          }
+        }}
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">

@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowRight, Shield, Truck, Clock, Star, Users, Award, Phone, MessageCircle, Ruler, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
 import StructureModal from './StructureModal';
+import SEOHead from './SEOHead';
 import { Page } from '../types';
 import { Structure } from '../types';
 
@@ -84,6 +85,61 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
 
   return (
     <>
+      <SEOHead
+        title="Fun Event - Location Structures Gonflables Premium Île-de-France | Devis Gratuit"
+        description="🎪 Spécialiste location structures gonflables premium en Île-de-France. Châteaux gonflables, toboggans géants, jeux aquatiques. Livraison gratuite Paris 75-95. Devis sous 48h ✨"
+        keywords="location structures gonflables Paris, château gonflable Île-de-France, toboggan gonflable géant, jeux gonflables anniversaire, animation enfant Paris, location matériel festif 75 77 78 91 92 93 94 95"
+        ogTitle="Fun Event - Structures Gonflables Premium pour Événements Magiques"
+        ogDescription="Créez des moments inoubliables avec nos structures gonflables premium. Livraison gratuite en Île-de-France, installation incluse, service 7j/7."
+        canonicalUrl="https://funevent.fr/"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          "name": "Fun Event",
+          "description": "Location de structures gonflables premium pour événements en Île-de-France",
+          "url": "https://funevent.fr",
+          "telephone": "+33663528072",
+          "email": "contact@funevent.fr",
+          "logo": "https://i.imgur.com/gfhDZfm.png",
+          "image": "https://i.imgur.com/gfhDZfm.png",
+          "priceRange": "€€",
+          "address": {
+            "@type": "PostalAddress",
+            "addressRegion": "Île-de-France",
+            "addressCountry": "FR"
+          },
+          "areaServed": [
+            { "@type": "City", "name": "Paris" },
+            { "@type": "AdministrativeArea", "name": "Île-de-France" }
+          ],
+          "serviceType": "Location de structures gonflables",
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Structures Gonflables Premium",
+            "itemListElement": availableStructures.slice(0, 5).map((structure, index) => ({
+              "@type": "Offer",
+              "position": index + 1,
+              "itemOffered": {
+                "@type": "Product",
+                "name": structure.name,
+                "description": structure.description,
+                "image": structure.image,
+                "offers": {
+                  "@type": "Offer",
+                  "price": structure.price,
+                  "priceCurrency": "EUR",
+                  "availability": "https://schema.org/InStock"
+                }
+              }
+            }))
+          },
+          "openingHours": "Mo-Su 08:00-20:00",
+          "sameAs": [
+            "https://instagram.com/FUN_EVENT",
+            "https://snapchat.com/add/FUN_EVENTT"
+          ]
+        }}
+      />
       {/* Hero Principal */}
       <main className="relative bg-white text-gray-900 overflow-hidden min-h-screen">
         

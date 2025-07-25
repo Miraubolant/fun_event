@@ -3,6 +3,7 @@ import { Users, Ruler, Heart, Eye, ShoppingCart } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
 import { useCart } from '../contexts/CartContext';
 import StructureModal from './StructureModal';
+import SEOHead from './SEOHead';
 import { Structure } from '../types';
 
 const Catalog: React.FC = () => {
@@ -40,6 +41,56 @@ const Catalog: React.FC = () => {
 
   return (
     <section className="py-16 bg-gray-50" itemScope itemType="https://schema.org/ItemList">
+      <SEOHead
+        title="Catalogue Structures Gonflables - Fun Event | Châteaux, Toboggans, Jeux Aquatiques"
+        description="🎪 Découvrez notre catalogue complet de structures gonflables premium : châteaux gonflables, toboggans géants, parcours aventure, jeux aquatiques. Location Île-de-France avec livraison gratuite."
+        keywords="catalogue structures gonflables, château gonflable location Paris, toboggan gonflable géant, parcours aventure gonflable, jeux aquatiques enfant, location matériel animation Île-de-France"
+        ogTitle="Catalogue Premium - Structures Gonflables Fun Event"
+        ogDescription="Plus de 20 structures gonflables premium pour tous les âges. Châteaux, toboggans, parcours aventure. Livraison gratuite en Île-de-France."
+        canonicalUrl="https://funevent.fr/catalogue"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "name": "Catalogue Structures Gonflables Fun Event",
+          "description": "Collection complète de structures gonflables premium pour événements",
+          "numberOfItems": filteredStructures.length,
+          "itemListElement": filteredStructures.slice(0, 10).map((structure, index) => ({
+            "@type": "Product",
+            "position": index + 1,
+            "name": structure.name,
+            "description": structure.description,
+            "image": structure.image,
+            "category": categories.find(c => c.id === structure.category)?.label || "Structure Gonflable",
+            "offers": {
+              "@type": "Offer",
+              "price": structure.price,
+              "priceCurrency": "EUR",
+              "availability": structure.available ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+              "seller": {
+                "@type": "Organization",
+                "name": "Fun Event"
+              }
+            },
+            "additionalProperty": [
+              {
+                "@type": "PropertyValue",
+                "name": "Dimensions",
+                "value": structure.size
+              },
+              {
+                "@type": "PropertyValue", 
+                "name": "Capacité",
+                "value": structure.capacity
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Âge recommandé", 
+                "value": structure.age
+              }
+            ]
+          }))
+        }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="animate-fade-in">

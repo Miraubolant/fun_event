@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, HelpCircle, Phone, MessageCircle, Search } from 'lucide-react';
+import SEOHead from './SEOHead';
 
 const FAQ: React.FC = () => {
   const [openItems, setOpenItems] = useState<number[]>([0]); // Premier item ouvert par défaut
@@ -80,6 +81,28 @@ const FAQ: React.FC = () => {
 
   return (
     <section className="py-16 bg-gray-50" itemScope itemType="https://schema.org/FAQPage">
+      <SEOHead
+        title="FAQ - Questions Fréquentes | Fun Event Location Structures Gonflables"
+        description="❓ Toutes les réponses à vos questions sur la location de structures gonflables : réservation, livraison, installation, tarifs, sécurité. Service client 7j/7 en Île-de-France."
+        keywords="FAQ structures gonflables, questions location château gonflable, tarifs livraison installation, sécurité normes gonflables, réservation Fun Event Paris, service client 7j/7"
+        ogTitle="FAQ Complète - Location Structures Gonflables Fun Event"
+        ogDescription="Trouvez rapidement les réponses à toutes vos questions sur nos services de location de structures gonflables premium."
+        canonicalUrl="https://funevent.fr/faq"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": faqData.flatMap(category => 
+            category.questions.slice(0, 3).map(item => ({
+              "@type": "Question",
+              "name": item.question,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": item.answer
+              }
+            }))
+          )
+        }}
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
