@@ -113,10 +113,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log('Statut admin défini:', data?.role === 'admin');
     console.log('Vérification du statut admin pour:', userId);
       console.log('Erreur catch admin check:', error);
-    setUser(null);
-    setIsAdmin(false);
-  };
-
 
   return (
     <AuthContext.Provider value={{ user, login, logout, isAdmin, loading }}>
