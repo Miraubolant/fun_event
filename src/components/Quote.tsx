@@ -568,19 +568,19 @@ const Quote: React.FC = () => {
                                 {structure.price2Days && ` • 2 jours: ${structure.price2Days}€`}
                               </p>
                               {isFromCart && (
-                                // Mettre à jour le formulaire et le panier
-                                setFormData(prev => ({
-                                  ...prev,
-                                  structures: prev.structures.map(item =>
-                                    item.id === structure.id ? { ...item, customDays: days } : item
-                                  )
-                                }));
-                                
-                                // Mettre à jour le panier si la structure y est
-                                const isInCart = cartItems.some(item => item.structure.id === structure.id);
-                                if (isInCart) {
-                                  updateCartDuration(structure.id, 'custom', days);
-                                }
+                               // Mettre à jour le formulaire
+                               setFormData(prev => ({
+                                 ...prev,
+                                 structures: prev.structures.map(item =>
+                                   item.id === structure.id ? { ...item, customDays: days } : item
+                                 )
+                               }));
+                               
+                               // Mettre à jour le panier si la structure y est
+                               const isInCart = cartItems.some(item => item.structure.id === structure.id);
+                               if (isInCart) {
+                                 updateCartDuration(structure.id, 'custom', days);
+                               }
                               )}
                             </div>
                           </div>
