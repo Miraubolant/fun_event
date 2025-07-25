@@ -72,7 +72,23 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       try {
         const { data: structuresData, error: structuresError } = await supabase
           .from('structures')
-          .select('*')
+          .select(`
+            id,
+            name,
+            category_id,
+            size,
+            capacity,
+            age,
+            price,
+            price_2_days,
+            max_weight,
+            services,
+            image,
+            description,
+            available,
+            created_at,
+            updated_at
+          `)
           .order('name');
         
         if (structuresError) {
@@ -162,6 +178,17 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   // Fonctions pour les structures
   const addStructure = async (newStructure: Omit<Structure, 'id'>) => {
     try {
+      // Vérifier que la catégorie existe
+      const { data: categoryExists } = await supabase
+        .from('categories')
+        .select('id')
+        .eq('id', newStructure.category)
+        .single();
+      
+      if (!categoryExists) {
+        throw new Error('La catégorie sélectionnée n\'existe pas');
+      }
+      
       const { data, error } = await supabase
         .from('structures')
         .insert({
@@ -245,6 +272,16 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   // Fonctions pour les catégories
   const addCategory = async (newCategory: Omit<Category, 'id'>) => {
     try {
+      // Vérifier que la table existe
+      const { error: testError } = await supabase
+        .from('categories')
+        .select('id')
+        .limit(1);
+      
+      if (testError && testError.code === '42P01') {
+        throw new Error('Table categories n\'existe pas. Veuillez exécuter les migrations Supabase.');
+      }
+      
       const { error } = await supabase
         .from('categories')
         .insert({
@@ -306,6 +343,16 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   // Fonctions pour les photos du carrousel
   const addCarouselPhoto = async (newPhoto: Omit<CarouselPhoto, 'id'>) => {
     try {
+      // Vérifier que la table existe
+      const { error: testError } = await supabase
+        .from('carousel_photos')
+        .select('id')
+        .limit(1);
+      
+      if (testError && testError.code === '42P01') {
+        throw new Error('Table carousel_photos n\'existe pas. Veuillez exécuter les migrations Supabase.');
+      }
+      
       const { error } = await supabase
         .from('carousel_photos')
         .insert({

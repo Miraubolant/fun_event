@@ -45,6 +45,13 @@ const AdminPanel: React.FC = () => {
 
   const handleAdd = () => {
     if (formData.name && formData.category && formData.price) {
+      // Vérifier que la catégorie existe
+      const categoryExists = categories.find(c => c.id === formData.category);
+      if (!categoryExists) {
+        alert('Veuillez sélectionner une catégorie valide.');
+        return;
+      }
+      
       const newStructure = {
         name: formData.name,
         category: formData.category,
@@ -62,7 +69,7 @@ const AdminPanel: React.FC = () => {
       
       addStructure(newStructure).catch(error => {
         console.error('Erreur lors de l\'ajout:', error);
-        alert('Erreur lors de l\'ajout de la structure. Vérifiez votre connexion.');
+        alert(`Erreur lors de l'ajout de la structure: ${error.message || 'Vérifiez votre connexion.'}`);
       });
       
       setShowAddForm(false);
@@ -79,7 +86,7 @@ const AdminPanel: React.FC = () => {
       
       addCategory(newCategory).catch(error => {
         console.error('Erreur lors de l\'ajout:', error);
-        alert('Erreur lors de l\'ajout de la catégorie. Vérifiez votre connexion.');
+        alert(`Erreur lors de l'ajout de la catégorie: ${error.message || 'Vérifiez votre connexion.'}`);
       });
       
       setShowCategoryForm(false);
@@ -100,7 +107,7 @@ const AdminPanel: React.FC = () => {
       
       addCarouselPhoto(newPhoto).catch(error => {
         console.error('Erreur lors de l\'ajout:', error);
-        alert('Erreur lors de l\'ajout de la photo. Vérifiez votre connexion.');
+        alert(`Erreur lors de l'ajout de la photo: ${error.message || 'Vérifiez votre connexion.'}`);
       });
       
       setShowPhotoForm(false);
