@@ -17,6 +17,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onNavigateToQuot
     if (items.length === 0) return;
     
     let message = "🛒 *Commande Fun Event*\n\n";
+    let hasCustomPricing = false;
     
     items.forEach((item, index) => {
       let price = item.structure.price;
@@ -29,6 +30,7 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onNavigateToQuot
       } else if (item.duration === 'custom' && item.customDays) {
         multiplier = item.customDays * 0.9;
         durationLabel = `${item.customDays} jour${item.customDays > 1 ? 's' : ''}`;
+        hasCustomPricing = true;
       }
       
       const finalPrice = Math.round(price * multiplier);
@@ -36,11 +38,22 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onNavigateToQuot
       message += `${index + 1}. *${item.structure.name}*\n`;
       message += `   • Quantité: ${item.quantity}\n`;
       message += `   • Durée: ${durationLabel}\n`;
-      message += `   • Prix unitaire: ${finalPrice}€\n`;
-      message += `   • Sous-total: ${finalPrice * item.quantity}€\n\n`;
+      if (item.duration === 'custom') {
+        message += `   • Prix: Sur mesure\n`;
+        message += `   • Sous-total: Sur mesure\n\n`;
+      } else {
+        message += `   • Prix unitaire: ${finalPrice}€\n`;
+        message += `   • Sous-total: ${finalPrice * item.quantity}€\n\n`;
+      }
     });
     
-    message += `💰 *Total: ${getTotalPrice()}€*\n\n`;
+    if (hasCustomPricing) {
+      message += `💰 *Total: Prix sur mesure*\n\n`;
+      message += "⚠️ *Note:* Certaines structures ont une tarification personnalisée. Le prix final sera confirmé dans le devis.\n\n";
+    } else {
+      message += `💰 *Total: ${getTotalPrice()}€*\n\n`;
+    }
+    
     message += "Je souhaiterais réserver ces structures. Pouvez-vous me confirmer la disponibilité et les détails de livraison ?";
     
     const encodedMessage = encodeURIComponent(message);
@@ -82,13 +95,18 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onNavigateToQuot
                 let price = item.structure.price;
                 let multiplier = 1;
                 let durationLabel = '1 jour';
+               let displayPrice = '';
                 
                 if (item.duration === '2days' && item.structure.price2Days) {
                   price = item.structure.price2Days;
                   durationLabel = '2 jours (weekend)';
+                 displayPrice = `${price * item.quantity}€`;
                 } else if (item.duration === 'custom' && item.customDays) {
                   multiplier = item.customDays * 0.9;
                   durationLabel = `${item.customDays} jour${item.customDays > 1 ? 's' : ''}`;
+                 displayPrice = 'Prix sur mesure';
+               } else {
+                 displayPrice = `${price * item.quantity}€`;
                 }
                 
                 const finalPrice = Math.round(price * multiplier);
@@ -150,8 +168,10 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onNavigateToQuot
                             </button>
                           </div>
                           <div className="text-right">
-                            <p className="font-bold text-orange-600 text-sm sm:text-base">{finalPrice * item.quantity}€</p>
-                            <p className="text-xs text-gray-500">{finalPrice}€ x {item.quantity}</p>
+                           <p className="font-bold text-orange-600 text-sm sm:text-base">{displayPrice}</p>
+                           {item.duration !== 'custom' && (
+                             <p className="text-xs text-gray-500">{finalPrice}€ x {item.quantity}</p>
+                           )}
                             <p className="text-xs text-blue-600">{durationLabel}</p>
                           </div>
                         </div>
@@ -174,7 +194,12 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onNavigateToQuot
           <div className="border-t border-gray-200 p-6">
             <div className="flex items-center justify-between mb-4">
               <span className="text-lg sm:text-xl font-bold text-gray-900">Total:</span>
-              <span className="text-xl sm:text-2xl font-bold text-orange-600">{getTotalPrice()}€</span>
+              <span className="text-xl sm:text-2xl font-bold text-orange-600">
+                {getTotalPrice() === 0 && items.some(item => item.duration === 'custom') 
+                  ? 'Prix sur mesure' 
+                  : `${getTotalPrice()}€`
+                }
+              </span>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
