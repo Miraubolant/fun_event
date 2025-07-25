@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Save, X, Package, DollarSign, Tag, Image, Camera, ArrowUp, ArrowDown, AlertTriangle, LogOut } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, X, Package, DollarSign, Tag, Image, Camera, ArrowUp, ArrowDown, AlertTriangle, LogOut, GripVertical } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Structure, Category, CarouselPhoto } from '../types';
@@ -38,6 +38,10 @@ const AdminPanel: React.FC = () => {
   const [formData, setFormData] = useState<Partial<Structure>>({});
   const [categoryData, setCategoryData] = useState<Partial<Category>>({});
   const [photoData, setPhotoData] = useState<Partial<CarouselPhoto>>({});
+  
+  // États pour le glisser-déposer
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
+  const [draggedOver, setDraggedOver] = useState<string | null>(null);
 
   const handleEdit = (structure: Structure) => {
     setShowEditForm(true);
@@ -211,6 +215,7 @@ const AdminPanel: React.FC = () => {
     setEditingPhotoId(null);
     setPhotoData({});
   };
+  
   const openSection = (section: 'structures' | 'categories' | 'photos') => {
     setActiveSection(section);
     // Fermer les autres sections
@@ -219,6 +224,7 @@ const AdminPanel: React.FC = () => {
     setShowPhotoForm(section === 'photos');
     setShowEditForm(false);
   };
+  
   const movePhoto = (id: string, direction: 'up' | 'down') => {
     const sortedPhotos = [...carouselPhotos].sort((a, b) => a.order - b.order);
     const currentIndex = sortedPhotos.findIndex(p => p.id === id);
@@ -255,6 +261,49 @@ const AdminPanel: React.FC = () => {
         updateStructure(structure.id, { order: index + 1 });
       });
     }
+  };
+
+  // Fonctions pour le glisser-déposer des structures
+  const handleDragStart = (e: React.DragEvent, structureId: string) => {
+    setDraggedItem(structureId);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', structureId);
+  };
+
+  const handleDragOver = (e: React.DragEvent, structureId: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDraggedOver(structureId);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedItem(null);
+    setDraggedOver(null);
+  };
+
+  const handleDrop = (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    
+    if (!draggedItem || draggedItem === targetId) return;
+
+    const sortedStructures = [...structures].sort((a, b) => (a.order || 1) - (b.order || 1));
+    const draggedIndex = sortedStructures.findIndex(s => s.id === draggedItem);
+    const targetIndex = sortedStructures.findIndex(s => s.id === targetId);
+
+    if (draggedIndex === -1 || targetIndex === -1) return;
+
+    // Réorganiser le tableau
+    const newStructures = [...sortedStructures];
+    const [draggedStructure] = newStructures.splice(draggedIndex, 1);
+    newStructures.splice(targetIndex, 0, draggedStructure);
+
+    // Mettre à jour les ordres
+    newStructures.forEach((structure, index) => {
+      updateStructure(structure.id, { order: index + 1 });
+    });
+
+    setDraggedItem(null);
+    setDraggedOver(null);
   };
 
   return (
@@ -883,13 +932,13 @@ const AdminPanel: React.FC = () => {
           </div>
         )}
 
-        {/* Liste des structures */}
+        {/* Liste des structures avec glisser-déposer */}
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="px-4 lg:px-6 py-4 border-b border-gray-200">
             <h2 className="text-lg lg:text-xl font-bold text-gray-900">
               Structures Existantes ({structures.length})
               <span className="text-sm font-normal text-gray-600 ml-2">
-                - Ordre d'affichage dans le carrousel
+                - Glissez-déposez pour réorganiser l'ordre d'affichage
               </span>
             </h2>
           </div>
@@ -898,6 +947,7 @@ const AdminPanel: React.FC = () => {
             <table className="w-full min-w-[720px]">
               <thead className="bg-gray-50">
                 <tr>
+                  <th className="px-3 lg:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Glisser</th>
                   <th className="px-3 lg:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Ordre</th>
                   <th className="px-3 lg:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Structure</th>
                   <th className="px-3 lg:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Catégorie</th>
@@ -908,7 +958,24 @@ const AdminPanel: React.FC = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {[...structures].sort((a, b) => (a.order || 1) - (b.order || 1)).map((structure, index) => (
-                  <tr key={structure.id} className="hover:bg-gray-50 transition-colors">
+                  <tr 
+                    key={structure.id} 
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, structure.id)}
+                    onDragOver={(e) => handleDragOver(e, structure.id)}
+                    onDragEnd={handleDragEnd}
+                    onDrop={(e) => handleDrop(e, structure.id)}
+                    className={`hover:bg-gray-50 transition-all cursor-move ${
+                      draggedItem === structure.id ? 'opacity-50 scale-95' : ''
+                    } ${
+                      draggedOver === structure.id && draggedItem !== structure.id ? 'bg-blue-50 border-t-2 border-blue-400' : ''
+                    }`}
+                  >
+                    <td className="px-3 lg:px-6 py-4">
+                      <div className="flex items-center justify-center">
+                        <GripVertical className="w-4 h-4 text-gray-400 hover:text-gray-600 transition-colors" />
+                      </div>
+                    </td>
                     <td className="px-3 lg:px-6 py-4">
                       <div className="flex items-center gap-1 lg:gap-2">
                         <span className="text-sm font-semibold text-gray-900 bg-blue-100 px-2 py-1 rounded-full min-w-[24px] text-center">
