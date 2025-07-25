@@ -11,7 +11,8 @@ const Quote: React.FC = () => {
   const [formData, setFormData] = useState({
     eventType: '',
     date: '',
-    duration: '',
+    duration: '1',
+    customDays: '',
     location: '',
     guests: '',
     structures: [] as Array<{id: string, duration: '1day' | '2days'}>,
@@ -51,12 +52,9 @@ const Quote: React.FC = () => {
   ];
 
   const durations = [
-    { id: '4h', label: '4 heures', multiplier: 0.8 },
-    { id: '6h', label: '6 heures', multiplier: 1 },
-    { id: '8h', label: '8 heures', multiplier: 1.2 },
-    { id: 'journee', label: 'Journée complète', multiplier: 1.5 },
-    { id: 'weekend', label: 'Weekend', multiplier: 2.5 },
-    { id: 'plusieurs', label: 'Plusieurs jours', multiplier: 3.5 }
+    { id: '1', label: '1 journée', multiplier: 1 },
+    { id: '2', label: 'Weekend (2 jours)', multiplier: 1.8 },
+    { id: 'custom', label: 'Plusieurs jours', multiplier: 1 }
   ];
 
   const zones = [
@@ -116,8 +114,15 @@ const Quote: React.FC = () => {
       }
     });
 
-    const duration = durations.find(d => d.id === formData.duration);
-    const multiplier = duration?.multiplier || 1;
+    let multiplier = 1;
+    if (formData.duration === 'custom') {
+      const customDays = parseInt(formData.customDays) || 1;
+      multiplier = Math.max(1, customDays * 0.9); // Dégressif après 1 jour
+    } else {
+      const duration = durations.find(d => d.id === formData.duration);
+      multiplier = duration?.multiplier || 1;
+    }
+    
     total *= multiplier;
 
     setEstimatedPrice(Math.round(total));
@@ -137,8 +142,19 @@ const Quote: React.FC = () => {
         total += price;
       }
     });
-    const duration = durations.find(d => d.id === formData.duration);
-    const multiplier = duration?.multiplier || 1;
+    
+    let multiplier = 1;
+    let durationLabel = '';
+    if (formData.duration === 'custom') {
+      const customDays = parseInt(formData.customDays) || 1;
+      multiplier = Math.max(1, customDays * 0.9);
+      durationLabel = `${customDays} jour${customDays > 1 ? 's' : ''}`;
+    } else {
+      const duration = durations.find(d => d.id === formData.duration);
+      multiplier = duration?.multiplier || 1;
+      durationLabel = duration?.label || formData.duration;
+    }
+    
     total *= multiplier;
     const finalPrice = Math.round(total);
     setEstimatedPrice(finalPrice);
@@ -147,7 +163,7 @@ const Quote: React.FC = () => {
     const formDataToSend = new FormData();
     formDataToSend.append('eventType', eventTypes.find(t => t.id === formData.eventType)?.label || formData.eventType);
     formDataToSend.append('date', formData.date);
-    formDataToSend.append('duration', durations.find(d => d.id === formData.duration)?.label || formData.duration);
+    formDataToSend.append('duration', durationLabel);
     formDataToSend.append('location', formData.location);
     formDataToSend.append('guests', formData.guests);
     
@@ -434,6 +450,28 @@ const Quote: React.FC = () => {
                       </label>
                     ))}
                   </div>
+                  
+                  {formData.duration === 'custom' && (
+                    <div className="mt-4">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Nombre de jours *
+                      </label>
+                      <input
+                        type="number"
+                        name="customDays"
+                        value={formData.customDays}
+                        onChange={handleInputChange}
+                        min="3"
+                        max="30"
+                        required={formData.duration === 'custom'}
+                        placeholder="ex: 5"
+                        className="w-full px-3 py-3 sm:px-4 sm:py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm sm:text-base"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        💡 Tarif dégressif à partir de 3 jours
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <div>
