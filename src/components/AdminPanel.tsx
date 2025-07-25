@@ -314,7 +314,7 @@ const AdminPanel: React.FC = () => {
     <section className="py-8 lg:py-16 bg-gradient-to-br from-gray-50 via-blue-50/30 to-orange-50/30 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-6 mb-8 lg:mb-12">
+        <div className="flex flex-col lg:flex-row lg:justify-center lg:items-center gap-6 mb-8 lg:mb-12">
           <div>
             <div className="animate-fade-in">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-4 leading-tight">
@@ -331,17 +331,6 @@ const AdminPanel: React.FC = () => {
                 <span className="font-bold text-orange-500"> tarifs</span>
               </p>
             </div>
-          </div>
-          
-          {/* Action Button - Déconnexion uniquement */}
-          <div className="flex justify-end w-full lg:w-auto">
-            <button
-              onClick={logout}
-              className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 sm:px-6 py-3 rounded-lg font-semibold hover:from-red-600 hover:to-red-700 transition-all flex items-center justify-center text-sm lg:text-base shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              <LogOut className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              Déconnexion
-            </button>
           </div>
         </div>
 
