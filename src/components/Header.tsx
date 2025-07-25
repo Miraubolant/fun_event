@@ -47,9 +47,9 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             </div>
             <div>
               <h1 className="text-2xl font-extrabold text-gray-900">
-                Fun Event ✨
+                Fun Event
               </h1>
-              <p className="text-sm font-semibold text-gray-700">🎪 Location de structures gonflables premium</p>
+              <p className="text-sm font-semibold text-gray-700">Location de structures gonflables premium</p>
             </div>
           </div>
 
