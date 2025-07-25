@@ -33,19 +33,36 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log('🔍 Vérification du statut admin pour:', userId);
       
       // Vérifier d'abord si l'utilisateur est connecté
+      console.log('📋 Vérification de la session...');
       const { data: { session } } = await supabase.auth.getSession();
       console.log('📋 Session actuelle:', session ? 'Existe' : 'Aucune');
       if (!session) {
         console.log('❌ Pas de session active');
+        console.log('🎯 Résultat final checkAdminStatus: false (pas de session)');
         return false;
       }
       
       console.log('🔍 Requête vers admin_users...');
-      const { data: adminUser, error: adminError } = await supabase
+      
+      // Ajouter un timeout pour éviter le blocage
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Timeout: requête trop longue')), 10000);
+      });
+      
+      const queryPromise = supabase
         .from('admin_users')
         .select('*')
         .eq('id', userId)
         .single();
+      
+      console.log('⏱️ Lancement de la requête avec timeout...');
+      const { data: adminUser, error: adminError } = await Promise.race([
+        queryPromise,
+        timeoutPromise
+      ]).catch(err => {
+        console.log('❌ Erreur ou timeout de la requête:', err.message);
+        return { data: null, error: err };
+      });
 
       console.log('📊 Résultat requête admin_users:', { 
         adminUser, 
@@ -165,6 +182,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       console.log('🔐 Tentative de connexion pour:', email);
       console.log('🔑 Mot de passe fourni:', password ? 'Oui' : 'Non');
+      
+      console.log('🔗 Tentative de connexion Supabase...');
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -187,8 +206,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         
         console.log('🔍 Vérification du statut admin...');
         
+        // Attendre un peu que la session soit bien établie
+        console.log('⏳ Attente de l\'établissement de la session...');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
         // Vérifier le statut admin
+        console.log('🚀 Lancement de checkAdminStatus...');
         const isAdmin = await checkAdminStatus(data.user.id);
+        console.log('📋 Retour de checkAdminStatus:', isAdmin);
         
         if (isAdmin) {
           console.log('🎉 Connexion admin réussie !');
@@ -199,7 +224,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Si pas admin mais email autorisé, créer le compte admin
         if (data.user.email === 'victor@mirault.com') {
           console.log('📧 Email autorisé, création du compte admin...');
+          console.log('🚀 Lancement de createAdminUser...');
           const created = await createAdminUser(data.user.id, data.user.email);
+          console.log('📋 Retour de createAdminUser:', created);
           if (created) {
             console.log('🎉 Compte admin créé et connexion réussie !');
             console.log('🎯 Résultat final login: true (créé)');
