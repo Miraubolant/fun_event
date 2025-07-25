@@ -45,72 +45,106 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
     try {
       setLoading(true);
       
-      // Charger les catégories
-      const { data: categoriesData, error: categoriesError } = await supabase
-        .from('categories')
-        .select('*')
-        .order('label');
-      
-      if (categoriesError) {
-        console.error('Erreur lors du chargement des catégories:', categoriesError);
-      } else {
-        setCategories(categoriesData || []);
+      // Charger les catégories avec gestion d'erreur
+      try {
+        const { data: categoriesData, error: categoriesError } = await supabase
+          .from('categories')
+          .select('*')
+          .order('label');
+        
+        if (categoriesError) {
+          if (categoriesError.code === '42P01') {
+            console.warn('Table categories n\'existe pas encore. Veuillez exécuter les migrations.');
+            setCategories([]);
+          } else {
+            console.error('Erreur lors du chargement des catégories:', categoriesError);
+            setCategories([]);
+          }
+        } else {
+          setCategories(categoriesData || []);
+        }
+      } catch (error) {
+        console.warn('Impossible de charger les catégories:', error);
+        setCategories([]);
       }
 
-      // Charger les structures avec leurs catégories
-      const { data: structuresData, error: structuresError } = await supabase
-        .from('structures')
-        .select(`
-          *,
-          categories!inner(id, label)
-        `)
-        .order('name');
-      
-      if (structuresError) {
-        console.error('Erreur lors du chargement des structures:', structuresError);
-      } else {
-        // Transformer les données pour correspondre au type Structure
-        const transformedStructures = (structuresData || []).map(item => ({
-          id: item.id,
-          name: item.name,
-          category: item.category_id, // Utiliser l'ID de la catégorie
-          size: item.size,
-          capacity: item.capacity,
-          age: item.age,
-          price: item.price,
-          price2Days: item.price_2_days,
-          maxWeight: item.max_weight,
-          services: item.services,
-          image: item.image,
-          description: item.description,
-          available: item.available
-        }));
-        setStructures(transformedStructures);
+      // Charger les structures sans jointure complexe
+      try {
+        const { data: structuresData, error: structuresError } = await supabase
+          .from('structures')
+          .select('*')
+          .order('name');
+        
+        if (structuresError) {
+          if (structuresError.code === '42P01') {
+            console.warn('Table structures n\'existe pas encore. Veuillez exécuter les migrations.');
+            setStructures([]);
+          } else {
+            console.error('Erreur lors du chargement des structures:', structuresError);
+            setStructures([]);
+          }
+        } else {
+          // Transformer les données pour correspondre au type Structure
+          const transformedStructures = (structuresData || []).map(item => ({
+            id: item.id,
+            name: item.name,
+            category: item.category_id, // Utiliser l'ID de la catégorie
+            size: item.size || '',
+            capacity: item.capacity || '',
+            age: item.age || '',
+            price: item.price || 0,
+            price2Days: item.price_2_days,
+            maxWeight: item.max_weight,
+            services: item.services,
+            image: item.image || '',
+            description: item.description || '',
+            available: item.available ?? true
+          }));
+          setStructures(transformedStructures);
+        }
+      } catch (error) {
+        console.warn('Impossible de charger les structures:', error);
+        setStructures([]);
       }
 
-      // Charger les photos du carrousel
-      const { data: photosData, error: photosError } = await supabase
-        .from('carousel_photos')
-        .select('*')
-        .order('order_position');
-      
-      if (photosError) {
-        console.error('Erreur lors du chargement des photos:', photosError);
-      } else {
-        // Transformer les données pour correspondre au type CarouselPhoto
-        const transformedPhotos = (photosData || []).map(item => ({
-          id: item.id,
-          url: item.url,
-          alt: item.alt,
-          title: item.title,
-          location: item.location,
-          order: item.order_position
-        }));
-        setCarouselPhotos(transformedPhotos);
+      // Charger les photos du carrousel avec gestion d'erreur
+      try {
+        const { data: photosData, error: photosError } = await supabase
+          .from('carousel_photos')
+          .select('*')
+          .order('order_position');
+        
+        if (photosError) {
+          if (photosError.code === '42P01') {
+            console.warn('Table carousel_photos n\'existe pas encore. Veuillez exécuter les migrations.');
+            setCarouselPhotos([]);
+          } else {
+            console.error('Erreur lors du chargement des photos:', photosError);
+            setCarouselPhotos([]);
+          }
+        } else {
+          // Transformer les données pour correspondre au type CarouselPhoto
+          const transformedPhotos = (photosData || []).map(item => ({
+            id: item.id,
+            url: item.url,
+            alt: item.alt,
+            title: item.title,
+            location: item.location,
+            order: item.order_position
+          }));
+          setCarouselPhotos(transformedPhotos);
+        }
+      } catch (error) {
+        console.warn('Impossible de charger les photos du carrousel:', error);
+        setCarouselPhotos([]);
       }
       
     } catch (error) {
       console.error('Erreur lors du chargement des données:', error);
+      // Initialiser avec des tableaux vides en cas d'erreur générale
+      setCategories([]);
+      setStructures([]);
+      setCarouselPhotos([]);
     } finally {
       setLoading(false);
     }
@@ -151,7 +185,12 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       
       await refreshData();
     } catch (error) {
-      console.error('Erreur lors de l\'ajout de la structure:', error);
+      if (error.code === '42P01') {
+        console.error('Table structures n\'existe pas. Veuillez exécuter les migrations Supabase.');
+        alert('Erreur: Les tables de la base de données n\'existent pas. Veuillez exécuter les migrations Supabase.');
+      } else {
+        console.error('Erreur lors de l\'ajout de la structure:', error);
+      }
       throw error;
     }
   };
@@ -217,7 +256,12 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       
       await refreshData();
     } catch (error) {
-      console.error('Erreur lors de l\'ajout de la catégorie:', error);
+      if (error.code === '42P01') {
+        console.error('Table categories n\'existe pas. Veuillez exécuter les migrations Supabase.');
+        alert('Erreur: Les tables de la base de données n\'existent pas. Veuillez exécuter les migrations Supabase.');
+      } else {
+        console.error('Erreur lors de l\'ajout de la catégorie:', error);
+      }
       throw error;
     }
   };
@@ -276,7 +320,12 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       
       await refreshData();
     } catch (error) {
-      console.error('Erreur lors de l\'ajout de la photo:', error);
+      if (error.code === '42P01') {
+        console.error('Table carousel_photos n\'existe pas. Veuillez exécuter les migrations Supabase.');
+        alert('Erreur: Les tables de la base de données n\'existent pas. Veuillez exécuter les migrations Supabase.');
+      } else {
+        console.error('Erreur lors de l\'ajout de la photo:', error);
+      }
       throw error;
     }
   };
