@@ -38,7 +38,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             className="flex items-center cursor-pointer group"
             onClick={() => onNavigate('accueil')}
           >
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mr-4 shadow-lg group-hover:shadow-xl transition-all transform group-hover:scale-105" style={{background: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mr-4 shadow-lg group-hover:shadow-xl transition-all transform group-hover:scale-105 bg-gradient-to-r from-blue-500 to-orange-500">
               <img 
                 src="https://i.imgur.com/gfhDZfm.png" 
                 alt="Fun Event Logo" 
