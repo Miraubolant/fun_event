@@ -107,11 +107,6 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
           </div>
         </form>
 
-        <div className="mt-6 text-center text-sm text-gray-500">
-          <p>Compte administrateur :</p>
-          <p>Email: admin@funevent.fr</p>
-          <p>Créez votre mot de passe lors de la première connexion</p>
-        </div>
       </div>
     </div>
   );
