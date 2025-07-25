@@ -3,11 +3,29 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('⚠️ Variables d\'environnement Supabase manquantes. Veuillez configurer VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY dans le fichier .env');
+// Fonction pour valider une URL
+const isValidUrl = (string: string) => {
+  try {
+    new URL(string);
+    return true;
+  } catch (_) {
+    return false;
+  }
+};
+
+if (!supabaseUrl || !supabaseAnonKey || !isValidUrl(supabaseUrl)) {
+  if (!supabaseUrl) {
+    console.warn('⚠️ VITE_SUPABASE_URL manquante dans le fichier .env');
+  } else if (!isValidUrl(supabaseUrl)) {
+    console.warn('⚠️ VITE_SUPABASE_URL invalide:', supabaseUrl);
+  }
+  if (!supabaseAnonKey) {
+    console.warn('⚠️ VITE_SUPABASE_ANON_KEY manquante dans le fichier .env');
+  }
+  console.warn('Veuillez cliquer sur "Connect to Supabase" en haut à droite pour configurer Supabase');
 }
 
-export const supabase = supabaseUrl && supabaseAnonKey 
+export const supabase = supabaseUrl && supabaseAnonKey && isValidUrl(supabaseUrl)
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
