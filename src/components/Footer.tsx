@@ -44,7 +44,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               {/* Réseaux sociaux */}
               <div className="flex items-center space-x-4">
                 <a 
-                  href="https://instagram.com/FUN_EVENT" 
+                  href="https://www.instagram.com/fun_eventt/?igsh=dWtwMXUzYjJ6NTJi" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center bg-white/20 backdrop-blur-sm hover:bg-pink-500 transition-all p-3 rounded-xl border border-white/30 hover:scale-110 transform"
