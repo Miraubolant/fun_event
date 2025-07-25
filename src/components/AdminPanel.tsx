@@ -314,7 +314,7 @@ const AdminPanel: React.FC = () => {
     <section className="py-8 lg:py-16 bg-gradient-to-br from-gray-50 via-blue-50/30 to-orange-50/30 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div className="flex flex-col lg:flex-row lg:justify-center lg:items-center gap-6 mb-8 lg:mb-12">
+        <div className="flex flex-col lg:flex-row lg:justify-start lg:items-center gap-6 mb-8 lg:mb-12">
           <div>
             <div className="animate-fade-in">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-4 leading-tight">
@@ -327,7 +327,7 @@ const AdminPanel: React.FC = () => {
                 </span>
               </h1>
               <p className="text-base sm:text-lg lg:text-xl text-gray-700 font-medium">
-                            🛠️ Gérez vos <span className="font-bold" style={{color: '#0F97F6'}}>structures</span> et 
+                🛠️ Gérez vos <span className="font-bold" style={{color: '#0F97F6'}}>structures</span> et 
                 <span className="font-bold text-orange-500"> tarifs</span>
               </p>
             </div>
