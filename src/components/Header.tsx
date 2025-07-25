@@ -33,16 +33,18 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-3 sm:py-4 lg:py-6">
           
-          {/* Logo et nom - Logo plus gros sans contour */}
+          {/* Logo et nom - Logo plus gros et responsive */}
           <div 
             className="flex items-center cursor-pointer group"
             onClick={() => onNavigate('accueil')}
           >
-            <img 
-              src="https://i.imgur.com/gfhDZfm.png" 
-              alt="Fun Event Logo" 
-              className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 xl:w-32 xl:h-32 rounded-xl object-cover mr-3 sm:mr-4 lg:mr-6 shadow-lg group-hover:shadow-xl transition-all transform group-hover:scale-105"
-            />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full flex items-center justify-center mr-3 sm:mr-4 lg:mr-6 shadow-lg group-hover:shadow-xl transition-all transform group-hover:scale-105" style={{background: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
+              <img 
+                src="https://i.imgur.com/gfhDZfm.png" 
+                alt="Fun Event Logo" 
+                className="w-14 h-14 sm:w-18 sm:h-18 lg:w-22 lg:h-22 rounded-full object-cover"
+              />
+            </div>
             <div className="min-w-0 flex-1">
               <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-extrabold text-gray-900 leading-tight">
                 Fun Event
