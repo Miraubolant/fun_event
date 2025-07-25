@@ -53,7 +53,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                placeholder="votre@email.com"
+                placeholder="admin@funevent.fr"
                 required
               />
             </div>
@@ -107,6 +107,11 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
           </div>
         </form>
 
+        <div className="mt-6 text-center text-sm text-gray-500">
+          <p>Identifiants de test :</p>
+          <p>Email: admin@funevent.fr</p>
+          <p>Mot de passe: admin123</p>
+        </div>
       </div>
     </div>
   );
