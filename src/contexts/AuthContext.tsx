@@ -68,17 +68,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         .single();
 
       if (error) {
-        console.log('Supabase non configuré ou utilisateur non admin');
+        console.log('Supabase non configuré ou utilisateur non admin:', error);
         setIsAdmin(false);
         return;
       }
 
       setIsAdmin(data?.role === 'admin');
     } catch (error) {
-      console.log('Supabase non configuré');
+      console.log('Supabase non configuré:', error);
       setIsAdmin(false);
     }
   };
+  
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({

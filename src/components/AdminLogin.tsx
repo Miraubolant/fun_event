@@ -19,12 +19,17 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
     setLoading(true);
     setError('');
 
-    const success = await login(email, password);
-    
-    if (success) {
-      onClose();
-    } else {
-      setError('Email ou mot de passe incorrect');
+    try {
+      const success = await login(email, password);
+      
+      if (success) {
+        onClose();
+      } else {
+        setError('Email ou mot de passe incorrect');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Erreur de connexion. Vérifiez votre configuration Supabase.');
     }
     
     setLoading(false);
