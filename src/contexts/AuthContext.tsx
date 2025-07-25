@@ -35,6 +35,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const ADMIN_EMAIL = 'admin@funevent.fr';
 
   useEffect(() => {
+    // Vérifier si Supabase est configuré
+    if (!supabase) {
+      console.warn('Supabase non configuré pour l\'authentification');
+      setLoading(false);
+      return;
+    }
+    
     // Récupérer la session actuelle
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
@@ -79,6 +86,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
+    if (!supabase) {
+      console.error('Supabase non configuré');
+      return false;
+    }
+    
     try {
       // Vérifier que c'est l'email admin
       if (email !== ADMIN_EMAIL) {
@@ -110,6 +122,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = async (): Promise<void> => {
+    if (!supabase) {
+      console.error('Supabase non configuré');
+      return;
+    }
+    
     try {
       await supabase.auth.signOut();
       setUser(null);

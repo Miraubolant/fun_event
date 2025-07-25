@@ -43,6 +43,16 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
 
   // Charger les données depuis Supabase
   const loadData = async () => {
+    // Vérifier si Supabase est configuré
+    if (!supabase) {
+      console.warn('Supabase non configuré. Utilisation de données par défaut.');
+      setCategories([]);
+      setStructures([]);
+      setCarouselPhotos([]);
+      setLoading(false);
+      return;
+    }
+    
     try {
       setLoading(true);
       
@@ -180,6 +190,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
 
   // Fonctions pour les structures
   const addStructure = async (newStructure: Omit<Structure, 'id'>) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
     try {
       // Vérifier que la catégorie existe
       const { data: categoryExists } = await supabase
@@ -238,6 +252,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   };
 
   const updateStructure = async (id: string, updatedStructure: Partial<Structure>) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
     try {
       const updateData: any = {};
       
@@ -270,6 +288,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   };
 
   const deleteStructure = async (id: string) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
     try {
       const { error } = await supabase
         .from('structures')
@@ -287,6 +309,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
 
   // Fonctions pour les catégories
   const addCategory = async (newCategory: Omit<Category, 'id'>) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
     try {
       // Vérifier que la table existe
       const { error: testError } = await supabase
@@ -320,6 +346,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   };
 
   const updateCategory = async (id: string, updatedCategory: Partial<Category>) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
     try {
       const updateData: any = {};
       
@@ -341,6 +371,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   };
 
   const deleteCategory = async (id: string) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
     try {
       const { error } = await supabase
         .from('categories')
@@ -358,6 +392,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
 
   // Fonctions pour les photos du carrousel
   const addCarouselPhoto = async (newPhoto: Omit<CarouselPhoto, 'id'>) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
     try {
       // Vérifier que la table existe
       const { error: testError } = await supabase
@@ -394,6 +432,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   };
 
   const updateCarouselPhoto = async (id: string, updatedPhoto: Partial<CarouselPhoto>) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
     try {
       const updateData: any = {};
       
@@ -418,6 +460,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   };
 
   const deleteCarouselPhoto = async (id: string) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
     try {
       const { error } = await supabase
         .from('carousel_photos')
@@ -434,6 +480,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   };
 
   const reorderCarouselPhotos = async (photos: CarouselPhoto[]) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
     try {
       // Mettre à jour l'ordre de chaque photo
       const updates = photos.map((photo, index) => 
@@ -452,6 +502,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   };
 
   const reorderStructures = async (structures: Structure[]) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
     try {
       // Mettre à jour l'ordre de chaque structure
       const updates = structures.map((structure, index) => 
