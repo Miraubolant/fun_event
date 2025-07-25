@@ -18,12 +18,16 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    
+    console.log('🔐 Début de la tentative de connexion admin');
 
     const success = await login(email, password);
     
     if (success) {
+      console.log('✅ Connexion admin réussie');
       onClose();
     } else {
+      console.log('❌ Échec de la connexion admin');
       setError('Email ou mot de passe incorrect');
     }
     
