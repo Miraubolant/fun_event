@@ -44,10 +44,7 @@ const AdminPanel: React.FC = () => {
   };
 
   const handleAdd = () => {
-    console.log('🔄 Tentative d\'ajout de structure avec les données:', formData);
-    
     if (formData.name && formData.category && formData.price) {
-      console.log('✅ Validation réussie, ajout en cours...');
       addStructure({
         name: formData.name,
         category: formData.category,
@@ -64,51 +61,30 @@ const AdminPanel: React.FC = () => {
       });
       setShowAddForm(false);
       setFormData({});
-    } else {
-      console.log('❌ Validation échouée:', {
-        name: formData.name,
-        category: formData.category,
-        price: formData.price
-      });
-      alert('Veuillez remplir au minimum le nom, la catégorie et le prix');
     }
   };
 
   const handleAddCategory = () => {
-    console.log('🔄 Tentative d\'ajout de catégorie avec les données:', categoryData);
-    
     if (categoryData.label && categoryData.icon) {
-      console.log('✅ Validation réussie, ajout en cours...');
       addCategory({
         label: categoryData.label,
         icon: categoryData.icon
       });
       setShowCategoryForm(false);
       setCategoryData({});
-    } else {
-      console.log('❌ Validation échouée:', categoryData);
-      alert('Veuillez remplir le nom et l\'icône de la catégorie');
     }
   };
 
   const handleAddPhoto = () => {
-    console.log('🔄 Tentative d\'ajout de photo avec les données:', photoData);
-    
     if (photoData.url && photoData.alt) {
       const maxOrder = Math.max(...carouselPhotos.map(p => p.order), 0);
-      console.log('✅ Validation réussie, ajout en cours...');
       addCarouselPhoto({
         url: photoData.url,
         alt: photoData.alt,
-        title: photoData.title,
-        location: photoData.location,
         order: photoData.order || maxOrder + 1
       });
       setShowPhotoForm(false);
       setPhotoData({});
-    } else {
-      console.log('❌ Validation échouée:', photoData);
-      alert('Veuillez remplir au minimum l\'URL et la description de l\'image');
     }
   };
 

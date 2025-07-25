@@ -127,8 +127,6 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
 
   const addStructure = async (newStructure: Omit<Structure, 'id'>) => {
     try {
-      console.log('🔄 Tentative d\'ajout de structure:', newStructure);
-      
       const { data, error } = await supabase
         .from('structures')
         .insert({
@@ -149,17 +147,14 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
         .single();
 
       if (error) {
-        console.error('❌ Erreur lors de l\'ajout de la structure:', error);
-        alert(`Erreur lors de l'ajout: ${error.message}`);
+        console.error('Erreur lors de l\'ajout de la structure:', error);
         return;
       }
 
-      console.log('✅ Structure ajoutée avec succès:', data);
       // Recharger les données
       await loadData();
     } catch (error) {
-      console.error('❌ Erreur critique lors de l\'ajout de la structure:', error);
-      alert(`Erreur critique: ${error}`);
+      console.error('Erreur lors de l\'ajout de la structure:', error);
     }
   };
 
@@ -216,29 +211,22 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
 
   const addCategory = async (newCategory: Omit<Category, 'id'>) => {
     try {
-      console.log('🔄 Tentative d\'ajout de catégorie:', newCategory);
-      
       const { error } = await supabase
         .from('categories')
         .insert({
           label: newCategory.label,
           icon: newCategory.icon
-        })
-        .select()
-        .single();
+        });
 
       if (error) {
-        console.error('❌ Erreur lors de l\'ajout de la catégorie:', error);
-        alert(`Erreur lors de l'ajout: ${error.message}`);
+        console.error('Erreur lors de l\'ajout de la catégorie:', error);
         return;
       }
 
-      console.log('✅ Catégorie ajoutée avec succès');
       // Recharger les données
       await loadData();
     } catch (error) {
-      console.error('❌ Erreur critique lors de l\'ajout de la catégorie:', error);
-      alert(`Erreur critique: ${error}`);
+      console.error('Erreur lors de l\'ajout de la catégorie:', error);
     }
   };
 
@@ -285,8 +273,6 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
 
   const addCarouselPhoto = async (newPhoto: Omit<CarouselPhoto, 'id'>) => {
     try {
-      console.log('🔄 Tentative d\'ajout de photo:', newPhoto);
-      
       const { error } = await supabase
         .from('carousel_photos')
         .insert({
@@ -295,22 +281,17 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
           title: newPhoto.title,
           location: newPhoto.location,
           order_position: newPhoto.order
-        })
-        .select()
-        .single();
+        });
 
       if (error) {
-        console.error('❌ Erreur lors de l\'ajout de la photo:', error);
-        alert(`Erreur lors de l'ajout: ${error.message}`);
+        console.error('Erreur lors de l\'ajout de la photo:', error);
         return;
       }
 
-      console.log('✅ Photo ajoutée avec succès');
       // Recharger les données
       await loadData();
     } catch (error) {
-      console.error('❌ Erreur critique lors de l\'ajout de la photo:', error);
-      alert(`Erreur critique: ${error}`);
+      console.error('Erreur lors de l\'ajout de la photo:', error);
     }
   };
 
