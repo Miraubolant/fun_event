@@ -11,7 +11,7 @@ const Quote: React.FC = () => {
   const [formData, setFormData] = useState({
     eventType: '',
     date: '',
-    duration: '1',
+    duration: '1day',
     customDays: '',
     location: '',
     guests: '',
@@ -30,11 +30,19 @@ const Quote: React.FC = () => {
     if (cartItems.length > 0) {
       const cartStructures = cartItems.map(item => ({
         id: item.structure.id,
-        duration: item.duration
+        duration: item.duration,
+        customDays: item.customDays
       }));
       setFormData(prev => ({
         ...prev,
-        structures: cartStructures
+        structures: cartStructures,
+        // Synchroniser la durée globale avec le panier si tous les items ont la même durée
+        duration: cartItems.length > 0 && cartItems.every(item => item.duration === cartItems[0].duration) 
+          ? cartItems[0].duration 
+          : prev.duration,
+        customDays: cartItems.length > 0 && cartItems[0].duration === 'custom' 
+          ? cartItems[0].customDays?.toString() || '3'
+          : prev.customDays
       }));
     }
   }, [cartItems]);
@@ -52,8 +60,8 @@ const Quote: React.FC = () => {
   ];
 
   const durations = [
-    { id: '1', label: '1 journée', multiplier: 1 },
-    { id: '2', label: 'Weekend (2 jours)', multiplier: 1.8 },
+    { id: '1day', label: '1 journée', multiplier: 1 },
+    { id: '2days', label: 'Weekend (2 jours)', multiplier: 1.8 },
     { id: 'custom', label: 'Plusieurs jours', multiplier: 1 }
   ];
 
@@ -256,7 +264,7 @@ const Quote: React.FC = () => {
                   setIsSubmitted(false);
                   setCurrentStep(1);
                   setFormData({
-                    eventType: '', date: '', duration: '', location: '', guests: '',
+                    eventType: '', date: '', duration: '1day', customDays: '', location: '', guests: '',
                     structures: [], name: '', email: '', phone: '', message: ''
                   });
                 }}
@@ -447,7 +455,19 @@ const Quote: React.FC = () => {
                           name="duration"
                           value={duration.id}
                           checked={formData.duration === duration.id}
-                          onChange={handleInputChange}
+                          onChange={(e) => {
+                            handleInputChange(e);
+                            // Mettre à jour toutes les structures du panier avec la nouvelle durée
+                            if (cartItems.length > 0) {
+                              cartItems.forEach(item => {
+                                if (e.target.value === 'custom') {
+                                  updateCartDuration(item.structure.id, 'custom', 3);
+                                } else {
+                                  updateCartDuration(item.structure.id, e.target.value as '1day' | '2days');
+                                }
+                              });
+                            }
+                          }}
                           className="sr-only"
                         />
                         <span className="font-medium text-center text-sm sm:text-base">{duration.label}</span>
@@ -464,7 +484,16 @@ const Quote: React.FC = () => {
                         type="number"
                         name="customDays"
                         value={formData.customDays}
-                        onChange={handleInputChange}
+                        onChange={(e) => {
+                          handleInputChange(e);
+                          // Mettre à jour toutes les structures du panier avec le nouveau nombre de jours
+                          if (cartItems.length > 0) {
+                            const days = parseInt(e.target.value) || 3;
+                            cartItems.forEach(item => {
+                              updateCartDuration(item.structure.id, 'custom', days);
+                            });
+                          }
+                        }}
                         min="3"
                         max="30"
                         required={formData.duration === 'custom'}
@@ -539,7 +568,19 @@ const Quote: React.FC = () => {
                                 {structure.price2Days && ` • 2 jours: ${structure.price2Days}€`}
                               </p>
                               {isFromCart && (
-                                <p className="text-xs text-green-600 font-medium">✓ Ajouté depuis le panier</p>
+                                // Mettre à jour le formulaire et le panier
+                                setFormData(prev => ({
+                                  ...prev,
+                                  structures: prev.structures.map(item =>
+                                    item.id === structure.id ? { ...item, customDays: days } : item
+                                  )
+                                }));
+                                
+                                // Mettre à jour le panier si la structure y est
+                                const isInCart = cartItems.some(item => item.structure.id === structure.id);
+                                if (isInCart) {
+                                  updateCartDuration(structure.id, 'custom', days);
+                                }
                               )}
                             </div>
                           </div>
