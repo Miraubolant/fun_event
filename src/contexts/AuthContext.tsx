@@ -81,6 +81,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
   
   const login = async (email: string, password: string): Promise<boolean> => {
+    console.log('AuthContext: Tentative de connexion pour', email);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -88,25 +89,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       if (error) {
-        console.error('Login error:', error);
+        console.error('Erreur Supabase auth:', error.message);
         return false;
       }
 
       if (data.user) {
+        console.log('Utilisateur connecté:', data.user.id);
         setUser(data.user);
         await checkAdminStatus(data.user.id);
         return true;
       }
 
+      console.log('Aucun utilisateur retourné');
       return false;
     } catch (error) {
-      console.error('Login error:', error);
+        console.log('Erreur lors de la vérification admin:', error.message);
       return false;
     }
   };
 
+      console.log('Données admin récupérées:', data);
   const logout = () => {
-    supabase.auth.signOut();
+      console.log('Statut admin défini:', data?.role === 'admin');
+    console.log('Vérification du statut admin pour:', userId);
+      console.log('Erreur catch admin check:', error);
     setUser(null);
     setIsAdmin(false);
   };

@@ -19,17 +19,22 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
     setLoading(true);
     setError('');
 
+    console.log('Tentative de connexion avec:', email);
     try {
       const success = await login(email, password);
       
+      console.log('Résultat de la connexion:', success);
+      
       if (success) {
+        console.log('Connexion réussie, fermeture du modal');
         onClose();
       } else {
+        console.log('Échec de la connexion');
         setError('Email ou mot de passe incorrect');
       }
     } catch (error) {
       console.error('Login error:', error);
-      setError('Erreur de connexion. Vérifiez votre configuration Supabase.');
+      setError(`Erreur de connexion: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
     }
     
     setLoading(false);
