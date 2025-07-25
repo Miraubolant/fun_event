@@ -97,8 +97,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             
             <button 
               onClick={() => onNavigate('devis')}
-              className="text-white px-6 py-2 rounded-lg transition-all font-semibold shadow-md hover:shadow-lg"
-              style={{background: 'linear-gradient(to right, #0F97F6, #FF5722)'}}
+              className="text-white px-6 py-2 rounded-lg transition-all font-semibold shadow-md hover:shadow-lg bg-gradient-to-r from-blue-500 to-orange-500 hover:from-blue-600 hover:to-orange-600"
             >
               Devis Gratuit
             </button>
@@ -169,8 +168,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                     onNavigate('devis');
                     setIsMenuOpen(false);
                   }}
-                  className="w-full text-white px-6 py-3 rounded-lg transition-all font-semibold shadow-md"
-                  style={{background: 'linear-gradient(to right, #0F97F6, #FF5722)'}}
+                  className="w-full text-white px-6 py-3 rounded-lg transition-all font-semibold shadow-md bg-gradient-to-r from-blue-500 to-orange-500 hover:from-blue-600 hover:to-orange-600"
                 >
                   Devis Gratuit
                 </button>
