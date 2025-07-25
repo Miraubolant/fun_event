@@ -110,6 +110,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       console.log('Données admin récupérées:', data);
   const logout = () => {
+  }
   const logout = async () => {
     try {
       await supabase.auth.signOut();
