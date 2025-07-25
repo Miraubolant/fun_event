@@ -45,7 +45,7 @@ const AdminPanel: React.FC = () => {
 
   const handleAdd = () => {
     if (formData.name && formData.category && formData.price) {
-      addStructure({
+      const newStructure = {
         name: formData.name,
         category: formData.category,
         size: formData.size || '',
@@ -58,7 +58,13 @@ const AdminPanel: React.FC = () => {
         image: formData.image || 'https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=400',
         description: formData.description || '',
         available: formData.available ?? true
+      };
+      
+      addStructure(newStructure).catch(error => {
+        console.error('Erreur lors de l\'ajout:', error);
+        alert('Erreur lors de l\'ajout de la structure. Vérifiez votre connexion.');
       });
+      
       setShowAddForm(false);
       setFormData({});
     }
@@ -66,10 +72,16 @@ const AdminPanel: React.FC = () => {
 
   const handleAddCategory = () => {
     if (categoryData.label && categoryData.icon) {
-      addCategory({
+      const newCategory = {
         label: categoryData.label,
         icon: categoryData.icon
+      };
+      
+      addCategory(newCategory).catch(error => {
+        console.error('Erreur lors de l\'ajout:', error);
+        alert('Erreur lors de l\'ajout de la catégorie. Vérifiez votre connexion.');
       });
+      
       setShowCategoryForm(false);
       setCategoryData({});
     }
@@ -78,11 +90,19 @@ const AdminPanel: React.FC = () => {
   const handleAddPhoto = () => {
     if (photoData.url && photoData.alt) {
       const maxOrder = Math.max(...carouselPhotos.map(p => p.order), 0);
-      addCarouselPhoto({
+      const newPhoto = {
         url: photoData.url,
         alt: photoData.alt,
+        title: photoData.title,
+        location: photoData.location,
         order: photoData.order || maxOrder + 1
+      };
+      
+      addCarouselPhoto(newPhoto).catch(error => {
+        console.error('Erreur lors de l\'ajout:', error);
+        alert('Erreur lors de l\'ajout de la photo. Vérifiez votre connexion.');
       });
+      
       setShowPhotoForm(false);
       setPhotoData({});
     }

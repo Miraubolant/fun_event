@@ -24,7 +24,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
     if (success) {
       onClose();
     } else {
-      setError('Email ou mot de passe incorrect');
+      setError('Accès refusé. Seul l\'administrateur peut se connecter.');
     }
     
     setLoading(false);
@@ -108,9 +108,9 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
         </form>
 
         <div className="mt-6 text-center text-sm text-gray-500">
-          <p>Identifiants de test :</p>
+          <p>Compte administrateur :</p>
           <p>Email: admin@funevent.fr</p>
-          <p>Mot de passe: admin123</p>
+          <p>Créez votre mot de passe lors de la première connexion</p>
         </div>
       </div>
     </div>
