@@ -26,6 +26,7 @@ const AdminPanel: React.FC = () => {
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [showPhotoForm, setShowPhotoForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
+  const [activeSection, setActiveSection] = useState<'structures' | 'categories' | 'photos' | null>(null);
   const [formData, setFormData] = useState<Partial<Structure>>({});
   const [categoryData, setCategoryData] = useState<Partial<Category>>({});
   const [photoData, setPhotoData] = useState<Partial<CarouselPhoto>>({});
@@ -72,7 +73,7 @@ const AdminPanel: React.FC = () => {
         alert(`Erreur lors de l'ajout de la structure: ${error.message || 'Vérifiez votre connexion.'}`);
       });
       
-      setShowAddForm(false);
+      // Ne pas fermer le formulaire, juste vider les données
       setFormData({});
     }
   };
@@ -89,7 +90,7 @@ const AdminPanel: React.FC = () => {
         alert(`Erreur lors de l'ajout de la catégorie: ${error.message || 'Vérifiez votre connexion.'}`);
       });
       
-      setShowCategoryForm(false);
+      // Ne pas fermer le formulaire, juste vider les données
       setCategoryData({});
     }
   };
@@ -110,16 +111,13 @@ const AdminPanel: React.FC = () => {
         alert(`Erreur lors de l'ajout de la photo: ${error.message || 'Vérifiez votre connexion.'}`);
       });
       
-      setShowPhotoForm(false);
+      // Ne pas fermer le formulaire, juste vider les données
       setPhotoData({});
     }
   };
 
   const handleCancel = () => {
-    setShowAddForm(false);
-    setShowEditForm(false);
-    setShowCategoryForm(false);
-    setShowPhotoForm(false);
+    setActiveSection(null);
     setFormData({});
     setCategoryData({});
     setPhotoData({});
@@ -143,6 +141,14 @@ const AdminPanel: React.FC = () => {
     }
   };
 
+  const openSection = (section: 'structures' | 'categories' | 'photos') => {
+    setActiveSection(section);
+    // Fermer les autres sections
+    setShowAddForm(section === 'structures');
+    setShowCategoryForm(section === 'categories');
+    setShowPhotoForm(section === 'photos');
+    setShowEditForm(false);
+  };
   const movePhoto = (id: string, direction: 'up' | 'down') => {
     const sortedPhotos = [...carouselPhotos].sort((a, b) => a.order - b.order);
     const currentIndex = sortedPhotos.findIndex(p => p.id === id);
@@ -185,25 +191,25 @@ const AdminPanel: React.FC = () => {
           </div>
           <div className="flex gap-4">
             <button
-              onClick={() => setShowAddForm(true)}
+              onClick={() => openSection('structures')}
              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center"
             >
               <Plus className="w-5 h-5 mr-2" />
-              Ajouter Structure
+              {activeSection === 'structures' ? 'Gérer Structures' : 'Ajouter Structure'}
             </button>
             <button
-              onClick={() => setShowCategoryForm(true)}
+              onClick={() => openSection('categories')}
              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center"
             >
               <Tag className="w-5 h-5 mr-2" />
-              Gérer Catégories
+              {activeSection === 'categories' ? 'Gérer Catégories' : 'Ajouter Catégorie'}
             </button>
             <button
-              onClick={() => setShowPhotoForm(true)}
+              onClick={() => openSection('photos')}
              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center"
             >
               <Camera className="w-5 h-5 mr-2" />
-              Gérer Photos
+              {activeSection === 'photos' ? 'Gérer Photos' : 'Ajouter Photo'}
             </button>
             <button
               onClick={logout}
@@ -259,7 +265,7 @@ const AdminPanel: React.FC = () => {
         </div>
 
         {/* Gestion des photos du carrousel */}
-        {showPhotoForm && (
+        {activeSection === 'photos' && (
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Gérer les Photos du Carrousel</h2>
             
@@ -334,14 +340,14 @@ const AdminPanel: React.FC = () => {
                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center"
               >
                 <Save className="w-5 h-5 mr-2" />
-                Ajouter Photo
+                Ajouter une autre photo
               </button>
               <button
                 onClick={handleCancel}
                 className="bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center"
               >
                 <X className="w-5 h-5 mr-2" />
-                Annuler
+                Fermer
               </button>
             </div>
             
@@ -395,7 +401,7 @@ const AdminPanel: React.FC = () => {
         )}
 
         {/* Gestion des catégories */}
-        {showCategoryForm && (
+        {activeSection === 'categories' && (
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Gérer les Catégories</h2>
             
@@ -422,14 +428,14 @@ const AdminPanel: React.FC = () => {
                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center"
               >
                 <Save className="w-5 h-5 mr-2" />
-                Ajouter Catégorie
+                Ajouter une autre catégorie
               </button>
               <button
                 onClick={handleCancel}
                 className="bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center"
               >
                 <X className="w-5 h-5 mr-2" />
-                Annuler
+                Fermer
               </button>
             </div>
             
@@ -453,7 +459,7 @@ const AdminPanel: React.FC = () => {
         )}
 
         {/* Formulaire d'ajout */}
-        {showAddForm && (
+        {activeSection === 'structures' && !showEditForm && (
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Ajouter une nouvelle structure</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -586,14 +592,14 @@ const AdminPanel: React.FC = () => {
                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center"
               >
                 <Save className="w-5 h-5 mr-2" />
-                Ajouter
+                Ajouter une autre structure
               </button>
               <button
                 onClick={handleCancel}
                 className="bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center"
               >
                 <X className="w-5 h-5 mr-2" />
-                Annuler
+                Fermer
               </button>
             </div>
           </div>
