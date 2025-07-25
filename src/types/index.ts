@@ -36,5 +36,3 @@ export interface CarouselPhoto {
 }
 
 export type Page = 'accueil' | 'catalogue' | 'faq' | 'devis' | 'contact' | 'admin';
-
-export type Page = 'accueil' | 'catalogue' | 'evenements' | 'faq' | 'devis' | 'contact' | 'admin' | 'mentions-legales' | 'politique-confidentialite';

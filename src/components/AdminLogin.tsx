@@ -108,9 +108,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onClose }) => {
         </form>
 
         <div className="mt-6 text-center text-sm text-gray-500">
-          <p>Identifiants de test :</p>
-          <p>Email: admin@funevent.fr</p>
-          <p>Mot de passe: admin123</p>
+          <p>Connectez-vous avec votre compte administrateur Supabase</p>
         </div>
       </div>
     </div>
