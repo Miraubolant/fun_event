@@ -20,7 +20,7 @@ import { Page } from './types';
 const AppContent: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>('accueil');
   const [showAdminLogin, setShowAdminLogin] = useState(false);
-  const { isAdmin, loading } = useAuth();
+  const { isAdmin } = useAuth();
 
   const handleNavigate = (page: Page) => {
     setCurrentPage(page);
