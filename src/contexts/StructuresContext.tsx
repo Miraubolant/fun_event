@@ -249,6 +249,8 @@ const initialStructures: Structure[] = [
     capacity: 'Jusqu\'à 30 enfants/heure',
     age: '3-12 ans',
     price: 0, // Sur devis
+  }
+]
 
 export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children }) => {
   const [structures, setStructures] = useState<Structure[]>([]);
