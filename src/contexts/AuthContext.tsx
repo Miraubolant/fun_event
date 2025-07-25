@@ -68,20 +68,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         .single();
 
       if (error) {
-        console.log('Supabase non configuré ou utilisateur non admin:', error);
+        console.error('Error checking admin status:', error);
         setIsAdmin(false);
         return;
       }
 
       setIsAdmin(data?.role === 'admin');
     } catch (error) {
-      console.log('Supabase non configuré:', error);
+      console.error('Error checking admin status:', error);
       setIsAdmin(false);
     }
   };
-  
   const login = async (email: string, password: string): Promise<boolean> => {
-    console.log('AuthContext: Tentative de connexion pour', email);
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -89,35 +87,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       if (error) {
-        console.error('Erreur Supabase auth:', error.message);
+        console.error('Login error:', error);
         return false;
       }
 
       if (data.user) {
-        console.log('Utilisateur connecté:', data.user.id);
         setUser(data.user);
         await checkAdminStatus(data.user.id);
         return true;
       }
 
-      console.log('Aucun utilisateur retourné');
       return false;
     } catch (error) {
-        console.log('Erreur lors de la vérification admin:', error.message);
+      console.error('Login error:', error);
       return false;
     }
   };
 
-      console.log('Données admin récupérées:', data);
-  const logout = async () => {
-    try {
-      await supabase.auth.signOut();
-      setUser(null);
-      setIsAdmin(false);
-    } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error);
-    }
+  const logout = () => {
+    supabase.auth.signOut();
+    setUser(null);
+    setIsAdmin(false);
   };
+
 
   return (
     <AuthContext.Provider value={{ user, login, logout, isAdmin, loading }}>
