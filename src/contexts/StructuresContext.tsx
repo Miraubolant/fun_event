@@ -36,7 +36,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   const [structures, setStructures] = useState<Structure[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [carouselPhotos, setCarouselPhotos] = useState<CarouselPhoto[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Charger les données depuis Supabase au démarrage
   React.useEffect(() => {
@@ -45,7 +45,6 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
 
   const loadData = async () => {
     try {
-      setLoading(true);
       
       // Charger les catégories
       const { data: categoriesData, error: categoriesError } = await supabase
@@ -120,8 +119,6 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
 
     } catch (error) {
       console.error('Erreur lors du chargement des données:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -343,17 +340,6 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
     // Cette fonction est maintenant gérée par updateCarouselPhoto
     // pour chaque photo individuellement
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-600">Chargement des données...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <StructuresContext.Provider value={{ 
