@@ -19,15 +19,25 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onNavigateToQuot
     let message = "🛒 *Commande Fun Event*\n\n";
     
     items.forEach((item, index) => {
-      const price = item.duration === '2days' && item.structure.price2Days 
-        ? item.structure.price2Days 
-        : item.structure.price;
+      let price = item.structure.price;
+      let multiplier = 1;
+      let durationLabel = '1 jour';
+      
+      if (item.duration === '2days' && item.structure.price2Days) {
+        price = item.structure.price2Days;
+        durationLabel = '2 jours (weekend)';
+      } else if (item.duration === 'custom' && item.customDays) {
+        multiplier = item.customDays * 0.9;
+        durationLabel = `${item.customDays} jour${item.customDays > 1 ? 's' : ''}`;
+      }
+      
+      const finalPrice = Math.round(price * multiplier);
       
       message += `${index + 1}. *${item.structure.name}*\n`;
       message += `   • Quantité: ${item.quantity}\n`;
-      message += `   • Durée: ${item.duration === '2days' ? '2 jours' : '1 jour'}\n`;
-      message += `   • Prix unitaire: ${price}€\n`;
-      message += `   • Sous-total: ${price * item.quantity}€\n\n`;
+      message += `   • Durée: ${durationLabel}\n`;
+      message += `   • Prix unitaire: ${finalPrice}€\n`;
+      message += `   • Sous-total: ${finalPrice * item.quantity}€\n\n`;
     });
     
     message += `💰 *Total: ${getTotalPrice()}€*\n\n`;
@@ -69,9 +79,19 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onNavigateToQuot
           ) : (
             <div className="space-y-4">
               {items.map((item) => {
-                const price = item.duration === '2days' && item.structure.price2Days 
-                  ? item.structure.price2Days 
-                  : item.structure.price;
+                let price = item.structure.price;
+                let multiplier = 1;
+                let durationLabel = '1 jour';
+                
+                if (item.duration === '2days' && item.structure.price2Days) {
+                  price = item.structure.price2Days;
+                  durationLabel = '2 jours (weekend)';
+                } else if (item.duration === 'custom' && item.customDays) {
+                  multiplier = item.customDays * 0.9;
+                  durationLabel = `${item.customDays} jour${item.customDays > 1 ? 's' : ''}`;
+                }
+                
+                const finalPrice = Math.round(price * multiplier);
                 
                 return (
                   <div key={`${item.structure.id}-${item.duration}`} className="bg-gray-50 rounded-lg p-4">
@@ -87,12 +107,31 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onNavigateToQuot
                           <label className="block text-xs text-gray-500 mb-1">Durée:</label>
                           <select
                             value={item.duration}
-                            onChange={(e) => updateDuration(item.structure.id, e.target.value as '1day' | '2days')}
+                            onChange={(e) => {
+                              const newDuration = e.target.value as '1day' | '2days' | 'custom';
+                              if (newDuration === 'custom') {
+                                updateDuration(item.structure.id, newDuration, 3);
+                              } else {
+                                updateDuration(item.structure.id, newDuration);
+                              }
+                            }}
                             className="text-xs sm:text-sm border border-gray-300 rounded px-2 py-1 focus:border-blue-500 focus:outline-none w-full"
                           >
                             <option value="1day">1 jour</option>
-                            <option value="2days">2 jours</option>
+                            <option value="2days">Weekend (2 jours)</option>
+                            <option value="custom">Plusieurs jours</option>
                           </select>
+                          {item.duration === 'custom' && (
+                            <input
+                              type="number"
+                              min="3"
+                              max="30"
+                              value={item.customDays || 3}
+                              onChange={(e) => updateDuration(item.structure.id, 'custom', parseInt(e.target.value))}
+                              className="mt-1 text-xs sm:text-sm border border-gray-300 rounded px-2 py-1 focus:border-blue-500 focus:outline-none w-full"
+                              placeholder="Nombre de jours"
+                            />
+                          )}
                         </div>
                         <div className="flex items-center justify-between flex-wrap gap-2">
                           <div className="flex items-center gap-1 sm:gap-2">
@@ -111,8 +150,9 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onNavigateToQuot
                             </button>
                           </div>
                           <div className="text-right">
-                            <p className="font-bold text-orange-600 text-sm sm:text-base">{price * item.quantity}€</p>
-                            <p className="text-xs text-gray-500">{price}€ x {item.quantity}</p>
+                            <p className="font-bold text-orange-600 text-sm sm:text-base">{finalPrice * item.quantity}€</p>
+                            <p className="text-xs text-gray-500">{finalPrice}€ x {item.quantity}</p>
+                            <p className="text-xs text-blue-600">{durationLabel}</p>
                           </div>
                         </div>
                       </div>

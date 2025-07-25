@@ -4,15 +4,16 @@ import { Structure } from '../types';
 interface CartItem {
   structure: Structure;
   quantity: number;
-  duration: '1day' | '2days';
+  duration: '1day' | '2days' | 'custom';
+  customDays?: number;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (structure: Structure, duration?: '1day' | '2days') => void;
+  addToCart: (structure: Structure, duration?: '1day' | '2days' | 'custom', customDays?: number) => void;
   removeFromCart: (structureId: string) => void;
   updateQuantity: (structureId: string, quantity: number) => void;
-  updateDuration: (structureId: string, duration: '1day' | '2days') => void;
+  updateDuration: (structureId: string, duration: '1day' | '2days' | 'custom', customDays?: number) => void;
   clearCart: () => void;
   getTotalPrice: () => number;
   getItemCount: () => number;
@@ -35,21 +36,25 @@ interface CartProviderProps {
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
 
-  const addToCart = (structure: Structure, duration: '1day' | '2days' = '1day') => {
+  const addToCart = (structure: Structure, duration: '1day' | '2days' | 'custom' = '1day', customDays?: number) => {
     setItems(prev => {
       const existingItem = prev.find(item => 
-        item.structure.id === structure.id && item.duration === duration
+        item.structure.id === structure.id && 
+        item.duration === duration &&
+        (duration !== 'custom' || item.customDays === customDays)
       );
       
       if (existingItem) {
         return prev.map(item =>
-          item.structure.id === structure.id && item.duration === duration
+          item.structure.id === structure.id && 
+          item.duration === duration &&
+          (duration !== 'custom' || item.customDays === customDays)
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       }
       
-      return [...prev, { structure, quantity: 1, duration }];
+      return [...prev, { structure, quantity: 1, duration, customDays }];
     });
   };
 
@@ -72,11 +77,11 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     );
   };
 
-  const updateDuration = (structureId: string, duration: '1day' | '2days') => {
+  const updateDuration = (structureId: string, duration: '1day' | '2days' | 'custom', customDays?: number) => {
     setItems(prev =>
       prev.map(item =>
         item.structure.id === structureId
-          ? { ...item, duration }
+          ? { ...item, duration, customDays }
           : item
       )
     );
@@ -88,9 +93,16 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   const getTotalPrice = () => {
     return items.reduce((total, item) => {
-      const price = item.duration === '2days' && item.structure.price2Days 
-        ? item.structure.price2Days 
-        : item.structure.price;
+      let price = item.structure.price;
+      let multiplier = 1;
+      
+      if (item.duration === '2days' && item.structure.price2Days) {
+        price = item.structure.price2Days;
+      } else if (item.duration === 'custom' && item.customDays) {
+        multiplier = item.customDays * 0.9; // Tarif dégressif
+      }
+      
+      const finalPrice = price * multiplier;
       return total + (price * item.quantity);
     }, 0);
   };

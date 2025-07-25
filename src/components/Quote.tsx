@@ -97,7 +97,11 @@ const Quote: React.FC = () => {
     // Si la structure est dans le panier, mettre à jour le panier aussi
     const isInCart = cartItems.some(item => item.structure.id === structureId);
     if (isInCart) {
-      updateCartDuration(structureId, duration);
+      if (duration === 'custom') {
+        updateCartDuration(structureId, duration, 3);
+      } else {
+        updateCartDuration(structureId, duration);
+      }
     }
   };
 
