@@ -22,17 +22,6 @@ const AppContent: React.FC = () => {
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const { isAdmin, loading } = useAuth();
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg">Chargement de l'application...</p>
-        </div>
-      </div>
-    );
-  }
-
   const handleNavigate = (page: Page) => {
     setCurrentPage(page);
     // Scroll automatiquement en haut de la page
