@@ -333,29 +333,8 @@ const AdminPanel: React.FC = () => {
             </div>
           </div>
           
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 w-full lg:w-auto">
-            <button
-              onClick={openStructureModal}
-              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 sm:px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center justify-center text-sm lg:text-base shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              Ajouter Structure
-            </button>
-            <button
-              onClick={openCategoryModal}
-              className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 sm:px-6 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all flex items-center justify-center text-sm lg:text-base shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              <Tag className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              Ajouter Catégorie
-            </button>
-            <button
-              onClick={openPhotoModal}
-              className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-4 sm:px-6 py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-purple-700 transition-all flex items-center justify-center text-sm lg:text-base shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              <Camera className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              Ajouter Photo
-            </button>
+          {/* Action Button - Déconnexion uniquement */}
+          <div className="flex justify-end w-full lg:w-auto">
             <button
               onClick={logout}
               className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 sm:px-6 py-3 rounded-lg font-semibold hover:from-red-600 hover:to-red-700 transition-all flex items-center justify-center text-sm lg:text-base shadow-lg hover:shadow-xl transform hover:scale-105"
