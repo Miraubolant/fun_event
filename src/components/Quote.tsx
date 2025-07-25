@@ -467,9 +467,6 @@ const Quote: React.FC = () => {
                         placeholder="ex: 5"
                         className="w-full px-3 py-3 sm:px-4 sm:py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-sm sm:text-base"
                       />
-                      <p className="text-xs text-gray-500 mt-1">
-                        💡 Tarif dégressif à partir de 3 jours
-                      </p>
                     </div>
                   )}
                 </div>
