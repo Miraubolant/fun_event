@@ -110,10 +110,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       console.log('Données admin récupérées:', data);
   const logout = () => {
-      console.log('Statut admin défini:', data?.role === 'admin');
-    console.log('Vérification du statut admin pour:', userId);
-      console.log('Erreur catch admin check:', error);
-  }
+  const logout = async () => {
+    try {
+      await supabase.auth.signOut();
+      setUser(null);
+      setIsAdmin(false);
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error);
+    }
+  };
 
   return (
     <AuthContext.Provider value={{ user, login, logout, isAdmin, loading }}>
