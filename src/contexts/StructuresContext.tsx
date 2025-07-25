@@ -252,6 +252,8 @@ const initialStructures: Structure[] = [
     id: '11',
     name: 'Machine à pop-corn',
     category: 'gourmandises',
+  }
+]
 export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children }) => {
   const [structures, setStructures] = useState<Structure[]>(initialStructures);
   const [categories, setCategories] = useState<Category[]>(initialCategories);
