@@ -569,18 +569,7 @@ const Quote: React.FC = () => {
                               </p>
                               {isFromCart && (
                                // Mettre à jour le formulaire
-                               setFormData(prev => ({
-                                 ...prev,
-                                 structures: prev.structures.map(item =>
-                                   item.id === structure.id ? { ...item, customDays: days } : item
-                                 )
-                               }));
-                               
-                               // Mettre à jour le panier si la structure y est
-                               const isInCart = cartItems.some(item => item.structure.id === structure.id);
-                               if (isInCart) {
-                                 updateCartDuration(structure.id, 'custom', days);
-                               }
+                                <p className="text-xs text-green-600 font-medium">✓ Depuis le panier</p>
                               )}
                             </div>
                           </div>
