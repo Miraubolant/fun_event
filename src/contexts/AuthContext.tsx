@@ -28,6 +28,82 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const checkAdminStatus = async (userId: string) => {
+    try {
+      console.log('🔍 Vérification du statut admin pour:', userId);
+      
+      // Vérifier d'abord si l'utilisateur est connecté
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        console.log('❌ Pas de session active');
+        return false;
+      }
+      
+      const { data: adminUser, error: adminError } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      console.log('🔍 Résultat vérification admin:', { 
+        adminUser, 
+        adminError: adminError?.message,
+        userId 
+      });
+      
+      if (adminUser) {
+        console.log('✅ Utilisateur admin confirmé:', adminUser);
+        setUser({
+          id: userId,
+          email: adminUser.email || '',
+          role: 'admin'
+        });
+        return true;
+      } else if (adminError && adminError.code !== 'PGRST116') {
+        console.error('❌ Erreur lors de la vérification admin:', adminError.message);
+        return false;
+      } else {
+        console.log('❌ Utilisateur non-admin ou non trouvé');
+        return false;
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors de checkAdminStatus:', error);
+      return false;
+    }
+  };
+
+  // Fonction pour créer un utilisateur admin
+  const createAdminUser = async (userId: string, email: string) => {
+    try {
+      console.log('🔧 Tentative de création de l\'enregistrement admin...');
+      const { data: insertData, error: insertError } = await supabase
+        .from('admin_users')
+        .insert({
+          id: userId,
+          email: email,
+          role: 'admin'
+        })
+        .select()
+        .single();
+      
+      if (insertData && !insertError) {
+        console.log('✅ Enregistrement admin créé avec succès:', insertData);
+        setUser({
+          id: userId,
+          email: email,
+          role: 'admin'
+        });
+        return true;
+      } else {
+        console.error('❌ Erreur création admin:', insertError?.message);
+        return false;
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors de createAdminUser:', error);
+      return false;
+    }
+  };
+
   // Vérifier l'état d'authentification au chargement
   React.useEffect(() => {
     const checkAuth = async () => {
@@ -39,24 +115,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (session?.user) {
           console.log('👤 Utilisateur connecté, vérification du statut admin...');
           // Vérifier si l'utilisateur est admin
-          const { data: adminUser, error: adminError } = await supabase
-            .from('admin_users')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
-
-          console.log('🔍 Requête admin_users:', { adminUser, adminError });
-          
-          if (adminUser) {
-            console.log('✅ Utilisateur admin confirmé');
-            setUser({
-              id: session.user.id,
-              email: session.user.email || '',
-              role: 'admin'
-            });
-          } else {
-            console.log('❌ Utilisateur non-admin ou erreur:', adminError?.message);
-          }
+          const isAdmin = await checkAdminStatus(session.user.id);
+          console.log('🎯 Résultat final checkAdminStatus:', isAdmin);
         } else {
           console.log('❌ Aucune session active');
         }
@@ -76,25 +136,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (event === 'SIGNED_IN' && session?.user) {
         console.log('✅ Connexion détectée, vérification admin...');
         // Vérifier si l'utilisateur est admin
-        const { data: adminUser, error: adminError } = await supabase
-          .from('admin_users')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-
-        console.log('🔍 Vérification admin après connexion:', { adminUser, adminError });
-        
-        if (adminUser) {
-          console.log('✅ Admin confirmé après connexion');
-          setUser({
-            id: session.user.id,
-            email: session.user.email || '',
-            role: 'admin'
-          });
-        } else {
-          console.log('❌ Non-admin après connexion');
-          setUser(null);
-        }
+        const isAdmin = await checkAdminStatus(session.user.id);
+        console.log('🎯 Résultat final onAuthStateChange:', isAdmin);
       } else if (event === 'SIGNED_OUT') {
         console.log('🚪 Déconnexion détectée');
         setUser(null);
@@ -121,61 +164,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.log('✅ Utilisateur connecté:', data.user.id);
         console.log('📧 Email:', data.user.email);
         
-        // Attendre que la session soit établie
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
         console.log('🔍 Vérification du statut admin...');
         
-        // Vérifier si l'utilisateur est admin avec une requête simple
-        const { data: adminUser, error: adminError } = await supabase
-          .from('admin_users')
-          .select('*')
-          .eq('id', data.user.id)
-          .single();
-
-        console.log('📊 Résultat vérification admin:', { 
-          adminUser, 
-          adminError: adminError?.message,
-          userId: data.user.id 
-        });
-
-        if (adminUser) {
-          console.log('🎉 Utilisateur admin confirmé:', adminUser);
-          setUser({
-            id: data.user.id,
-            email: data.user.email || '',
-            role: 'admin'
-          });
+        // Vérifier le statut admin
+        const isAdmin = await checkAdminStatus(data.user.id);
+        
+        if (isAdmin) {
+          console.log('🎉 Connexion admin réussie !');
           return true;
-        } else if (adminError) {
-          console.error('❌ Erreur lors de la vérification admin:', adminError.message);
-          // Essayer de créer l'enregistrement admin si c'est le bon email
-          if (data.user.email === 'victor@mirault.com') {
-            console.log('🔧 Tentative de création de l\'enregistrement admin...');
-            const { data: insertData, error: insertError } = await supabase
-              .from('admin_users')
-              .insert({
-                id: data.user.id,
-                email: data.user.email,
-                role: 'admin'
-              })
-              .select()
-              .single();
-            
-            if (insertData && !insertError) {
-              console.log('✅ Enregistrement admin créé avec succès');
-              setUser({
-                id: data.user.id,
-                email: data.user.email || '',
-                role: 'admin'
-              });
-              return true;
-            } else {
-              console.error('❌ Erreur création admin:', insertError?.message);
-            }
+        }
+        
+        // Si pas admin mais email autorisé, créer le compte admin
+        if (data.user.email === 'victor@mirault.com') {
+          console.log('📧 Email autorisé, création du compte admin...');
+          const created = await createAdminUser(data.user.id, data.user.email);
+          if (created) {
+            console.log('🎉 Compte admin créé et connexion réussie !');
+            return true;
           }
         } else {
-          console.log('❌ Utilisateur non-admin');
+          console.log('❌ Email non autorisé pour admin');
         }
         
         // Déconnecter si pas admin
