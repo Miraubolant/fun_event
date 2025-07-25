@@ -15,7 +15,7 @@ const Quote: React.FC = () => {
     customDays: '',
     location: '',
     guests: '',
-    structures: [] as Array<{id: string, duration: '1day' | '2days'}>,
+    structures: [] as Array<{id: string, duration: '1day' | '2days' | 'custom', customDays?: number}>,
     name: '',
     email: '',
     phone: '',
@@ -76,16 +76,16 @@ const Quote: React.FC = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleStructureChange = (structureId: string, isChecked: boolean, duration: '1day' | '2days' = '1day') => {
+  const handleStructureChange = (structureId: string, isChecked: boolean, duration: '1day' | '2days' | 'custom' = '1day') => {
     setFormData(prev => ({
       ...prev,
       structures: isChecked 
-        ? [...prev.structures, { id: structureId, duration }]
+        ? [...prev.structures, { id: structureId, duration, customDays: duration === 'custom' ? 3 : undefined }]
         : prev.structures.filter(item => item.id !== structureId)
     }));
   };
 
-  const handleDurationChange = (structureId: string, duration: '1day' | '2days') => {
+  const handleDurationChange = (structureId: string, duration: '1day' | '2days' | 'custom') => {
     // Mettre à jour l'état local du formulaire
     setFormData(prev => ({
       ...prev,
@@ -557,11 +557,29 @@ const Quote: React.FC = () => {
                             className="w-full px-2 py-2 sm:px-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-xs sm:text-sm"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            <option value="1day">1 jour - {structure.price}€</option>
+                            <option value="1day">1 journée - {structure.price}€</option>
                             {structure.price2Days && (
-                              <option value="2days">2 jours - {structure.price2Days}€</option>
+                              <option value="2days">Weekend (2 jours) - {structure.price2Days}€</option>
                             )}
+                            <option value="custom">Plusieurs jours - Prix sur mesure</option>
                           </select>
+                          
+                          {currentDuration === 'custom' && (
+                            <div className="mt-2">
+                              <input
+                                type="number"
+                                min="3"
+                                max="30"
+                                placeholder="Nombre de jours"
+                                className="w-full px-2 py-2 sm:px-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-xs sm:text-sm"
+                                onClick={(e) => e.stopPropagation()}
+                                onChange={(e) => {
+                                  const days = parseInt(e.target.value) || 3;
+                                  // Ici on pourrait gérer le nombre de jours personnalisé
+                                }}
+                              />
+                            </div>
+                          )}
                         </div>
                       )}
                     </label>
