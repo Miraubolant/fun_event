@@ -34,20 +34,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       // Vérifier d'abord si l'utilisateur est connecté
       const { data: { session } } = await supabase.auth.getSession();
+      console.log('📋 Session actuelle:', session ? 'Existe' : 'Aucune');
       if (!session) {
         console.log('❌ Pas de session active');
         return false;
       }
       
+      console.log('🔍 Requête vers admin_users...');
       const { data: adminUser, error: adminError } = await supabase
         .from('admin_users')
         .select('*')
         .eq('id', userId)
         .single();
 
-      console.log('🔍 Résultat vérification admin:', { 
+      console.log('📊 Résultat requête admin_users:', { 
         adminUser, 
         adminError: adminError?.message,
+        adminErrorCode: adminError?.code,
         userId 
       });
       
@@ -58,16 +61,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           email: adminUser.email || '',
           role: 'admin'
         });
+        console.log('🎯 Résultat final checkAdminStatus: true');
         return true;
       } else if (adminError && adminError.code !== 'PGRST116') {
         console.error('❌ Erreur lors de la vérification admin:', adminError.message);
+        console.log('🎯 Résultat final checkAdminStatus: false (erreur)');
         return false;
       } else {
         console.log('❌ Utilisateur non-admin ou non trouvé');
+        console.log('🎯 Résultat final checkAdminStatus: false (non trouvé)');
         return false;
       }
     } catch (error) {
       console.error('❌ Erreur lors de checkAdminStatus:', error);
+      console.log('🎯 Résultat final checkAdminStatus: false (exception)');
       return false;
     }
   };
@@ -76,6 +83,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const createAdminUser = async (userId: string, email: string) => {
     try {
       console.log('🔧 Tentative de création de l\'enregistrement admin...');
+      console.log('📝 Données à insérer:', { userId, email });
       const { data: insertData, error: insertError } = await supabase
         .from('admin_users')
         .insert({
@@ -86,6 +94,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         .select()
         .single();
       
+      console.log('📊 Résultat insertion admin:', { insertData, insertError });
+      
       if (insertData && !insertError) {
         console.log('✅ Enregistrement admin créé avec succès:', insertData);
         setUser({
@@ -93,13 +103,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           email: email,
           role: 'admin'
         });
+        console.log('🎯 Résultat final createAdminUser: true');
         return true;
       } else {
         console.error('❌ Erreur création admin:', insertError?.message);
+        console.log('🎯 Résultat final createAdminUser: false');
         return false;
       }
     } catch (error) {
       console.error('❌ Erreur lors de createAdminUser:', error);
+      console.log('🎯 Résultat final createAdminUser: false (exception)');
       return false;
     }
   };
@@ -123,6 +136,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } catch (error) {
         console.error('❌ Erreur lors de la vérification de l\'authentification:', error);
       } finally {
+        console.log('🏁 Fin de checkAuth, setLoading(false)');
         setLoading(false);
       }
     };
@@ -150,13 +164,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       console.log('🔐 Tentative de connexion pour:', email);
+      console.log('🔑 Mot de passe fourni:', password ? 'Oui' : 'Non');
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
 
+      console.log('📊 Résultat signInWithPassword:', { 
+        user: data.user ? 'Connecté' : 'Échec', 
+        error: error?.message 
+      });
+
       if (error) {
         console.error('❌ Erreur de connexion Supabase:', error.message);
+        console.log('🎯 Résultat final login: false (erreur connexion)');
         return false;
       }
 
@@ -171,6 +192,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         
         if (isAdmin) {
           console.log('🎉 Connexion admin réussie !');
+          console.log('🎯 Résultat final login: true');
           return true;
         }
         
@@ -180,6 +202,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           const created = await createAdminUser(data.user.id, data.user.email);
           if (created) {
             console.log('🎉 Compte admin créé et connexion réussie !');
+            console.log('🎯 Résultat final login: true (créé)');
             return true;
           }
         } else {
@@ -187,13 +210,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
         
         // Déconnecter si pas admin
+        console.log('🚪 Déconnexion car pas admin...');
         await supabase.auth.signOut();
+        console.log('🎯 Résultat final login: false (pas admin)');
         return false;
       }
 
+      console.log('🎯 Résultat final login: false (pas d\'utilisateur)');
       return false;
     } catch (error) {
       console.error('❌ Erreur lors de la connexion:', error);
+      console.log('🎯 Résultat final login: false (exception)');
       return false;
     }
   };
