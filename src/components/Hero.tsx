@@ -15,7 +15,9 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   const [currentSlide, setCurrentSlide] = React.useState(0);
   
   // Toutes les structures disponibles pour le carrousel
-  const availableStructures = structures.filter(s => s.available);
+  const availableStructures = structures
+    .filter(s => s.available)
+    .sort((a, b) => (a.order || 1) - (b.order || 1));
   
   // Nombre d'éléments par slide selon la taille d'écran
   const [itemsPerSlide, setItemsPerSlide] = React.useState(3);

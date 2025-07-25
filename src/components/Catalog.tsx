@@ -17,8 +17,8 @@ const Catalog: React.FC = () => {
   ];
 
   const filteredStructures = activeCategory === 'tous'
-    ? structures.filter(s => s.available)
-    : structures.filter(s => s.category === activeCategory && s.available);
+    ? structures.filter(s => s.available).sort((a, b) => (a.order || 1) - (b.order || 1))
+    : structures.filter(s => s.category === activeCategory && s.available).sort((a, b) => (a.order || 1) - (b.order || 1));
 
   // Vérifier si une structure est dans le panier
   const isInCart = (structureId: string) => {

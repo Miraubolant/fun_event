@@ -12,6 +12,7 @@ export interface Structure {
   image: string;
   description: string;
   available: boolean;
+  order?: number;
 }
 
 export interface Category {

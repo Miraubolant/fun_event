@@ -17,6 +17,7 @@ interface StructuresContextType {
   updateCarouselPhoto: (id: string, photo: Partial<CarouselPhoto>) => Promise<void>;
   deleteCarouselPhoto: (id: string) => Promise<void>;
   reorderCarouselPhotos: (photos: CarouselPhoto[]) => Promise<void>;
+  reorderStructures: (structures: Structure[]) => Promise<void>;
   refreshData: () => Promise<void>;
 }
 
@@ -86,10 +87,11 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
             image,
             description,
             available,
+            order_position,
             created_at,
             updated_at
           `)
-          .order('name');
+          .order('order_position', { ascending: true });
         
         if (structuresError) {
           if (structuresError.code === '42P01') {
@@ -114,7 +116,8 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
             services: item.services,
             image: item.image || '',
             description: item.description || '',
-            available: item.available ?? true
+            available: item.available ?? true,
+            order: item.order_position || 1
           }));
           setStructures(transformedStructures);
         }
@@ -189,6 +192,17 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
         throw new Error('La catégorie sélectionnée n\'existe pas');
       }
       
+      // Obtenir la prochaine position
+      const { data: maxOrderData } = await supabase
+        .from('structures')
+        .select('order_position')
+        .order('order_position', { ascending: false })
+        .limit(1);
+      
+      const nextOrder = maxOrderData && maxOrderData.length > 0 
+        ? (maxOrderData[0].order_position || 0) + 1 
+        : 1;
+      
       const { data, error } = await supabase
         .from('structures')
         .insert({
@@ -203,7 +217,8 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
           services: newStructure.services,
           image: newStructure.image,
           description: newStructure.description,
-          available: newStructure.available
+          available: newStructure.available,
+          order_position: nextOrder
         })
         .select()
         .single();
@@ -238,6 +253,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       if (updatedStructure.image !== undefined) updateData.image = updatedStructure.image;
       if (updatedStructure.description !== undefined) updateData.description = updatedStructure.description;
       if (updatedStructure.available !== undefined) updateData.available = updatedStructure.available;
+      if (updatedStructure.order !== undefined) updateData.order_position = updatedStructure.order;
 
       const { error } = await supabase
         .from('structures')
@@ -435,6 +451,24 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
     }
   };
 
+  const reorderStructures = async (structures: Structure[]) => {
+    try {
+      // Mettre à jour l'ordre de chaque structure
+      const updates = structures.map((structure, index) => 
+        supabase
+          .from('structures')
+          .update({ order_position: index + 1 })
+          .eq('id', structure.id)
+      );
+
+      await Promise.all(updates);
+      await refreshData();
+    } catch (error) {
+      console.error('Erreur lors de la réorganisation des structures:', error);
+      throw error;
+    }
+  };
+
   return (
     <StructuresContext.Provider value={{ 
       structures, 
@@ -451,6 +485,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       updateCarouselPhoto,
       deleteCarouselPhoto,
       reorderCarouselPhotos,
+      reorderStructures,
       refreshData
     }}>
       {children}

@@ -18,7 +18,8 @@ const AdminPanel: React.FC = () => {
     addCarouselPhoto,
     updateCarouselPhoto,
     deleteCarouselPhoto,
-    reorderCarouselPhotos
+    reorderCarouselPhotos,
+    reorderStructures
   } = useStructures();
   const { logout } = useAuth();
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -233,6 +234,25 @@ const AdminPanel: React.FC = () => {
       [newPhotos[currentIndex], newPhotos[currentIndex + 1]] = [newPhotos[currentIndex + 1], newPhotos[currentIndex]];
       newPhotos.forEach((photo, index) => {
         updateCarouselPhoto(photo.id, { order: index + 1 });
+      });
+    }
+  };
+
+  const moveStructure = (id: string, direction: 'up' | 'down') => {
+    const sortedStructures = [...structures].sort((a, b) => (a.order || 1) - (b.order || 1));
+    const currentIndex = sortedStructures.findIndex(s => s.id === id);
+    
+    if (direction === 'up' && currentIndex > 0) {
+      const newStructures = [...sortedStructures];
+      [newStructures[currentIndex], newStructures[currentIndex - 1]] = [newStructures[currentIndex - 1], newStructures[currentIndex]];
+      newStructures.forEach((structure, index) => {
+        updateStructure(structure.id, { order: index + 1 });
+      });
+    } else if (direction === 'down' && currentIndex < sortedStructures.length - 1) {
+      const newStructures = [...sortedStructures];
+      [newStructures[currentIndex], newStructures[currentIndex + 1]] = [newStructures[currentIndex + 1], newStructures[currentIndex]];
+      newStructures.forEach((structure, index) => {
+        updateStructure(structure.id, { order: index + 1 });
       });
     }
   };
@@ -866,13 +886,19 @@ const AdminPanel: React.FC = () => {
         {/* Liste des structures */}
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="px-4 lg:px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg lg:text-xl font-bold text-gray-900">Structures Existantes ({structures.length})</h2>
+            <h2 className="text-lg lg:text-xl font-bold text-gray-900">
+              Structures Existantes ({structures.length})
+              <span className="text-sm font-normal text-gray-600 ml-2">
+                - Ordre d'affichage dans le carrousel
+              </span>
+            </h2>
           </div>
           
           <div className="overflow-x-auto min-h-0">
-            <table className="w-full min-w-[640px]">
+            <table className="w-full min-w-[720px]">
               <thead className="bg-gray-50">
                 <tr>
+                  <th className="px-3 lg:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Ordre</th>
                   <th className="px-3 lg:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Structure</th>
                   <th className="px-3 lg:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Catégorie</th>
                   <th className="px-3 lg:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Prix</th>
@@ -881,8 +907,33 @@ const AdminPanel: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {structures.map((structure) => (
+                {[...structures].sort((a, b) => (a.order || 1) - (b.order || 1)).map((structure, index) => (
                   <tr key={structure.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-3 lg:px-6 py-4">
+                      <div className="flex items-center gap-1 lg:gap-2">
+                        <span className="text-sm font-semibold text-gray-900 bg-blue-100 px-2 py-1 rounded-full min-w-[24px] text-center">
+                          {index + 1}
+                        </span>
+                        <div className="flex flex-col gap-1">
+                          <button
+                            onClick={() => moveStructure(structure.id, 'up')}
+                            disabled={index === 0}
+                            className="p-1 text-blue-600 hover:text-blue-800 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors hover:bg-blue-100 rounded"
+                            title="Monter"
+                          >
+                            <ArrowUp className="w-3 h-3" />
+                          </button>
+                          <button
+                            onClick={() => moveStructure(structure.id, 'down')}
+                            disabled={index === structures.length - 1}
+                            className="p-1 text-blue-600 hover:text-blue-800 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors hover:bg-blue-100 rounded"
+                            title="Descendre"
+                          >
+                            <ArrowDown className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    </td>
                     <td className="px-3 lg:px-6 py-4">
                       <div className="flex items-center">
                         <img className="h-8 w-8 lg:h-12 lg:w-12 rounded-lg object-cover mr-2 lg:mr-4 flex-shrink-0" src={structure.image} alt={structure.name} />
