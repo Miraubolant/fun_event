@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { supabase } from '../lib/supabase';
 import { Structure, Category, CarouselPhoto } from '../types';
 
 interface StructuresContextType {
@@ -248,106 +249,417 @@ const initialStructures: Structure[] = [
     capacity: 'Jusqu\'à 30 enfants/heure',
     age: '3-12 ans',
     price: 0, // Sur devis
-    services: 'Ballons fournis, Animation personnalisée, Créations à emporter',
-    image: 'https://imgur.com/sTAtBdS.png',
-    description: 'Transformez des ballons en œuvres d\'art ! Notre sculpteur professionnel crée en direct des animaux, fleurs et personnages qui raviront les enfants. Chaque création devient un souvenir unique de votre événement.',
-    available: true
-  },
-  {
-    id: '16',
-    name: 'Maquilleuse',
-    category: 'evenementiel',
-    size: 'Poste de maquillage',
-    capacity: '15-20 enfants/heure',
-    age: '3-12 ans',
-    price: 0, // Sur devis
-    services: 'Maquillage hypoallergénique, Matériel professionnel, Designs variés',
-    image: 'https://i.imgur.com/k59vJoX.png',
-    description: 'Transformez les enfants en leurs héros préférés ! Notre maquilleuse professionnelle utilise des produits sûrs et hypoallergéniques pour créer des maquillages fantastiques : animaux, super-héros, princesses et bien plus encore.',
-    available: true
-  },
-  {
-    id: '17',
-    name: 'Mascotte',
-    category: 'evenementiel',
-    size: 'Animation interactive',
-    capacity: 'Tous publics',
-    age: 'Tous âges',
-    price: 0, // Sur devis
-    services: 'Costume professionnel, Animation personnalisée, Photos souvenirs',
-    image: 'https://i.imgur.com/Rq9gyt0.png',
-    description: 'Donnez vie à votre événement avec nos mascottes colorées ! Nos animateurs professionnels en costume créent une ambiance festive inoubliable avec danses, jeux et interactions qui raviront petits et grands.',
-    available: true
-  }
-];
 
 export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children }) => {
-  const [structures, setStructures] = useState<Structure[]>(initialStructures);
-  const [categories, setCategories] = useState<Category[]>(initialCategories);
-  const [carouselPhotos, setCarouselPhotos] = useState<CarouselPhoto[]>(initialCarouselPhotos);
+  const [structures, setStructures] = useState<Structure[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [carouselPhotos, setCarouselPhotos] = useState<CarouselPhoto[]>([]);
 
-  const addStructure = (newStructure: Omit<Structure, 'id'>) => {
-    const structure: Structure = {
-      ...newStructure,
-      id: Date.now().toString()
-    };
-    setStructures(prev => [...prev, structure]);
+  // Charger les données depuis Supabase
+  useEffect(() => {
+    fetchCategories();
+    fetchStructures();
+    fetchCarouselPhotos();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching categories:', error);
+        return;
+      }
+
+      setCategories(data || []);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
   };
 
-  const updateStructure = (id: string, updatedStructure: Partial<Structure>) => {
-    setStructures(prev => 
-      prev.map(structure => 
-        structure.id === id ? { ...structure, ...updatedStructure } : structure
-      )
-    );
+  const fetchStructures = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('structures')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching structures:', error);
+        return;
+      }
+
+      // Convertir les données Supabase vers le format attendu
+      const formattedStructures: Structure[] = (data || []).map(item => ({
+        id: item.id,
+        name: item.name,
+        category: item.category_id || '',
+        size: item.size,
+        capacity: item.capacity,
+        age: item.age,
+        price: item.price,
+        price2Days: item.price_2_days || undefined,
+        maxWeight: item.max_weight || undefined,
+        services: item.services || undefined,
+        image: item.image,
+        description: item.description,
+        available: item.available ?? true
+      }));
+
+      setStructures(formattedStructures);
+    } catch (error) {
+      console.error('Error fetching structures:', error);
+    }
   };
 
-  const deleteStructure = (id: string) => {
-    setStructures(prev => prev.filter(structure => structure.id !== id));
+  const fetchCarouselPhotos = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('carousel_photos')
+        .select('*')
+        .order('order_position', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching carousel photos:', error);
+        return;
+      }
+
+      // Convertir les données Supabase vers le format attendu
+      const formattedPhotos: CarouselPhoto[] = (data || []).map(item => ({
+        id: item.id,
+        url: item.url,
+        alt: item.alt,
+        title: item.title || undefined,
+        location: item.location || undefined,
+        order: item.order_position
+      }));
+
+      setCarouselPhotos(formattedPhotos);
+    } catch (error) {
+      console.error('Error fetching carousel photos:', error);
+    }
   };
 
-  const addCategory = (newCategory: Omit<Category, 'id'>) => {
-    const category: Category = {
-      ...newCategory,
-      id: Date.now().toString()
-    };
-    setCategories(prev => [...prev, category]);
+  const addStructure = async (newStructure: Omit<Structure, 'id'>) => {
+    try {
+      const { data, error } = await supabase
+        .from('structures')
+        .insert({
+          name: newStructure.name,
+          category_id: newStructure.category,
+          size: newStructure.size,
+          capacity: newStructure.capacity,
+          age: newStructure.age,
+          price: newStructure.price,
+          price_2_days: newStructure.price2Days,
+          max_weight: newStructure.maxWeight,
+          services: newStructure.services,
+          image: newStructure.image,
+          description: newStructure.description,
+          available: newStructure.available
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error adding structure:', error);
+        return;
+      }
+
+      if (data) {
+        const formattedStructure: Structure = {
+          id: data.id,
+          name: data.name,
+          category: data.category_id || '',
+          size: data.size,
+          capacity: data.capacity,
+          age: data.age,
+          price: data.price,
+          price2Days: data.price_2_days || undefined,
+          maxWeight: data.max_weight || undefined,
+          services: data.services || undefined,
+          image: data.image,
+          description: data.description,
+          available: data.available ?? true
+        };
+        setStructures(prev => [...prev, formattedStructure]);
+      }
+    } catch (error) {
+      console.error('Error adding structure:', error);
+    }
   };
 
-  const updateCategory = (id: string, updatedCategory: Partial<Category>) => {
-    setCategories(prev => 
-      prev.map(category => 
-        category.id === id ? { ...category, ...updatedCategory } : category
-      )
-    );
+  const updateStructure = async (id: string, updatedStructure: Partial<Structure>) => {
+    try {
+      const { data, error } = await supabase
+        .from('structures')
+        .update({
+          name: updatedStructure.name,
+          category_id: updatedStructure.category,
+          size: updatedStructure.size,
+          capacity: updatedStructure.capacity,
+          age: updatedStructure.age,
+          price: updatedStructure.price,
+          price_2_days: updatedStructure.price2Days,
+          max_weight: updatedStructure.maxWeight,
+          services: updatedStructure.services,
+          image: updatedStructure.image,
+          description: updatedStructure.description,
+          available: updatedStructure.available
+        })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error updating structure:', error);
+        return;
+      }
+
+      if (data) {
+        const formattedStructure: Structure = {
+          id: data.id,
+          name: data.name,
+          category: data.category_id || '',
+          size: data.size,
+          capacity: data.capacity,
+          age: data.age,
+          price: data.price,
+          price2Days: data.price_2_days || undefined,
+          maxWeight: data.max_weight || undefined,
+          services: data.services || undefined,
+          image: data.image,
+          description: data.description,
+          available: data.available ?? true
+        };
+        setStructures(prev => 
+          prev.map(structure => 
+            structure.id === id ? formattedStructure : structure
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Error updating structure:', error);
+    }
   };
 
-  const deleteCategory = (id: string) => {
-    setCategories(prev => prev.filter(category => category.id !== id));
+  const deleteStructure = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('structures')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.error('Error deleting structure:', error);
+        return;
+      }
+
+      setStructures(prev => prev.filter(structure => structure.id !== id));
+    } catch (error) {
+      console.error('Error deleting structure:', error);
+    }
   };
 
-  const addCarouselPhoto = (newPhoto: Omit<CarouselPhoto, 'id'>) => {
-    const photo: CarouselPhoto = {
-      ...newPhoto,
-      id: Date.now().toString()
-    };
-    setCarouselPhotos(prev => [...prev, photo].sort((a, b) => a.order - b.order));
+  const addCategory = async (newCategory: Omit<Category, 'id'>) => {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .insert({
+          label: newCategory.label,
+          icon: newCategory.icon
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error adding category:', error);
+        return;
+      }
+
+      if (data) {
+        const formattedCategory: Category = {
+          id: data.id,
+          label: data.label,
+          icon: data.icon
+        };
+        setCategories(prev => [...prev, formattedCategory]);
+      }
+    } catch (error) {
+      console.error('Error adding category:', error);
+    }
   };
 
-  const updateCarouselPhoto = (id: string, updatedPhoto: Partial<CarouselPhoto>) => {
-    setCarouselPhotos(prev => 
-      prev.map(photo => 
-        photo.id === id ? { ...photo, ...updatedPhoto } : photo
-      ).sort((a, b) => a.order - b.order)
-    );
+  const updateCategory = async (id: string, updatedCategory: Partial<Category>) => {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .update({
+          label: updatedCategory.label,
+          icon: updatedCategory.icon
+        })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error updating category:', error);
+        return;
+      }
+
+      if (data) {
+        const formattedCategory: Category = {
+          id: data.id,
+          label: data.label,
+          icon: data.icon
+        };
+        setCategories(prev => 
+          prev.map(category => 
+            category.id === id ? formattedCategory : category
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Error updating category:', error);
+    }
   };
 
-  const deleteCarouselPhoto = (id: string) => {
-    setCarouselPhotos(prev => prev.filter(photo => photo.id !== id));
+  const deleteCategory = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('categories')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.error('Error deleting category:', error);
+        return;
+      }
+
+      setCategories(prev => prev.filter(category => category.id !== id));
+    } catch (error) {
+      console.error('Error deleting category:', error);
+    }
   };
 
-  const reorderCarouselPhotos = (photos: CarouselPhoto[]) => {
-    setCarouselPhotos(photos);
+  const addCarouselPhoto = async (newPhoto: Omit<CarouselPhoto, 'id'>) => {
+    try {
+      const { data, error } = await supabase
+        .from('carousel_photos')
+        .insert({
+          url: newPhoto.url,
+          alt: newPhoto.alt,
+          title: newPhoto.title,
+          location: newPhoto.location,
+          order_position: newPhoto.order
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error adding carousel photo:', error);
+        return;
+      }
+
+      if (data) {
+        const formattedPhoto: CarouselPhoto = {
+          id: data.id,
+          url: data.url,
+          alt: data.alt,
+          title: data.title || undefined,
+          location: data.location || undefined,
+          order: data.order_position
+        };
+        setCarouselPhotos(prev => [...prev, formattedPhoto].sort((a, b) => a.order - b.order));
+      }
+    } catch (error) {
+      console.error('Error adding carousel photo:', error);
+    }
+  };
+
+  const updateCarouselPhoto = async (id: string, updatedPhoto: Partial<CarouselPhoto>) => {
+    try {
+      const { data, error } = await supabase
+        .from('carousel_photos')
+        .update({
+          url: updatedPhoto.url,
+          alt: updatedPhoto.alt,
+          title: updatedPhoto.title,
+          location: updatedPhoto.location,
+          order_position: updatedPhoto.order
+        })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error updating carousel photo:', error);
+        return;
+      }
+
+      if (data) {
+        const formattedPhoto: CarouselPhoto = {
+          id: data.id,
+          url: data.url,
+          alt: data.alt,
+          title: data.title || undefined,
+          location: data.location || undefined,
+          order: data.order_position
+        };
+        setCarouselPhotos(prev => 
+          prev.map(photo => 
+            photo.id === id ? formattedPhoto : photo
+          ).sort((a, b) => a.order - b.order)
+        );
+      }
+    } catch (error) {
+      console.error('Error updating carousel photo:', error);
+    }
+  };
+
+  const deleteCarouselPhoto = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('carousel_photos')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.error('Error deleting carousel photo:', error);
+        return;
+      }
+
+      setCarouselPhotos(prev => prev.filter(photo => photo.id !== id));
+    } catch (error) {
+      console.error('Error deleting carousel photo:', error);
+    }
+  };
+
+  const reorderCarouselPhotos = async (photos: CarouselPhoto[]) => {
+    try {
+      // Mettre à jour l'ordre de toutes les photos
+      const updates = photos.map((photo, index) => 
+        supabase
+          .from('carousel_photos')
+          .update({ order_position: index + 1 })
+          .eq('id', photo.id)
+      );
+
+      await Promise.all(updates);
+      
+      // Mettre à jour l'état local
+      const updatedPhotos = photos.map((photo, index) => ({
+        ...photo,
+        order: index + 1
+      }));
+      
+      setCarouselPhotos(updatedPhotos);
+    } catch (error) {
+      console.error('Error reordering carousel photos:', error);
+    }
   };
 
   return (
