@@ -106,46 +106,81 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      console.log('Tentative de connexion pour:', email);
+      console.log('🔐 Tentative de connexion pour:', email);
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
 
       if (error) {
-        console.error('Erreur de connexion Supabase:', error.message);
+        console.error('❌ Erreur de connexion Supabase:', error.message);
         return false;
       }
 
       if (data.user) {
-        console.log('Utilisateur connecté:', data.user.id);
+        console.log('✅ Utilisateur connecté:', data.user.id);
+        console.log('📧 Email:', data.user.email);
         
-        // Attendre un peu pour que la session soit bien établie
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Attendre que la session soit établie
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
-        // Vérifier si l'utilisateur est admin
+        console.log('🔍 Vérification du statut admin...');
+        
+        // Vérifier si l'utilisateur est admin avec une requête simple
         const { data: adminUser, error: adminError } = await supabase
           .from('admin_users')
           .select('*')
           .eq('id', data.user.id)
           .single();
 
-        console.log('🔍 Vérification admin lors du login:', { adminUser, adminError });
+        console.log('📊 Résultat vérification admin:', { 
+          adminUser, 
+          adminError: adminError?.message,
+          userId: data.user.id 
+        });
 
         if (adminUser) {
-          console.log('✅ Utilisateur admin confirmé:', adminUser);
+          console.log('🎉 Utilisateur admin confirmé:', adminUser);
           setUser({
             id: data.user.id,
             email: data.user.email || '',
             role: 'admin'
           });
           return true;
+        } else if (adminError) {
+          console.error('❌ Erreur lors de la vérification admin:', adminError.message);
+          // Essayer de créer l'enregistrement admin si c'est le bon email
+          if (data.user.email === 'victor@mirault.com') {
+            console.log('🔧 Tentative de création de l\'enregistrement admin...');
+            const { data: insertData, error: insertError } = await supabase
+              .from('admin_users')
+              .insert({
+                id: data.user.id,
+                email: data.user.email,
+                role: 'admin'
+              })
+              .select()
+              .single();
+            
+            if (insertData && !insertError) {
+              console.log('✅ Enregistrement admin créé avec succès');
+              setUser({
+                id: data.user.id,
+                email: data.user.email || '',
+                role: 'admin'
+              });
+              return true;
+            } else {
+              console.error('❌ Erreur création admin:', insertError?.message);
+            }
+          }
         } else {
-          console.log('❌ Utilisateur non-admin ou erreur admin:', adminError?.message);
-          // Déconnecter si pas admin
-          await supabase.auth.signOut();
-          return false;
+          console.log('❌ Utilisateur non-admin');
         }
+        
+        // Déconnecter si pas admin
+        await supabase.auth.signOut();
+        return false;
       }
 
       return false;
