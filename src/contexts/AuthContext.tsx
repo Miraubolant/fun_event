@@ -85,25 +85,35 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
+      console.log('Tentative de connexion pour:', email);
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
 
       if (error) {
-        console.error('Erreur de connexion:', error.message);
+        console.error('Erreur de connexion Supabase:', error.message);
         return false;
       }
 
       if (data.user) {
+        console.log('Utilisateur connecté:', data.user.id);
         // Vérifier si l'utilisateur est admin
-        const { data: adminUser } = await supabase
+        const { data: adminUser, error: adminError } = await supabase
           .from('admin_users')
           .select('*')
           .eq('id', data.user.id)
           .single();
 
+        if (adminError) {
+          console.error('Erreur lors de la vérification admin:', adminError);
+          // Si l'utilisateur n'existe pas dans admin_users, ce n'est pas un admin
+          await supabase.auth.signOut();
+          return false;
+        }
+
         if (adminUser) {
+          console.log('Utilisateur admin confirmé:', adminUser);
           setUser({
             id: data.user.id,
             email: data.user.email || '',
@@ -111,6 +121,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           });
           return true;
         } else {
+          console.log('Utilisateur non-admin, déconnexion');
           // Déconnecter si pas admin
           await supabase.auth.signOut();
           return false;
