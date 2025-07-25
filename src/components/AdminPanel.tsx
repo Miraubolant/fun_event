@@ -26,6 +26,7 @@ const AdminPanel: React.FC = () => {
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [showPhotoForm, setShowPhotoForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
+  const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<'structures' | 'categories' | 'photos' | null>(null);
   const [formData, setFormData] = useState<Partial<Structure>>({});
   const [categoryData, setCategoryData] = useState<Partial<Category>>({});
@@ -118,6 +119,7 @@ const AdminPanel: React.FC = () => {
 
   const handleCancel = () => {
     setActiveSection(null);
+    setEditingPhotoId(null);
     setFormData({});
     setCategoryData({});
     setPhotoData({});
@@ -141,6 +143,33 @@ const AdminPanel: React.FC = () => {
     }
   };
 
+  const handleEditPhoto = (photo: CarouselPhoto) => {
+    setEditingPhotoId(photo.id);
+    setPhotoData({
+      url: photo.url,
+      alt: photo.alt,
+      title: photo.title,
+      location: photo.location,
+      order: photo.order
+    });
+  };
+
+  const handleSavePhotoEdit = () => {
+    if (editingPhotoId && photoData.url && photoData.alt) {
+      updateCarouselPhoto(editingPhotoId, photoData).then(() => {
+        setEditingPhotoId(null);
+        setPhotoData({});
+      }).catch(error => {
+        console.error('Erreur lors de la modification:', error);
+        alert(`Erreur lors de la modification de la photo: ${error.message || 'Vérifiez votre connexion.'}`);
+      });
+    }
+  };
+
+  const handleCancelPhotoEdit = () => {
+    setEditingPhotoId(null);
+    setPhotoData({});
+  };
   const openSection = (section: 'structures' | 'categories' | 'photos') => {
     setActiveSection(section);
     // Fermer les autres sections
@@ -267,12 +296,14 @@ const AdminPanel: React.FC = () => {
         {/* Gestion des photos du carrousel */}
         {activeSection === 'photos' && (
           <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Gérer les Photos du Carrousel</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              {editingPhotoId ? 'Modifier la Photo' : 'Gérer les Photos du Carrousel'}
+            </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  URL de l'image *
+                  URL de l'image * {editingPhotoId && <span className="text-blue-600">(Modification en cours)</span>}
                 </label>
                 <input
                   type="url"
@@ -284,7 +315,7 @@ const AdminPanel: React.FC = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description (Alt text) *
+                  Description (Alt text) * {editingPhotoId && <span className="text-blue-600">(Modification en cours)</span>}
                 </label>
                 <input
                   type="text"
@@ -335,13 +366,32 @@ const AdminPanel: React.FC = () => {
             )}
             
             <div className="flex gap-3 mb-6">
-              <button
-                onClick={handleAddPhoto}
-               className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center"
-              >
-                <Save className="w-5 h-5 mr-2" />
-                Ajouter une autre photo
-              </button>
+              {editingPhotoId ? (
+                <>
+                  <button
+                    onClick={handleSavePhotoEdit}
+                    className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all flex items-center"
+                  >
+                    <Save className="w-5 h-5 mr-2" />
+                    Sauvegarder les modifications
+                  </button>
+                  <button
+                    onClick={handleCancelPhotoEdit}
+                    className="bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center"
+                  >
+                    <X className="w-5 h-5 mr-2" />
+                    Annuler la modification
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleAddPhoto}
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center"
+                >
+                  <Save className="w-5 h-5 mr-2" />
+                  Ajouter une autre photo
+                </button>
+              )}
               <button
                 onClick={handleCancel}
                 className="bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center"
@@ -354,7 +404,9 @@ const AdminPanel: React.FC = () => {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900">Photos actuelles :</h3>
               {[...carouselPhotos].sort((a, b) => a.order - b.order).map((photo, index) => (
-                <div key={photo.id} className="bg-gray-50 p-4 rounded-lg flex items-center justify-between">
+                <div key={photo.id} className={`p-4 rounded-lg flex items-center justify-between ${
+                  editingPhotoId === photo.id ? 'bg-blue-50 border-2 border-blue-300' : 'bg-gray-50'
+                }`}>
                   <div className="flex items-center">
                     <img 
                       src={photo.url} 
@@ -385,6 +437,13 @@ const AdminPanel: React.FC = () => {
                       title="Descendre"
                     >
                       <ArrowDown className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleEditPhoto(photo)}
+                      className="p-2 text-blue-600 hover:text-blue-800 transition-colors"
+                      title="Modifier"
+                    >
+                      <Edit className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDeletePhoto(photo.id)}
