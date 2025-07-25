@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Save, X, Package, DollarSign, Tag, Image, Camera, ArrowUp, ArrowDown } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, X, Package, DollarSign, Tag, Image, Camera, ArrowUp, ArrowDown, AlertTriangle } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Structure, Category, CarouselPhoto } from '../types';
@@ -28,6 +28,12 @@ const AdminPanel: React.FC = () => {
   const [showEditForm, setShowEditForm] = useState(false);
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<'structures' | 'categories' | 'photos' | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<{
+    isOpen: boolean;
+    type: 'structure' | 'category' | 'photo';
+    id: string;
+    name: string;
+  } | null>(null);
   const [formData, setFormData] = useState<Partial<Structure>>({});
   const [categoryData, setCategoryData] = useState<Partial<Category>>({});
   const [photoData, setPhotoData] = useState<Partial<CarouselPhoto>>({});
@@ -126,21 +132,55 @@ const AdminPanel: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Êtes-vous sûr de vouloir supprimer cette structure ?')) {
-      deleteStructure(id);
-    }
+    const structure = structures.find(s => s.id === id);
+    setDeleteConfirm({
+      isOpen: true,
+      type: 'structure',
+      id,
+      name: structure?.name || 'cette structure'
+    });
   };
 
   const handleDeleteCategory = (id: string) => {
-    if (window.confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
-      deleteCategory(id);
-    }
+    const category = categories.find(c => c.id === id);
+    setDeleteConfirm({
+      isOpen: true,
+      type: 'category',
+      id,
+      name: category?.label || 'cette catégorie'
+    });
   };
 
   const handleDeletePhoto = (id: string) => {
-    if (window.confirm('Êtes-vous sûr de vouloir supprimer cette photo ?')) {
-      deleteCarouselPhoto(id);
+    const photo = carouselPhotos.find(p => p.id === id);
+    setDeleteConfirm({
+      isOpen: true,
+      type: 'photo',
+      id,
+      name: photo?.title || photo?.alt || 'cette photo'
+    });
+  };
+
+  const confirmDelete = () => {
+    if (!deleteConfirm) return;
+    
+    switch (deleteConfirm.type) {
+      case 'structure':
+        deleteStructure(deleteConfirm.id);
+        break;
+      case 'category':
+        deleteCategory(deleteConfirm.id);
+        break;
+      case 'photo':
+        deleteCarouselPhoto(deleteConfirm.id);
+        break;
     }
+    
+    setDeleteConfirm(null);
+  };
+
+  const cancelDelete = () => {
+    setDeleteConfirm(null);
   };
 
   const handleEditPhoto = (photo: CarouselPhoto) => {
@@ -885,6 +925,42 @@ const AdminPanel: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Modale de confirmation de suppression */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                <AlertTriangle className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Confirmer la suppression</h3>
+                <p className="text-sm text-gray-600">Cette action est irréversible</p>
+              </div>
+            </div>
+            
+            <p className="text-gray-700 mb-6">
+              Êtes-vous sûr de vouloir supprimer <strong>"{deleteConfirm.name}"</strong> ?
+            </p>
+            
+            <div className="flex gap-3">
+              <button
+                onClick={cancelDelete}
+                className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="flex-1 bg-red-600 text-white px-4 py-3 rounded-lg hover:bg-red-700 transition-colors font-medium"
+              >
+                Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
