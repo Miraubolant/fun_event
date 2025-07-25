@@ -22,19 +22,21 @@ const AdminPanel: React.FC = () => {
     reorderStructures
   } = useStructures();
   const { logout } = useAuth();
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [showCategoryForm, setShowCategoryForm] = useState(false);
-  const [showPhotoForm, setShowPhotoForm] = useState(false);
-  const [showEditForm, setShowEditForm] = useState(false);
+  
+  // États pour les modales
+  const [showStructureModal, setShowStructureModal] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [editingStructureId, setEditingStructureId] = useState<string | null>(null);
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
-  const [activeSection, setActiveSection] = useState<'structures' | 'categories' | 'photos' | null>(null);
+  
   const [deleteConfirm, setDeleteConfirm] = useState<{
     isOpen: boolean;
     type: 'structure' | 'category' | 'photo';
     id: string;
     name: string;
   } | null>(null);
+  
   const [formData, setFormData] = useState<Partial<Structure>>({});
   const [categoryData, setCategoryData] = useState<Partial<Category>>({});
   const [photoData, setPhotoData] = useState<Partial<CarouselPhoto>>({});
@@ -43,97 +45,126 @@ const AdminPanel: React.FC = () => {
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const [draggedOver, setDraggedOver] = useState<string | null>(null);
 
-  const handleEdit = (structure: Structure) => {
-    setShowEditForm(true);
+  // Fonctions pour ouvrir les modales
+  const openStructureModal = () => {
+    setFormData({});
+    setEditingStructureId(null);
+    setShowStructureModal(true);
+  };
+
+  const openCategoryModal = () => {
+    setCategoryData({});
+    setShowCategoryModal(true);
+  };
+
+  const openPhotoModal = () => {
+    setPhotoData({});
+    setEditingPhotoId(null);
+    setShowPhotoModal(true);
+  };
+
+  // Fonctions pour fermer les modales
+  const closeAllModals = () => {
+    setShowStructureModal(false);
+    setShowCategoryModal(false);
+    setShowPhotoModal(false);
+    setEditingStructureId(null);
+    setEditingPhotoId(null);
+    setFormData({});
+    setCategoryData({});
+    setPhotoData({});
+  };
+
+  const handleEditStructure = (structure: Structure) => {
     setFormData(structure);
+    setEditingStructureId(structure.id);
+    setShowStructureModal(true);
   };
 
-  const handleSaveEdit = () => {
-    if (formData.id && formData.name && formData.category && formData.price) {
-      updateStructure(formData.id, formData);
-      setShowEditForm(false);
-      setFormData({});
-    }
-  };
-
-  const handleAdd = () => {
+  const handleSaveStructure = () => {
     if (formData.name && formData.category && formData.price) {
-      // Vérifier que la catégorie existe
       const categoryExists = categories.find(c => c.id === formData.category);
       if (!categoryExists) {
         alert('Veuillez sélectionner une catégorie valide.');
         return;
       }
       
-      const newStructure = {
-        name: formData.name,
-        category: formData.category,
-        size: formData.size || '',
-        capacity: formData.capacity || '',
-        age: formData.age || '',
-        price: formData.price,
-        price2Days: formData.price2Days,
-        maxWeight: formData.maxWeight,
-        services: formData.services,
-        image: formData.image || 'https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=400',
-        description: formData.description || '',
-        available: formData.available ?? true
-      };
-      
-      addStructure(newStructure).catch(error => {
-        console.error('Erreur lors de l\'ajout:', error);
-        alert(`Erreur lors de l'ajout de la structure: ${error.message || 'Vérifiez votre connexion.'}`);
-      });
-      
-      // Ne pas fermer le formulaire, juste vider les données
-      setFormData({});
+      if (editingStructureId) {
+        // Modification
+        updateStructure(editingStructureId, formData);
+        closeAllModals();
+      } else {
+        // Ajout
+        const newStructure = {
+          name: formData.name,
+          category: formData.category,
+          size: formData.size || '',
+          capacity: formData.capacity || '',
+          age: formData.age || '',
+          price: formData.price,
+          price2Days: formData.price2Days,
+          maxWeight: formData.maxWeight,
+          services: formData.services,
+          image: formData.image || 'https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=400',
+          description: formData.description || '',
+          available: formData.available ?? true
+        };
+        
+        addStructure(newStructure).then(() => {
+          setFormData({});
+        }).catch(error => {
+          console.error('Erreur lors de l\'ajout:', error);
+          alert(`Erreur lors de l'ajout de la structure: ${error.message || 'Vérifiez votre connexion.'}`);
+        });
+      }
     }
   };
 
-  const handleAddCategory = () => {
+  const handleSaveCategory = () => {
     if (categoryData.label && categoryData.icon) {
       const newCategory = {
         label: categoryData.label,
         icon: categoryData.icon
       };
       
-      addCategory(newCategory).catch(error => {
+      addCategory(newCategory).then(() => {
+        setCategoryData({});
+      }).catch(error => {
         console.error('Erreur lors de l\'ajout:', error);
         alert(`Erreur lors de l'ajout de la catégorie: ${error.message || 'Vérifiez votre connexion.'}`);
       });
-      
-      // Ne pas fermer le formulaire, juste vider les données
-      setCategoryData({});
     }
   };
 
-  const handleAddPhoto = () => {
+  const handleSavePhoto = () => {
     if (photoData.url && photoData.alt) {
-      const maxOrder = Math.max(...carouselPhotos.map(p => p.order), 0);
-      const newPhoto = {
-        url: photoData.url,
-        alt: photoData.alt,
-        title: photoData.title,
-        location: photoData.location,
-        order: photoData.order || maxOrder + 1
-      };
-      
-      addCarouselPhoto(newPhoto).catch(error => {
-        console.error('Erreur lors de l\'ajout:', error);
-        alert(`Erreur lors de l'ajout de la photo: ${error.message || 'Vérifiez votre connexion.'}`);
-      });
-      
-      // Ne pas fermer le formulaire, juste vider les données
-      setPhotoData({});
+      if (editingPhotoId) {
+        // Modification
+        updateCarouselPhoto(editingPhotoId, photoData).then(() => {
+          closeAllModals();
+        }).catch(error => {
+          console.error('Erreur lors de la modification:', error);
+          alert(`Erreur lors de la modification de la photo: ${error.message || 'Vérifiez votre connexion.'}`);
+        });
+      } else {
+        // Ajout
+        const maxOrder = Math.max(...carouselPhotos.map(p => p.order), 0);
+        const newPhoto = {
+          url: photoData.url,
+          alt: photoData.alt,
+          title: photoData.title,
+          location: photoData.location,
+          order: photoData.order || maxOrder + 1
+        };
+        
+        addCarouselPhoto(newPhoto).then(() => {
+          setPhotoData({});
+        }).catch(error => {
+          console.error('Erreur lors de l\'ajout:', error);
+          alert(`Erreur lors de l'ajout de la photo: ${error.message || 'Vérifiez votre connexion.'}`);
+        });
+      }
     }
-  };
-
-  const handleCancel = () => {
-    setActiveSection(null);
-    setEditingPhotoId(null);
-    setFormData({});
-    setCategoryData({});
-    setPhotoData({});
   };
 
   const handleDelete = (id: string) => {
@@ -197,34 +228,9 @@ const AdminPanel: React.FC = () => {
       location: photo.location,
       order: photo.order
     });
+    setShowPhotoModal(true);
   };
 
-  const handleSavePhotoEdit = () => {
-    if (editingPhotoId && photoData.url && photoData.alt) {
-      updateCarouselPhoto(editingPhotoId, photoData).then(() => {
-        setEditingPhotoId(null);
-        setPhotoData({});
-      }).catch(error => {
-        console.error('Erreur lors de la modification:', error);
-        alert(`Erreur lors de la modification de la photo: ${error.message || 'Vérifiez votre connexion.'}`);
-      });
-    }
-  };
-
-  const handleCancelPhotoEdit = () => {
-    setEditingPhotoId(null);
-    setPhotoData({});
-  };
-  
-  const openSection = (section: 'structures' | 'categories' | 'photos') => {
-    setActiveSection(section);
-    // Fermer les autres sections
-    setShowAddForm(section === 'structures');
-    setShowCategoryForm(section === 'categories');
-    setShowPhotoForm(section === 'photos');
-    setShowEditForm(false);
-  };
-  
   const movePhoto = (id: string, direction: 'up' | 'down') => {
     const sortedPhotos = [...carouselPhotos].sort((a, b) => a.order - b.order);
     const currentIndex = sortedPhotos.findIndex(p => p.id === id);
@@ -292,12 +298,10 @@ const AdminPanel: React.FC = () => {
 
     if (draggedIndex === -1 || targetIndex === -1) return;
 
-    // Réorganiser le tableau
     const newStructures = [...sortedStructures];
     const [draggedStructure] = newStructures.splice(draggedIndex, 1);
     newStructures.splice(targetIndex, 0, draggedStructure);
 
-    // Mettre à jour les ordres
     newStructures.forEach((structure, index) => {
       updateStructure(structure.id, { order: index + 1 });
     });
@@ -332,25 +336,25 @@ const AdminPanel: React.FC = () => {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 w-full lg:w-auto">
             <button
-              onClick={() => openSection('structures')}
+              onClick={openStructureModal}
               className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 sm:px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center justify-center text-sm lg:text-base shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              {activeSection === 'structures' ? 'Gérer Structures' : 'Ajouter Structure'}
+              Ajouter Structure
             </button>
             <button
-              onClick={() => openSection('categories')}
+              onClick={openCategoryModal}
               className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 sm:px-6 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all flex items-center justify-center text-sm lg:text-base shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <Tag className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              {activeSection === 'categories' ? 'Gérer Catégories' : 'Ajouter Catégorie'}
+              Ajouter Catégorie
             </button>
             <button
-              onClick={() => openSection('photos')}
+              onClick={openPhotoModal}
               className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-4 sm:px-6 py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-purple-700 transition-all flex items-center justify-center text-sm lg:text-base shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <Camera className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              {activeSection === 'photos' ? 'Gérer Photos' : 'Ajouter Photo'}
+              Ajouter Photo
             </button>
             <button
               onClick={logout}
@@ -383,7 +387,7 @@ const AdminPanel: React.FC = () => {
               <div>
                 <p className="text-xs lg:text-sm text-gray-600 font-medium">Prix Moyen</p>
                 <p className="text-xl lg:text-2xl font-bold text-gray-900">
-                  {Math.round(structures.reduce((acc, s) => acc + s.price, 0) / structures.length)}€
+                  {structures.length > 0 ? Math.round(structures.reduce((acc, s) => acc + s.price, 0) / structures.length) : 0}€
                 </p>
               </div>
             </div>
@@ -414,533 +418,122 @@ const AdminPanel: React.FC = () => {
           </div>
         </div>
 
-        {/* Gestion des photos du carrousel */}
-        {activeSection === 'photos' && (
-          <div className="bg-white rounded-xl shadow-lg p-4 lg:p-6 mb-8">
-            <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 lg:mb-6">
-              {editingPhotoId ? 'Modifier la Photo' : 'Gérer les Photos du Carrousel'}
-            </h2>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  URL de l'image * {editingPhotoId && <span className="text-blue-600">(Modification en cours)</span>}
-                </label>
-                <input
-                  type="url"
-                  placeholder="https://i.imgur.com/example.png"
-                  value={photoData.url || ''}
-                  onChange={(e) => setPhotoData({...photoData, url: e.target.value})}
-                  className="w-full px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Description (Alt text) * {editingPhotoId && <span className="text-blue-600">(Modification en cours)</span>}
-                </label>
-                <input
-                  type="text"
-                  placeholder="Description de l'image"
-                  value={photoData.alt || ''}
-                  onChange={(e) => setPhotoData({...photoData, alt: e.target.value})}
-                  className="w-full px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Titre de l'événement
-                </label>
-                <input
-                  type="text"
-                  placeholder="ex: Anniversaire Magique"
-                  value={photoData.title || ''}
-                  onChange={(e) => setPhotoData({...photoData, title: e.target.value})}
-                  className="w-full px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Localisation
-                </label>
-                <input
-                  type="text"
-                  placeholder="ex: Paris 15ème"
-                  value={photoData.location || ''}
-                  onChange={(e) => setPhotoData({...photoData, location: e.target.value})}
-                  className="w-full px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-                />
-              </div>
-            </div>
-            
-            {photoData.url && (
-              <div className="mb-6">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Aperçu :</label>
-                <img 
-                  src={photoData.url} 
-                  alt="Aperçu" 
-                  className="w-32 sm:w-48 h-24 sm:h-32 object-cover rounded-lg border-2 border-gray-200 shadow-md"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                  }}
-                />
-              </div>
-            )}
-            
-            <div className="flex flex-col sm:flex-row gap-3 mb-6">
-              {editingPhotoId ? (
-                <>
-                  <button
-                    onClick={handleSavePhotoEdit}
-                    className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 lg:px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105"
-                  >
-                    <Save className="w-4 h-4 lg:w-5 lg:h-5 mr-2" />
-                    Sauvegarder les modifications
-                  </button>
-                  <button
-                    onClick={handleCancelPhotoEdit}
-                    className="bg-gray-500 text-white px-4 lg:px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center justify-center shadow-lg hover:shadow-xl"
-                  >
-                    <X className="w-4 h-4 lg:w-5 lg:h-5 mr-2" />
-                    Annuler la modification
-                  </button>
-                </>
-              ) : (
+        {/* Section des catégories */}
+        <div className="bg-white rounded-xl shadow-lg p-4 lg:p-6 mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl lg:text-2xl font-bold text-gray-900">Catégories ({categories.length})</h2>
+            <button
+              onClick={openCategoryModal}
+              className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all flex items-center text-sm shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Nouvelle catégorie
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {categories.map((category) => (
+              <div key={category.id} className="bg-gray-50 p-3 lg:p-4 rounded-lg flex items-center justify-between hover:bg-gray-100 transition-colors">
+                <div className="flex items-center">
+                  <span className="text-xl lg:text-2xl mr-2 lg:mr-3">{category.icon}</span>
+                  <span className="font-medium text-sm lg:text-base">{category.label}</span>
+                </div>
                 <button
-                  onClick={handleAddPhoto}
-                  className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-4 lg:px-6 py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-purple-700 transition-all flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105"
+                  onClick={() => handleDeleteCategory(category.id)}
+                  className="text-red-600 hover:text-red-800 transition-colors p-1 hover:bg-red-100 rounded"
                 >
-                  <Save className="w-4 h-4 lg:w-5 lg:h-5 mr-2" />
-                  Ajouter une autre photo
+                  <Trash2 className="w-3 h-3 lg:w-4 lg:h-4" />
                 </button>
-              )}
-              <button
-                onClick={handleCancel}
-                className="bg-gray-500 text-white px-4 lg:px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center justify-center shadow-lg hover:shadow-xl"
-              >
-                <X className="w-4 h-4 lg:w-5 lg:h-5 mr-2" />
-                Fermer
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              <h3 className="text-lg lg:text-xl font-semibold text-gray-900">Photos actuelles :</h3>
-              {[...carouselPhotos].sort((a, b) => a.order - b.order).map((photo, index) => (
-                <div key={photo.id} className={`p-3 lg:p-4 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
-                  editingPhotoId === photo.id ? 'bg-blue-50 border-2 border-blue-300' : 'bg-gray-50'
-                }`}>
-                  <div className="flex items-center flex-1">
-                    <img 
-                      src={photo.url} 
-                      alt={photo.alt}
-                      className="w-12 h-9 lg:w-16 lg:h-12 object-cover rounded mr-3 lg:mr-4 flex-shrink-0"
-                    />
-                    <div>
-                      <p className="font-medium text-sm lg:text-base">{photo.title || photo.alt}</p>
-                      {photo.location && (
-                        <p className="text-xs lg:text-sm text-blue-600">📍 {photo.location}</p>
-                      )}
-                      <p className="text-xs lg:text-sm text-gray-500">Position: {index + 1}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 lg:gap-2 justify-end sm:justify-start">
-                    <button
-                      onClick={() => movePhoto(photo.id, 'up')}
-                      disabled={index === 0}
-                      className="p-1 lg:p-2 text-blue-600 hover:text-blue-800 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors hover:bg-blue-100 rounded"
-                      title="Monter"
-                    >
-                      <ArrowUp className="w-3 h-3 lg:w-4 lg:h-4" />
-                    </button>
-                    <button
-                      onClick={() => movePhoto(photo.id, 'down')}
-                      disabled={index === carouselPhotos.length - 1}
-                      className="p-1 lg:p-2 text-blue-600 hover:text-blue-800 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors hover:bg-blue-100 rounded"
-                      title="Descendre"
-                    >
-                      <ArrowDown className="w-3 h-3 lg:w-4 lg:h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleEditPhoto(photo)}
-                      className="p-1 lg:p-2 text-blue-600 hover:text-blue-800 transition-colors hover:bg-blue-100 rounded"
-                      title="Modifier"
-                    >
-                      <Edit className="w-3 h-3 lg:w-4 lg:h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDeletePhoto(photo.id)}
-                      className="p-1 lg:p-2 text-red-600 hover:text-red-800 transition-colors hover:bg-red-100 rounded"
-                      title="Supprimer"
-                    >
-                      <Trash2 className="w-3 h-3 lg:w-4 lg:h-4" />
-                    </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Section des photos */}
+        <div className="bg-white rounded-xl shadow-lg p-4 lg:p-6 mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl lg:text-2xl font-bold text-gray-900">Photos Carrousel ({carouselPhotos.length})</h2>
+            <button
+              onClick={openPhotoModal}
+              className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-purple-600 hover:to-purple-700 transition-all flex items-center text-sm shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Nouvelle photo
+            </button>
+          </div>
+          
+          <div className="space-y-4">
+            {[...carouselPhotos].sort((a, b) => a.order - b.order).map((photo, index) => (
+              <div key={photo.id} className="bg-gray-50 p-3 lg:p-4 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center flex-1">
+                  <img 
+                    src={photo.url} 
+                    alt={photo.alt}
+                    className="w-12 h-9 lg:w-16 lg:h-12 object-cover rounded mr-3 lg:mr-4 flex-shrink-0"
+                  />
+                  <div>
+                    <p className="font-medium text-sm lg:text-base">{photo.title || photo.alt}</p>
+                    {photo.location && (
+                      <p className="text-xs lg:text-sm text-blue-600">📍 {photo.location}</p>
+                    )}
+                    <p className="text-xs lg:text-sm text-gray-500">Position: {index + 1}</p>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Gestion des catégories */}
-        {activeSection === 'categories' && (
-          <div className="bg-white rounded-xl shadow-lg p-4 lg:p-6 mb-8">
-            <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 lg:mb-6">Gérer les Catégories</h2>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-              <input
-                type="text"
-                placeholder="Nom de la catégorie"
-                value={categoryData.label || ''}
-                onChange={(e) => setCategoryData({...categoryData, label: e.target.value})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
-              <input
-                type="text"
-                placeholder="Emoji (ex: 🏰)"
-                value={categoryData.icon || ''}
-                onChange={(e) => setCategoryData({...categoryData, icon: e.target.value})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
-            </div>
-            
-            <div className="flex flex-col sm:flex-row gap-3 mb-6">
-              <button
-                onClick={handleAddCategory}
-                className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 lg:px-6 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105"
-              >
-                <Save className="w-4 h-4 lg:w-5 lg:h-5 mr-2" />
-                Ajouter une autre catégorie
-              </button>
-              <button
-                onClick={handleCancel}
-                className="bg-gray-500 text-white px-4 lg:px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center justify-center shadow-lg hover:shadow-xl"
-              >
-                <X className="w-4 h-4 lg:w-5 lg:h-5 mr-2" />
-                Fermer
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {categories.map((category) => (
-                <div key={category.id} className="bg-gray-50 p-3 lg:p-4 rounded-lg flex items-center justify-between hover:bg-gray-100 transition-colors">
-                  <div className="flex items-center">
-                    <span className="text-xl lg:text-2xl mr-2 lg:mr-3">{category.icon}</span>
-                    <span className="font-medium text-sm lg:text-base">{category.label}</span>
-                  </div>
+                <div className="flex items-center gap-1 lg:gap-2 justify-end sm:justify-start">
                   <button
-                    onClick={() => handleDeleteCategory(category.id)}
-                    className="text-red-600 hover:text-red-800 transition-colors p-1 hover:bg-red-100 rounded"
+                    onClick={() => movePhoto(photo.id, 'up')}
+                    disabled={index === 0}
+                    className="p-1 lg:p-2 text-blue-600 hover:text-blue-800 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors hover:bg-blue-100 rounded"
+                    title="Monter"
+                  >
+                    <ArrowUp className="w-3 h-3 lg:w-4 lg:h-4" />
+                  </button>
+                  <button
+                    onClick={() => movePhoto(photo.id, 'down')}
+                    disabled={index === carouselPhotos.length - 1}
+                    className="p-1 lg:p-2 text-blue-600 hover:text-blue-800 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors hover:bg-blue-100 rounded"
+                    title="Descendre"
+                  >
+                    <ArrowDown className="w-3 h-3 lg:w-4 lg:h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleEditPhoto(photo)}
+                    className="p-1 lg:p-2 text-blue-600 hover:text-blue-800 transition-colors hover:bg-blue-100 rounded"
+                    title="Modifier"
+                  >
+                    <Edit className="w-3 h-3 lg:w-4 lg:h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDeletePhoto(photo.id)}
+                    className="p-1 lg:p-2 text-red-600 hover:text-red-800 transition-colors hover:bg-red-100 rounded"
+                    title="Supprimer"
                   >
                     <Trash2 className="w-3 h-3 lg:w-4 lg:h-4" />
                   </button>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        )}
-
-        {/* Formulaire d'ajout */}
-        {activeSection === 'structures' && !showEditForm && (
-          <div className="bg-white rounded-xl shadow-lg p-4 lg:p-6 mb-8">
-            <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 lg:mb-6">Ajouter une nouvelle structure</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <input
-                type="text"
-                placeholder="Nom de la structure"
-                value={formData.name || ''}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
-              <select
-                value={formData.category || ''}
-                onChange={(e) => setFormData({...formData, category: e.target.value})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              >
-                <option value="">Sélectionner une catégorie</option>
-                {categories.map(cat => (
-                  <option key={cat.id} value={cat.id}>{cat.label}</option>
-                ))}
-              </select>
-              <input
-                type="text"
-                placeholder="Dimensions (ex: 7,7m x 6,6m x 1,5m)"
-                value={formData.size || ''}
-                onChange={(e) => setFormData({...formData, size: e.target.value})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
-              <input
-                type="text"
-                placeholder="Capacité (ex: 2 personnes max)"
-                value={formData.capacity || ''}
-                onChange={(e) => setFormData({...formData, capacity: e.target.value})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
-              <input
-                type="text"
-                placeholder="Âge (ex: 3-77 ans)"
-                value={formData.age || ''}
-                onChange={(e) => setFormData({...formData, age: e.target.value})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
-              <input
-                type="number"
-                placeholder="Prix (€)"
-                value={formData.price || ''}
-                onChange={(e) => setFormData({...formData, price: parseInt(e.target.value)})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
-              <input
-                type="number"
-                placeholder="Prix 2 jours (€)"
-                value={formData.price2Days || ''}
-                onChange={(e) => setFormData({...formData, price2Days: parseInt(e.target.value)})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
-              <input
-                type="number"
-                placeholder="Poids max (kg)"
-                value={formData.maxWeight || ''}
-                onChange={(e) => setFormData({...formData, maxWeight: parseInt(e.target.value)})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
-              <div className="lg:col-span-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  <Image className="w-4 h-4 inline mr-1" />
-                  URL de l'image * (Lien direct vers l'image)
-                </label>
-                <input
-                  type="url"
-                  placeholder="https://i.imgur.com/fLqAlJ1.png (lien direct)"
-                  value={formData.image || ''}
-                  onChange={(e) => setFormData({...formData, image: e.target.value})}
-                  className="w-full px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  💡 Pour Imgur: utilisez https://i.imgur.com/ID.extension (ex: https://i.imgur.com/fLqAlJ1.png)
-                </p>
-                {formData.image && (
-                  <div className="mt-3">
-                    <img 
-                      src={formData.image} 
-                      alt="Aperçu" 
-                      className="w-24 sm:w-32 h-18 sm:h-24 object-cover rounded-lg border-2 border-gray-200 shadow-md"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
-              <div className="lg:col-span-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Description complète *
-                </label>
-                <textarea
-                  placeholder="Description complète avec emojis et détails..."
-                  value={formData.description || ''}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  className="w-full px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
-                  rows={6}
-                />
-              </div>
-              <div className="lg:col-span-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Services et normes
-                </label>
-                <textarea
-                  placeholder="Services et normes (ex: Enrouleur électrique inclus, Conforme EN 14960...)"
-                  value={formData.services || ''}
-                  onChange={(e) => setFormData({...formData, services: e.target.value})}
-                  className="w-full px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
-                  rows={3}
-                />
-              </div>
-              <div className="lg:col-span-2">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={formData.available ?? true}
-                    onChange={(e) => setFormData({...formData, available: e.target.checked})}
-                    className="mr-2 w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                  />
-                  <span className="text-sm font-semibold text-gray-700">Structure disponible</span>
-                </label>
-              </div>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 mt-6">
-              <button
-                onClick={handleAdd}
-                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 lg:px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105"
-              >
-                <Save className="w-4 h-4 lg:w-5 lg:h-5 mr-2" />
-                Ajouter une autre structure
-              </button>
-              <button
-                onClick={handleCancel}
-                className="bg-gray-500 text-white px-4 lg:px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center justify-center shadow-lg hover:shadow-xl"
-              >
-                <X className="w-4 h-4 lg:w-5 lg:h-5 mr-2" />
-                Fermer
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Formulaire d'édition */}
-        {showEditForm && (
-          <div className="bg-white rounded-xl shadow-lg p-4 lg:p-6 mb-8">
-            <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 lg:mb-6">Modifier la structure</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <input
-                type="text"
-                placeholder="Nom de la structure"
-                value={formData.name || ''}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
-              <select
-                value={formData.category || ''}
-                onChange={(e) => setFormData({...formData, category: e.target.value})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              >
-                <option value="">Sélectionner une catégorie</option>
-                {categories.map(cat => (
-                  <option key={cat.id} value={cat.id}>{cat.label}</option>
-                ))}
-              </select>
-              <input
-                type="text"
-                placeholder="Dimensions (ex: 7,7m x 6,6m x 1,5m)"
-                value={formData.size || ''}
-                onChange={(e) => setFormData({...formData, size: e.target.value})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
-              <input
-                type="text"
-                placeholder="Capacité (ex: 2 personnes max)"
-                value={formData.capacity || ''}
-                onChange={(e) => setFormData({...formData, capacity: e.target.value})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
-              <input
-                type="text"
-                placeholder="Âge (ex: 3-77 ans)"
-                value={formData.age || ''}
-                onChange={(e) => setFormData({...formData, age: e.target.value})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
-              <input
-                type="number"
-                placeholder="Prix (€)"
-                value={formData.price || ''}
-                onChange={(e) => setFormData({...formData, price: parseInt(e.target.value)})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
-              <input
-                type="number"
-                placeholder="Prix 2 jours (€)"
-                value={formData.price2Days || ''}
-                onChange={(e) => setFormData({...formData, price2Days: parseInt(e.target.value)})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
-              <input
-                type="number"
-                placeholder="Poids max (kg)"
-                value={formData.maxWeight || ''}
-                onChange={(e) => setFormData({...formData, maxWeight: parseInt(e.target.value)})}
-                className="px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              />
-              <div className="lg:col-span-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  <Image className="w-4 h-4 inline mr-1" />
-                  URL de l'image * (Lien direct vers l'image)
-                </label>
-                <input
-                  type="url"
-                  placeholder="https://i.imgur.com/fLqAlJ1.png (lien direct)"
-                  value={formData.image || ''}
-                  onChange={(e) => setFormData({...formData, image: e.target.value})}
-                  className="w-full px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  💡 Pour Imgur: utilisez https://i.imgur.com/ID.extension (ex: https://i.imgur.com/fLqAlJ1.png)
-                </p>
-                {formData.image && (
-                  <div className="mt-3">
-                    <img 
-                      src={formData.image} 
-                      alt="Aperçu" 
-                      className="w-24 sm:w-32 h-18 sm:h-24 object-cover rounded-lg border-2 border-gray-200 shadow-md"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
-              <div className="lg:col-span-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Description complète *
-                </label>
-                <textarea
-                  placeholder="Description complète avec emojis et détails..."
-                  value={formData.description || ''}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  className="w-full px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
-                  rows={6}
-                />
-              </div>
-              <div className="lg:col-span-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Services et normes
-                </label>
-                <textarea
-                  placeholder="Services et normes (ex: Enrouleur électrique inclus, Conforme EN 14960...)"
-                  value={formData.services || ''}
-                  onChange={(e) => setFormData({...formData, services: e.target.value})}
-                  className="w-full px-3 lg:px-4 py-2 lg:py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
-                  rows={3}
-                />
-              </div>
-              <div className="lg:col-span-2">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={formData.available ?? true}
-                    onChange={(e) => setFormData({...formData, available: e.target.checked})}
-                    className="mr-2 w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                  />
-                  <span className="text-sm font-semibold text-gray-700">Structure disponible</span>
-                </label>
-              </div>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 mt-6">
-              <button
-                onClick={handleSaveEdit}
-                className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 lg:px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105"
-              >
-                <Save className="w-4 h-4 lg:w-5 lg:h-5 mr-2" />
-                Sauvegarder
-              </button>
-              <button
-                onClick={handleCancel}
-                className="bg-gray-500 text-white px-4 lg:px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center justify-center shadow-lg hover:shadow-xl"
-              >
-                <X className="w-4 h-4 lg:w-5 lg:h-5 mr-2" />
-                Annuler
-              </button>
-            </div>
-          </div>
-        )}
+        </div>
 
         {/* Liste des structures avec glisser-déposer */}
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="px-4 lg:px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg lg:text-xl font-bold text-gray-900">
-              Structures Existantes ({structures.length})
-              <span className="text-sm font-normal text-gray-600 ml-2">
-                - Glissez-déposez pour réorganiser l'ordre d'affichage
-              </span>
-            </h2>
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg lg:text-xl font-bold text-gray-900">
+                Structures Existantes ({structures.length})
+                <span className="text-sm font-normal text-gray-600 ml-2">
+                  - Glissez-déposez pour réorganiser l'ordre d'affichage
+                </span>
+              </h2>
+              <button
+                onClick={openStructureModal}
+                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center text-sm shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Nouvelle structure
+              </button>
+            </div>
           </div>
           
           <div className="overflow-x-auto min-h-0">
@@ -1033,7 +626,7 @@ const AdminPanel: React.FC = () => {
                     <td className="px-3 lg:px-6 py-4">
                       <div className="flex gap-1 lg:gap-2">
                         <button
-                          onClick={() => handleEdit(structure)}
+                          onClick={() => handleEditStructure(structure)}
                           className="text-blue-600 hover:text-blue-900 transition-colors p-1 hover:bg-blue-100 rounded"
                           title="Modifier"
                         >
@@ -1055,6 +648,325 @@ const AdminPanel: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Modale Structure */}
+      {showStructureModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl lg:text-2xl font-bold text-gray-900">
+                  {editingStructureId ? 'Modifier la structure' : 'Ajouter une nouvelle structure'}
+                </h3>
+                <button
+                  onClick={closeAllModals}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  placeholder="Nom de la structure *"
+                  value={formData.name || ''}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                />
+                <select
+                  value={formData.category || ''}
+                  onChange={(e) => setFormData({...formData, category: e.target.value})}
+                  className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                >
+                  <option value="">Sélectionner une catégorie *</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.id}>{cat.label}</option>
+                  ))}
+                </select>
+                <input
+                  type="text"
+                  placeholder="Dimensions (ex: 7,7m x 6,6m x 1,5m)"
+                  value={formData.size || ''}
+                  onChange={(e) => setFormData({...formData, size: e.target.value})}
+                  className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                />
+                <input
+                  type="text"
+                  placeholder="Capacité (ex: 2 personnes max)"
+                  value={formData.capacity || ''}
+                  onChange={(e) => setFormData({...formData, capacity: e.target.value})}
+                  className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                />
+                <input
+                  type="text"
+                  placeholder="Âge (ex: 3-77 ans)"
+                  value={formData.age || ''}
+                  onChange={(e) => setFormData({...formData, age: e.target.value})}
+                  className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                />
+                <input
+                  type="number"
+                  placeholder="Prix (€) *"
+                  value={formData.price || ''}
+                  onChange={(e) => setFormData({...formData, price: parseInt(e.target.value)})}
+                  className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                />
+                <input
+                  type="number"
+                  placeholder="Prix 2 jours (€)"
+                  value={formData.price2Days || ''}
+                  onChange={(e) => setFormData({...formData, price2Days: parseInt(e.target.value)})}
+                  className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                />
+                <input
+                  type="number"
+                  placeholder="Poids max (kg)"
+                  value={formData.maxWeight || ''}
+                  onChange={(e) => setFormData({...formData, maxWeight: parseInt(e.target.value)})}
+                  className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                />
+                <div className="lg:col-span-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <Image className="w-4 h-4 inline mr-1" />
+                    URL de l'image * (Lien direct vers l'image)
+                  </label>
+                  <input
+                    type="url"
+                    placeholder="https://i.imgur.com/fLqAlJ1.png (lien direct)"
+                    value={formData.image || ''}
+                    onChange={(e) => setFormData({...formData, image: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    💡 Pour Imgur: utilisez https://i.imgur.com/ID.extension (ex: https://i.imgur.com/fLqAlJ1.png)
+                  </p>
+                  {formData.image && (
+                    <div className="mt-3">
+                      <img 
+                        src={formData.image} 
+                        alt="Aperçu" 
+                        className="w-32 h-24 object-cover rounded-lg border-2 border-gray-200 shadow-md"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+                <div className="lg:col-span-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Description complète *
+                  </label>
+                  <textarea
+                    placeholder="Description complète avec emojis et détails..."
+                    value={formData.description || ''}
+                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
+                    rows={4}
+                  />
+                </div>
+                <div className="lg:col-span-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Services et normes
+                  </label>
+                  <textarea
+                    placeholder="Services et normes (ex: Enrouleur électrique inclus, Conforme EN 14960...)"
+                    value={formData.services || ''}
+                    onChange={(e) => setFormData({...formData, services: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
+                    rows={3}
+                  />
+                </div>
+                <div className="lg:col-span-2">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={formData.available ?? true}
+                      onChange={(e) => setFormData({...formData, available: e.target.checked})}
+                      className="mr-2 w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                    />
+                    <span className="text-sm font-semibold text-gray-700">Structure disponible</span>
+                  </label>
+                </div>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                <button
+                  onClick={handleSaveStructure}
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  <Save className="w-5 h-5 mr-2" />
+                  {editingStructureId ? 'Modifier' : 'Ajouter'}
+                </button>
+                <button
+                  onClick={closeAllModals}
+                  className="bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center justify-center shadow-lg hover:shadow-xl"
+                >
+                  <X className="w-5 h-5 mr-2" />
+                  Annuler
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modale Catégorie */}
+      {showCategoryModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-gray-900">Ajouter une catégorie</h3>
+                <button
+                  onClick={closeAllModals}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  placeholder="Nom de la catégorie *"
+                  value={categoryData.label || ''}
+                  onChange={(e) => setCategoryData({...categoryData, label: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                />
+                <input
+                  type="text"
+                  placeholder="Emoji (ex: 🏰) *"
+                  value={categoryData.icon || ''}
+                  onChange={(e) => setCategoryData({...categoryData, icon: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                />
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                <button
+                  onClick={handleSaveCategory}
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  <Save className="w-5 h-5 mr-2" />
+                  Ajouter
+                </button>
+                <button
+                  onClick={closeAllModals}
+                  className="bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center justify-center shadow-lg hover:shadow-xl"
+                >
+                  <X className="w-5 h-5 mr-2" />
+                  Annuler
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modale Photo */}
+      {showPhotoModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-gray-900">
+                  {editingPhotoId ? 'Modifier la photo' : 'Ajouter une photo au carrousel'}
+                </h3>
+                <button
+                  onClick={closeAllModals}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    URL de l'image *
+                  </label>
+                  <input
+                    type="url"
+                    placeholder="https://i.imgur.com/example.png"
+                    value={photoData.url || ''}
+                    onChange={(e) => setPhotoData({...photoData, url: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Description (Alt text) *
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Description de l'image"
+                    value={photoData.alt || ''}
+                    onChange={(e) => setPhotoData({...photoData, alt: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Titre de l'événement
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="ex: Anniversaire Magique"
+                    value={photoData.title || ''}
+                    onChange={(e) => setPhotoData({...photoData, title: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Localisation
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="ex: Paris 15ème"
+                    value={photoData.location || ''}
+                    onChange={(e) => setPhotoData({...photoData, location: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  />
+                </div>
+              </div>
+              
+              {photoData.url && (
+                <div className="mt-6">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Aperçu :</label>
+                  <img 
+                    src={photoData.url} 
+                    alt="Aperçu" 
+                    className="w-48 h-32 object-cover rounded-lg border-2 border-gray-200 shadow-md"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
+              
+              <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                <button
+                  onClick={handleSavePhoto}
+                  className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-purple-700 transition-all flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  <Save className="w-5 h-5 mr-2" />
+                  {editingPhotoId ? 'Modifier' : 'Ajouter'}
+                </button>
+                <button
+                  onClick={closeAllModals}
+                  className="bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center justify-center shadow-lg hover:shadow-xl"
+                >
+                  <X className="w-5 h-5 mr-2" />
+                  Annuler
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modale de confirmation de suppression */}
       {deleteConfirm && (
