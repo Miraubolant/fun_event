@@ -684,21 +684,21 @@ const AdminPanel: React.FC = () => {
                   type="number"
                   placeholder="Prix (€) *"
                   value={formData.price || ''}
-                  onChange={(e) => setFormData({...formData, price: parseInt(e.target.value)})}
+                  onChange={(e) => setFormData({...formData, price: Number(e.target.value) || 0})}
                   className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
                 />
                 <input
                   type="number"
                   placeholder="Prix 2 jours (€)"
                   value={formData.price2Days || ''}
-                  onChange={(e) => setFormData({...formData, price2Days: parseInt(e.target.value)})}
+                  onChange={(e) => setFormData({...formData, price2Days: Number(e.target.value) || undefined})}
                   className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
                 />
                 <input
                   type="number"
                   placeholder="Poids max (kg)"
                   value={formData.maxWeight || ''}
-                  onChange={(e) => setFormData({...formData, maxWeight: parseInt(e.target.value)})}
+                  onChange={(e) => setFormData({...formData, maxWeight: Number(e.target.value) || undefined})}
                   className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
                 />
                 <div className="lg:col-span-2">
