@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Camera, Calendar, MapPin, Users, X } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
+import StructureModal from './StructureModal';
 import SEOHead from './SEOHead';
+import { Structure } from '../types';
 
 const Events: React.FC = () => {
   const { carouselPhotos, structures } = useStructures();
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+  const [selectedStructure, setSelectedStructure] = useState<Structure | null>(null);
   
   // Trier les photos par ordre
   const sortedPhotos = [...carouselPhotos].sort((a, b) => a.order - b.order);
@@ -18,6 +21,13 @@ const Events: React.FC = () => {
     setSelectedPhoto(null);
   };
 
+  const openStructureModal = (structure: Structure) => {
+    setSelectedStructure(structure);
+  };
+
+  const closeStructureModal = () => {
+    setSelectedStructure(null);
+  };
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       closeModal();
@@ -107,9 +117,18 @@ const Events: React.FC = () => {
                       {photo.structureId && (
                         <div className="mt-2 bg-gradient-to-r from-blue-500 to-orange-500 px-3 py-1 rounded-full text-xs font-bold inline-block">
                           🎪 {structures.find(s => s.id === photo.structureId)?.name || 'Structure'}
-                        </div>
-                      )}
-                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const structure = structures.find(s => s.id === photo.structureId);
+                        if (structure) {
+                          openStructureModal(structure);
+                        }
+                      }}
+                      className="mt-2 bg-gradient-to-r from-blue-500 to-orange-500 px-3 py-1 rounded-full text-xs font-bold inline-block hover:from-blue-600 hover:to-orange-600 transition-all transform hover:scale-105"
+                    >
+                      🎪 {structures.find(s => s.id === photo.structureId)?.name || 'Structure'} - Voir détails
+                    </button>
                   </div>
                 </div>
               ))}
@@ -168,6 +187,15 @@ const Events: React.FC = () => {
             />
           </div>
         </div>
+      )}
+
+      {/* Modal pour les détails de structure */}
+      {selectedStructure && (
+        <StructureModal
+          structure={selectedStructure}
+          isOpen={!!selectedStructure}
+          onClose={closeStructureModal}
+        />
       )}
     </>
   );
