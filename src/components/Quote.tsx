@@ -244,9 +244,20 @@ const Quote: React.FC = () => {
             {estimatedPrice && (
               <div className="bg-gradient-to-r from-blue-500 to-orange-500 text-white p-6 rounded-xl mb-8">
                 <h3 className="text-2xl font-bold mb-2">Estimation de votre devis</h3>
-                <p className="text-4xl font-bold">{estimatedPrice}€</p>
+                <p className="text-4xl font-bold">
+                  {estimatedPrice === 0 || formData.structures.some(structureItem => {
+                    const structure = availableStructures.find(s => s.id === structureItem.id);
+                    return structure?.customPricing;
+                  }) ? 'Prix sur mesure' : `${estimatedPrice}€`}
+                </p>
                 <p className="text-sm opacity-90">
-                  Prix indicatif basé sur {formData.structures.length} structure(s) - Devis définitif sous 48h
+                  {estimatedPrice === 0 || formData.structures.some(structureItem => {
+                    const structure = availableStructures.find(s => s.id === structureItem.id);
+                    return structure?.customPricing;
+                  }) 
+                    ? 'Devis personnalisé - Réponse sous 48h'
+                    : `Prix indicatif basé sur ${formData.structures.length} structure(s) - Devis définitif sous 48h`
+                  }
                 </p>
               </div>
             )}

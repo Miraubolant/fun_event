@@ -118,6 +118,10 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onNavigateToQuot
                 } else if (item.duration === 'custom' && item.customDays) {
                   multiplier = item.customDays * 0.9;
                   durationLabel = `${item.customDays} jour${item.customDays > 1 ? 's' : ''}`;
+                  displayPrice = 'Prix sur mesure';
+                } else {
+                  displayPrice = `${price * item.quantity}€`;
+                }
                 
                 const finalPrice = Math.round(price * multiplier);
                 
