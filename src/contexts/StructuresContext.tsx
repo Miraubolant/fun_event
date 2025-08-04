@@ -98,6 +98,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
             description,
             available,
             order_position,
+            custom_pricing,
             created_at,
             updated_at
           `)

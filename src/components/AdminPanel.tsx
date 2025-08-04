@@ -97,10 +97,7 @@ const AdminPanel: React.FC = () => {
       
       if (editingStructureId) {
         // Modification
-        updateStructure(editingStructureId, {
-          ...formData,
-          customPricing: formData.customPricing ?? false
-        });
+        updateStructure(editingStructureId, formData);
         closeAllModals();
       } else {
         // Ajout
