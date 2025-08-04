@@ -115,12 +115,7 @@ const Events: React.FC = () => {
                         <span>{photo.location || 'Île-de-France'}</span>
                       </div>
                       {photo.structureId && (
-                        <div className="mt-2 bg-gradient-to-r from-blue-500 to-orange-500 px-3 py-1 rounded-full text-xs font-bold inline-block">
-                          🎪 {structures.find(s => s.id === photo.structureId)?.name || 'Structure'}
-                        </div>
-                      )}
-                      {photo.structureId && (
-                        <button
+                        <div className="mt-2">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
