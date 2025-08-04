@@ -172,9 +172,6 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onNavigateToQuot
                           </div>
                           <div className="text-right">
                            <p className="font-bold text-orange-600 text-sm sm:text-base">{displayPrice}</p>
-                           {item.duration !== 'custom' && (
-                             <p className="text-xs text-gray-500">{finalPrice}€ x {item.quantity}</p>
-                           )}
                             <p className="text-xs text-blue-600">{durationLabel}</p>
                           </div>
                         </div>
