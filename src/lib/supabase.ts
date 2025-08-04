@@ -120,6 +120,7 @@ export interface Database {
           title: string | null;
           location: string | null;
           order_position: number;
+          structure_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -130,6 +131,7 @@ export interface Database {
           title?: string | null;
           location?: string | null;
           order_position?: number;
+          structure_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -140,6 +142,7 @@ export interface Database {
           title?: string | null;
           location?: string | null;
           order_position?: number;
+          structure_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
