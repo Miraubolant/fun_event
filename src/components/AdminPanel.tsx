@@ -82,10 +82,16 @@ const AdminPanel: React.FC = () => {
   };
 
   const handleSaveStructure = () => {
-    if (formData.name && formData.category && (formData.customPricing || formData.price)) {
+    if (formData.name && formData.category) {
       const categoryExists = categories.find(c => c.id === formData.category);
       if (!categoryExists) {
         alert('Veuillez sélectionner une catégorie valide.');
+        return;
+      }
+      
+      // Vérifier que le prix est fourni si ce n'est pas un prix sur mesure
+      if (!formData.customPricing && !formData.price) {
+        alert('Veuillez saisir un prix ou cocher "Prix sur mesure".');
         return;
       }
       
@@ -679,37 +685,15 @@ const AdminPanel: React.FC = () => {
                   placeholder="Prix (€) *"
                   value={formData.price || ''}
                   onChange={(e) => setFormData({...formData, price: parseInt(e.target.value)})}
-                  disabled={formData.customPricing}
-                  className={`px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-200 transition-all ${
-                    formData.customPricing 
-                      ? 'border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed' 
-                      : 'border-gray-200 focus:border-blue-500'
-                  }`}
+                  className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
                 />
-                {formData.customPricing && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg border-2 border-gray-300">
-                    <span className="text-gray-600 font-medium">Prix sur devis</span>
-                  </div>
-                )}
-              </div>
-              <div className="relative">
                 <input
                   type="number"
                   placeholder="Prix 2 jours (€)"
                   value={formData.price2Days || ''}
                   onChange={(e) => setFormData({...formData, price2Days: parseInt(e.target.value)})}
-                  disabled={formData.customPricing}
-                  className={`px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-200 transition-all ${
-                    formData.customPricing 
-                      ? 'border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed' 
-                      : 'border-gray-200 focus:border-blue-500'
-                  }`}
+                  className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
                 />
-                {formData.customPricing && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg border-2 border-gray-300">
-                    <span className="text-gray-600 font-medium">Prix sur devis</span>
-                  </div>
-                )}
                 <input
                   type="number"
                   placeholder="Poids max (kg)"
@@ -788,6 +772,13 @@ const AdminPanel: React.FC = () => {
                     />
                     <span className="text-sm font-semibold text-gray-700">Prix sur mesure (devis personnalisé)</span>
                   </label>
+                  {formData.customPricing && (
+                    <div className="mt-2 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                      <p className="text-sm text-orange-700">
+                        ⚠️ <strong>Prix sur mesure activé</strong> - Les champs prix ne sont plus obligatoires
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
               
