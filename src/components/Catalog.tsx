@@ -149,14 +149,7 @@ const Catalog: React.FC = () => {
                 />
                 <div className="absolute top-2 right-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
                   <span itemProp="offers" itemScope itemType="https://schema.org/Offer">
-                    {structure.customPricing ? (
-                      <span>Prix sur Devis</span>
-                    ) : (
-                      <>
-                        <span itemProp="price">{structure.price}</span>
-                        <span itemProp="priceCurrency" content="EUR">€</span>
-                      </>
-                    )}
+                    {structure.customPricing ? 'Prix sur Devis' : `${structure.price}€`}
                   </span>
                 </div>
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">

@@ -89,9 +89,15 @@ const StructureModal: React.FC<StructureModalProps> = ({ structure, isOpen, onCl
                   Tarifs
                 </h3>
                 <div className="space-y-1">
-                  <p className="text-lg font-bold text-blue-600">1 jour: {structure.price}€</p>
-                  {structure.price2Days && (
-                    <p className="text-lg font-bold text-orange-600">2 jours: {structure.price2Days}€</p>
+                  {structure.customPricing ? (
+                    <p className="text-lg font-bold text-orange-600">Prix sur Devis</p>
+                  ) : (
+                    <>
+                      <p className="text-lg font-bold text-blue-600">1 jour: {structure.price}€</p>
+                      {structure.price2Days && (
+                        <p className="text-lg font-bold text-orange-600">2 jours: {structure.price2Days}€</p>
+                      )}
+                    </>
                   )}
                 </div>
               </div>

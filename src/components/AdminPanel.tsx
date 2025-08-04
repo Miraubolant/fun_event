@@ -97,7 +97,10 @@ const AdminPanel: React.FC = () => {
       
       if (editingStructureId) {
         // Modification
-        updateStructure(editingStructureId, formData);
+        updateStructure(editingStructureId, {
+          ...formData,
+          customPricing: formData.customPricing ?? false
+        });
         closeAllModals();
       } else {
         // Ajout
@@ -585,9 +588,15 @@ const AdminPanel: React.FC = () => {
                     </td>
                     <td className="px-3 lg:px-6 py-4">
                       <div className="text-xs lg:text-sm font-semibold text-gray-900">
-                        <div>{structure.price}€/jour</div>
-                        {structure.price2Days && (
-                          <div className="text-xs text-gray-600 hidden lg:block">{structure.price2Days}€/2j</div>
+                        {structure.customPricing ? (
+                          <div className="text-orange-600">Prix sur Devis</div>
+                        ) : (
+                          <>
+                            <div>{structure.price}€/jour</div>
+                            {structure.price2Days && (
+                              <div className="text-xs text-gray-600 hidden lg:block">{structure.price2Days}€/2j</div>
+                            )}
+                          </>
                         )}
                       </div>
                     </td>

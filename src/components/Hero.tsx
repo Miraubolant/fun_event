@@ -232,7 +232,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                                   </div>
                                   {/* Badge prix */}
                                   <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
-                                    {structure.price}€
+                                    {structure.customPricing ? 'Prix sur Devis' : `${structure.price}€`}
                                   </div>
                                 </div>
                               </div>
