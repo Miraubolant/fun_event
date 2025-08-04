@@ -24,17 +24,6 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onNavigateToQuot
       let multiplier = 1;
       let durationLabel = '1 jour';
       
-      // Gestion des structures avec prix sur mesure
-      if (item.structure.customPricing) {
-        message += `${index + 1}. *${item.structure.name}*\n`;
-        message += `   • Quantité: ${item.quantity}\n`;
-        message += `   • Durée: ${durationLabel}\n`;
-        message += `   • Prix: Sur mesure\n`;
-        message += `   • Sous-total: Sur mesure\n\n`;
-        hasCustomPricing = true;
-        return;
-      }
-      
       if (item.duration === '2days' && item.structure.price2Days) {
         price = item.structure.price2Days;
         durationLabel = '2 jours (weekend)';
