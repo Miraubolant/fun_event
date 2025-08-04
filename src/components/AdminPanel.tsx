@@ -82,7 +82,7 @@ const AdminPanel: React.FC = () => {
   };
 
   const handleSaveStructure = () => {
-    if (formData.name && formData.category && formData.price) {
+    if (formData.name && formData.category && (formData.customPricing || formData.price)) {
       const categoryExists = categories.find(c => c.id === formData.category);
       if (!categoryExists) {
         alert('Veuillez sélectionner une catégorie valide.');
@@ -101,13 +101,14 @@ const AdminPanel: React.FC = () => {
           size: formData.size || '',
           capacity: formData.capacity || '',
           age: formData.age || '',
-          price: formData.price,
+          price: formData.customPricing ? 0 : (formData.price || 0),
           price2Days: formData.price2Days,
           maxWeight: formData.maxWeight,
           services: formData.services,
           image: formData.image || 'https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=400',
           description: formData.description || '',
-          available: formData.available ?? true
+          available: formData.available ?? true,
+          customPricing: formData.customPricing ?? false
         };
         
         addStructure(newStructure).then(() => {
@@ -678,15 +679,37 @@ const AdminPanel: React.FC = () => {
                   placeholder="Prix (€) *"
                   value={formData.price || ''}
                   onChange={(e) => setFormData({...formData, price: parseInt(e.target.value)})}
-                  className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  disabled={formData.customPricing}
+                  className={`px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-200 transition-all ${
+                    formData.customPricing 
+                      ? 'border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed' 
+                      : 'border-gray-200 focus:border-blue-500'
+                  }`}
                 />
+                {formData.customPricing && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg border-2 border-gray-300">
+                    <span className="text-gray-600 font-medium">Prix sur devis</span>
+                  </div>
+                )}
+              </div>
+              <div className="relative">
                 <input
                   type="number"
                   placeholder="Prix 2 jours (€)"
                   value={formData.price2Days || ''}
                   onChange={(e) => setFormData({...formData, price2Days: parseInt(e.target.value)})}
-                  className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  disabled={formData.customPricing}
+                  className={`px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-200 transition-all ${
+                    formData.customPricing 
+                      ? 'border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed' 
+                      : 'border-gray-200 focus:border-blue-500'
+                  }`}
                 />
+                {formData.customPricing && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg border-2 border-gray-300">
+                    <span className="text-gray-600 font-medium">Prix sur devis</span>
+                  </div>
+                )}
                 <input
                   type="number"
                   placeholder="Poids max (kg)"
