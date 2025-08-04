@@ -71,6 +71,7 @@ export interface Database {
           image: string;
           description: string;
           available: boolean;
+          custom_pricing: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -88,6 +89,7 @@ export interface Database {
           image: string;
           description: string;
           available?: boolean;
+          custom_pricing?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -105,6 +107,7 @@ export interface Database {
           image?: string;
           description?: string;
           available?: boolean;
+          custom_pricing?: boolean;
           created_at?: string;
           updated_at?: string;
         };
