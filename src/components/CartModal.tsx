@@ -95,19 +95,18 @@ const CartModal: React.FC<CartModalProps> = ({ isOpen, onClose, onNavigateToQuot
                 let price = item.structure.price;
                 let multiplier = 1;
                 let durationLabel = '1 jour';
-               let displayPrice = '';
+                let displayPrice = '';
                 
-                if (item.duration === '2days' && item.structure.price2Days) {
+                // Si la structure a un prix sur mesure
+                if (item.structure.customPricing) {
+                  displayPrice = 'Prix sur mesure';
+                } else if (item.duration === '2days' && item.structure.price2Days) {
                   price = item.structure.price2Days;
                   durationLabel = '2 jours (weekend)';
-                 displayPrice = `${price * item.quantity}€`;
+                  displayPrice = `${price * item.quantity}€`;
                 } else if (item.duration === 'custom' && item.customDays) {
                   multiplier = item.customDays * 0.9;
                   durationLabel = `${item.customDays} jour${item.customDays > 1 ? 's' : ''}`;
-                 displayPrice = 'Prix sur mesure';
-               } else {
-                 displayPrice = `${price * item.quantity}€`;
-                }
                 
                 const finalPrice = Math.round(price * multiplier);
                 

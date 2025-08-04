@@ -93,13 +93,18 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   const getTotalPrice = () => {
     return items.reduce((total, item) => {
-      // Si au moins un item a une durée custom, on ne peut pas calculer le total
-      if (items.some(i => i.duration === 'custom')) {
+      // Si au moins un item a une durée custom ou un prix sur mesure, on ne peut pas calculer le total
+      if (items.some(i => i.duration === 'custom' || i.structure.customPricing)) {
         return 0; // Retourner 0 pour indiquer un prix sur mesure
       }
       
       let price = item.structure.price;
       let multiplier = 1;
+      
+      // Si la structure a un prix sur mesure, on ne peut pas calculer
+      if (item.structure.customPricing) {
+        return 0;
+      }
       
       if (item.duration === '2days' && item.structure.price2Days) {
         price = item.structure.price2Days;
