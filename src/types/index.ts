@@ -13,6 +13,7 @@ export interface Structure {
   description: string;
   available: boolean;
   order?: number;
+  customPricing?: boolean;
 }
 
 export interface Category {
@@ -34,6 +35,7 @@ export interface CarouselPhoto {
   title?: string;
   location?: string;
   order: number;
+  structureId?: string;
 }
 
 export type Page = 'accueil' | 'catalogue' | 'faq' | 'devis' | 'contact' | 'admin';

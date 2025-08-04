@@ -756,6 +756,15 @@ const AdminPanel: React.FC = () => {
                     />
                     <span className="text-sm font-semibold text-gray-700">Structure disponible</span>
                   </label>
+                  <label className="flex items-center mt-3">
+                    <input
+                      type="checkbox"
+                      checked={formData.customPricing ?? false}
+                      onChange={(e) => setFormData({...formData, customPricing: e.target.checked})}
+                      className="mr-2 w-4 h-4 text-orange-600 rounded focus:ring-orange-500"
+                    />
+                    <span className="text-sm font-semibold text-gray-700">Prix sur mesure (devis personnalisé)</span>
+                  </label>
                 </div>
               </div>
               
@@ -898,6 +907,24 @@ const AdminPanel: React.FC = () => {
                     onChange={(e) => setPhotoData({...photoData, location: e.target.value})}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
                   />
+                </div>
+                <div className="lg:col-span-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Structure associée (optionnel)
+                  </label>
+                  <select
+                    value={photoData.structureId || ''}
+                    onChange={(e) => setPhotoData({...photoData, structureId: e.target.value || undefined})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  >
+                    <option value="">Aucune structure associée</option>
+                    {structures.map(structure => (
+                      <option key={structure.id} value={structure.id}>{structure.name}</option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    💡 Si sélectionnée, le nom de la structure s'affichera au survol de la photo
+                  </p>
                 </div>
               </div>
               

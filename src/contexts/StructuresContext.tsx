@@ -127,7 +127,8 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
             image: item.image || '',
             description: item.description || '',
             available: item.available ?? true,
-            order: item.order_position || 1
+            order: item.order_position || 1,
+            customPricing: item.custom_pricing ?? false
           }));
           setStructures(transformedStructures);
         }
@@ -159,7 +160,8 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
             alt: item.alt,
             title: item.title,
             location: item.location,
-            order: item.order_position
+            order: item.order_position,
+            structureId: item.structure_id
           }));
           setCarouselPhotos(transformedPhotos);
         }
@@ -232,7 +234,8 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
           image: newStructure.image,
           description: newStructure.description,
           available: newStructure.available,
-          order_position: nextOrder
+          order_position: nextOrder,
+          custom_pricing: newStructure.customPricing ?? false
         })
         .select()
         .single();
@@ -272,6 +275,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       if (updatedStructure.description !== undefined) updateData.description = updatedStructure.description;
       if (updatedStructure.available !== undefined) updateData.available = updatedStructure.available;
       if (updatedStructure.order !== undefined) updateData.order_position = updatedStructure.order;
+      if (updatedStructure.customPricing !== undefined) updateData.custom_pricing = updatedStructure.customPricing;
 
       const { error } = await supabase
         .from('structures')
@@ -414,7 +418,8 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
           alt: newPhoto.alt,
           title: newPhoto.title,
           location: newPhoto.location,
-          order_position: newPhoto.order
+          order_position: newPhoto.order,
+          structure_id: newPhoto.structureId
         });
 
       if (error) throw error;
@@ -444,6 +449,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       if (updatedPhoto.title !== undefined) updateData.title = updatedPhoto.title;
       if (updatedPhoto.location !== undefined) updateData.location = updatedPhoto.location;
       if (updatedPhoto.order !== undefined) updateData.order_position = updatedPhoto.order;
+      if (updatedPhoto.structureId !== undefined) updateData.structure_id = updatedPhoto.structureId;
 
       const { error } = await supabase
         .from('carousel_photos')

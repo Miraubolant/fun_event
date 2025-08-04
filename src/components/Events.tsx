@@ -4,7 +4,7 @@ import { useStructures } from '../contexts/StructuresContext';
 import SEOHead from './SEOHead';
 
 const Events: React.FC = () => {
-  const { carouselPhotos } = useStructures();
+  const { carouselPhotos, structures } = useStructures();
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   
   // Trier les photos par ordre
@@ -104,6 +104,11 @@ const Events: React.FC = () => {
                         <MapPin className="w-4 h-4 mr-1" />
                         <span>{photo.location || 'Île-de-France'}</span>
                       </div>
+                      {photo.structureId && (
+                        <div className="mt-2 bg-gradient-to-r from-blue-500 to-orange-500 px-3 py-1 rounded-full text-xs font-bold inline-block">
+                          🎪 {structures.find(s => s.id === photo.structureId)?.name || 'Structure'}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
