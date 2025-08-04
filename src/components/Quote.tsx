@@ -575,8 +575,7 @@ const Quote: React.FC = () => {
                             <div>
                               <h3 className="font-bold text-gray-900 text-sm sm:text-base">{structure.name}</h3>
                               <p className="text-blue-600 font-bold text-xs sm:text-sm">
-                                1 jour: {structure.price}€
-                                {structure.price2Days && ` • 2 jours: ${structure.price2Days}€`}
+                                {structure.customPricing ? 'Prix sur mesure' : `À partir de ${structure.price}€`}
                               </p>
                               {isFromCart && (
                                // Mettre à jour le formulaire
@@ -598,9 +597,9 @@ const Quote: React.FC = () => {
                             className="w-full px-2 py-2 sm:px-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-xs sm:text-sm"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            <option value="1day">1 journée - {structure.price}€</option>
+                            <option value="1day">1 journée</option>
                             {structure.price2Days && (
-                              <option value="2days">Weekend (2 jours) - {structure.price2Days}€</option>
+                              <option value="2days">Weekend (2 jours)</option>
                             )}
                             <option value="custom">Plusieurs jours - Prix sur mesure</option>
                           </select>
