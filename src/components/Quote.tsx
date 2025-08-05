@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, MapPin, Users, Clock, Calculator, CheckCircle, ArrowRight, Cake, Church, Heart, Building2, Handshake, Home, Tent, Theater, PartyPopper } from 'lucide-react';
+import { Calendar, MapPin, Users, Clock, Calculator, CheckCircle, ArrowRight } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { useStructures } from '../contexts/StructuresContext';
 import SEOHead from './SEOHead';
@@ -48,15 +48,15 @@ const Quote: React.FC = () => {
   }, [cartItems]);
 
   const eventTypes = [
-    { id: 'anniversaire', label: 'Anniversaire enfant', icon: Cake },
-    { id: 'bapteme', label: 'Baptême/Communion', icon: Church },
-    { id: 'mariage', label: 'Mariage', icon: Heart },
-    { id: 'entreprise', label: 'Fête d\'entreprise', icon: Building2 },
-    { id: 'team-building', label: 'Team building', icon: Handshake },
-    { id: 'quartier', label: 'Fête de quartier', icon: Home },
-    { id: 'kermesse', label: 'Kermesse', icon: Tent },
-    { id: 'festival', label: 'Festival', icon: Theater },
-    { id: 'autre', label: 'Autre', icon: PartyPopper }
+    { id: 'anniversaire', label: 'Anniversaire enfant', icon: '🎂' },
+    { id: 'bapteme', label: 'Baptême/Communion', icon: '⛪' },
+    { id: 'mariage', label: 'Mariage', icon: '💒' },
+    { id: 'entreprise', label: 'Fête d\'entreprise', icon: '🏢' },
+    { id: 'team-building', label: 'Team building', icon: '🤝' },
+    { id: 'quartier', label: 'Fête de quartier', icon: '🏘️' },
+    { id: 'kermesse', label: 'Kermesse', icon: '🎪' },
+    { id: 'festival', label: 'Festival', icon: '🎭' },
+    { id: 'autre', label: 'Autre', icon: '🎉' }
   ];
 
   const durations = [
@@ -393,9 +393,6 @@ const Quote: React.FC = () => {
                   </label>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {eventTypes.map(type => (
-                      {
-                        const IconComponent = type.icon;
-                        return (
                       <label 
                         key={type.id}
                         className={`flex items-center p-3 sm:p-4 border-2 rounded-xl cursor-pointer transition-all transform hover:scale-105 ${
@@ -412,11 +409,9 @@ const Quote: React.FC = () => {
                           onChange={handleInputChange}
                           className="sr-only"
                         />
-                        <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-blue-500" />
+                        <span className="text-xl sm:text-2xl mr-2 sm:mr-3">{type.icon}</span>
                         <span className="font-medium text-sm sm:text-base">{type.label}</span>
                       </label>
-                        );
-                      }
                     ))}
                   </div>
                 </div>
