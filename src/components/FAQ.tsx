@@ -4,22 +4,6 @@ import SEOHead from './SEOHead';
 import { useAuth } from '../contexts/AuthContext';
 
 const FAQ: React.FC = () => {
-  const [openItems, setOpenItems] = useState<number[]>([0]); // Premier item ouvert par défaut
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
-  const [editableFaqData, setEditableFaqData] = useState(faqData);
-  const { user } = useAuth();
-  
-  const isAdmin = user?.email === 'admin@funevent.fr';
-
-  const toggleItem = (index: number) => {
-    setOpenItems(prev => 
-      prev.includes(index) 
-        ? prev.filter(i => i !== index)
-        : [...prev, index]
-    );
-  };
-
   const faqData = [
     {
       category: 'Réservation',
@@ -75,6 +59,23 @@ const FAQ: React.FC = () => {
       ]
     }
   ];
+
+  const [openItems, setOpenItems] = useState<number[]>([0]); // Premier item ouvert par défaut
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [editableFaqData, setEditableFaqData] = useState(faqData);
+  const { user } = useAuth();
+  
+  const isAdmin = user?.email === 'admin@funevent.fr';
+
+  const toggleItem = (index: number) => {
+    setOpenItems(prev => 
+      prev.includes(index) 
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
+  };
+
 
   const updateCategory = (categoryIndex: number, field: string, value: string) => {
     setEditableFaqData(prev => prev.map((category, index) => 
