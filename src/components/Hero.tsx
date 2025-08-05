@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Shield, Truck, Clock, Star, Users, Award, Phone, MessageCircle, Ruler, Heart, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
+import { ArrowRight, Shield, Truck, Clock, Star, Users, Award, Phone, MessageCircle, Ruler, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
 import StructureModal from './StructureModal';
 import SEOHead from './SEOHead';
@@ -475,10 +475,9 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
 
 // Composant PhotoCarousel
 const PhotoCarousel: React.FC = () => {
-  const { carouselPhotos, structures } = useStructures();
+  const { carouselPhotos } = useStructures();
   const [currentSlide, setCurrentSlide] = React.useState(0);
   const [itemsPerSlide, setItemsPerSlide] = React.useState(3);
-  const [selectedStructure, setSelectedStructure] = React.useState<Structure | null>(null);
   
   // Trier les photos par ordre
   const sortedPhotos = [...carouselPhotos].sort((a, b) => a.order - b.order);
@@ -535,148 +534,106 @@ const PhotoCarousel: React.FC = () => {
     }
   }, [currentSlide, totalSlides]);
 
-  const openStructureModal = (structure: Structure) => {
-    setSelectedStructure(structure);
-  };
-
-  const closeStructureModal = () => {
-    setSelectedStructure(null);
-  };
-
   if (sortedPhotos.length === 0) return null;
 
   return (
-    <>
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
-              <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
-                Nos Structures
-              </span>
-              <br />
-              <span className="bg-gradient-to-r text-transparent bg-clip-text animate-pulse" style={{backgroundImage: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
-                en Action 📸
-              </span>
-            </h2>
-            <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-3xl mx-auto">
-              🎪 Découvrez nos structures gonflables <span className="font-bold" style={{color: '#0F97F6'}}>en situation</span> lors d'événements 
-              <span className="font-bold text-orange-500"> réels</span> ! 🎉
-            </p>
-          </div>
-
-          {/* Carrousel Container */}
-          <div className="relative max-w-6xl mx-auto">
-            {/* Navigation Buttons */}
-            {totalSlides > 1 && (
-              <>
-                <button
-                  onClick={prevSlide}
-                  className="absolute -left-4 sm:-left-6 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all hover:scale-110 border-2 border-gray-100"
-                >
-                  <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7 text-gray-600" />
-                </button>
-                <button
-                  onClick={nextSlide}
-                  className="absolute -right-4 sm:-right-6 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all hover:scale-110 border-2 border-gray-100"
-                >
-                  <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7 text-gray-600" />
-                </button>
-              </>
-            )}
-            
-            {/* Carrousel Content */}
-            <div className="overflow-hidden rounded-2xl">
-              <div 
-                className="flex transition-transform duration-500 ease-in-out"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {Array.from({ length: totalSlides }, (_, slideIndex) => (
-                  <div key={slideIndex} className="w-full flex-shrink-0 px-4">
-                    <div className={`grid gap-4 md:gap-8 ${
-                      itemsPerSlide === 1 ? 'grid-cols-1' :
-                      itemsPerSlide === 2 ? 'grid-cols-2' :
-                      'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-                    }`}>
-                      {sortedPhotos
-                        .slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide)
-                        .map((photo) => (
-                        <div 
-                          key={photo.id}
-                          className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 overflow-hidden w-full"
-                        >
-                          <div className="relative">
-                            <img 
-                              src={photo.url} 
-                              alt={photo.alt}
-                              className="w-full h-64 sm:h-80 object-cover group-hover:scale-110 transition-transform duration-500"
-                              loading="lazy"
-                              onError={(e) => {
-                                e.currentTarget.src = 'https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=400';
-                              }}
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <div className="absolute bottom-4 left-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                              <h3 className="text-lg font-bold mb-1">{photo.title || photo.alt}</h3>
-                              <div className="flex items-center text-sm">
-                                <MapPin className="w-4 h-4 mr-1" />
-                                <span>{photo.location || 'Île-de-France'}</span>
-                              </div>
-                              {photo.structureId && (
-                                <div className="mt-2">
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      const structure = structures.find(s => s.id === photo.structureId);
-                                      if (structure) {
-                                        openStructureModal(structure);
-                                      }
-                                    }}
-                                    className="bg-gradient-to-r from-blue-500 to-orange-500 px-3 py-1 rounded-full text-xs font-bold inline-block hover:from-blue-600 hover:to-orange-600 transition-all transform hover:scale-105"
-                                  >
-                                    🎪 {structures.find(s => s.id === photo.structureId)?.name || 'Structure'} - Voir détails
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            {/* Dots Indicators */}
-            {totalSlides > 1 && (
-              <div className="flex justify-center mt-8 space-x-2">
-                {Array.from({ length: totalSlides }, (_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => goToSlide(index)}
-                    className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
-                      currentSlide === index
-                        ? 'bg-gradient-to-r from-blue-500 to-orange-500 scale-125'
-                        : 'bg-gray-300 hover:bg-gray-400'
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
+    <section className="py-16 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
+            <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
+              Nos Structures
+            </span>
+            <br />
+            <span className="bg-gradient-to-r text-transparent bg-clip-text animate-pulse" style={{backgroundImage: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
+              en Action 📸
+            </span>
+          </h2>
+          <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-3xl mx-auto">
+            🎪 Découvrez nos structures gonflables <span className="font-bold" style={{color: '#0F97F6'}}>en situation</span> lors d'événements 
+            <span className="font-bold text-orange-500"> réels</span> ! 🎉
+          </p>
         </div>
-      </section>
 
-      {/* Modal pour les structures */}
-      {selectedStructure && (
-        <StructureModal
-          structure={selectedStructure}
-          isOpen={!!selectedStructure}
-          onClose={closeStructureModal}
-        />
-      )}
-    </>
+        {/* Carrousel Container */}
+        <div className="relative max-w-6xl mx-auto">
+          {/* Navigation Buttons */}
+          {totalSlides > 1 && (
+            <>
+              <button
+                onClick={prevSlide}
+                className="absolute -left-4 sm:-left-6 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all hover:scale-110 border-2 border-gray-100"
+              >
+                <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7 text-gray-600" />
+              </button>
+              <button
+                onClick={nextSlide}
+                className="absolute -right-4 sm:-right-6 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all hover:scale-110 border-2 border-gray-100"
+              >
+                <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7 text-gray-600" />
+              </button>
+            </>
+          )}
+          
+          {/* Carrousel Content */}
+          <div className="overflow-hidden rounded-2xl">
+            <div 
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+            >
+              {Array.from({ length: totalSlides }, (_, slideIndex) => (
+                <div key={slideIndex} className="w-full flex-shrink-0 px-4">
+                  <div className={`grid gap-4 md:gap-8 ${
+                    itemsPerSlide === 1 ? 'grid-cols-1' :
+                    itemsPerSlide === 2 ? 'grid-cols-2' :
+                    'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                  }`}>
+                    {sortedPhotos
+                      .slice(slideIndex * itemsPerSlide, (slideIndex + 1) * itemsPerSlide)
+                      .map((photo) => (
+                      <div 
+                        key={photo.id}
+                        className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 overflow-hidden w-full"
+                      >
+                        <div className="relative">
+                          <img 
+                            src={photo.url} 
+                            alt={photo.alt}
+                            className="w-full h-64 sm:h-80 object-cover group-hover:scale-110 transition-transform duration-500"
+                            loading="lazy"
+                            onError={(e) => {
+                              e.currentTarget.src = 'https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=400';
+                            }}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Dots Indicators */}
+          {totalSlides > 1 && (
+            <div className="flex justify-center mt-8 space-x-2">
+              {Array.from({ length: totalSlides }, (_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToSlide(index)}
+                  className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
+                    currentSlide === index
+                      ? 'bg-gradient-to-r from-blue-500 to-orange-500 scale-125'
+                      : 'bg-gray-300 hover:bg-gray-400'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
   );
 };
 
