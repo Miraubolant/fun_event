@@ -74,7 +74,7 @@ const Contact: React.FC = () => {
     {
       icon: Mail,
       title: 'Email',
-      value: 'contact@funevent.fr',
+      value: 'contact@fun-event.fr',
       description: 'Réponse sous 24h',
       link: 'mailto:contact@fun-event.fr',
       color: 'from-blue-500 to-blue-600'
