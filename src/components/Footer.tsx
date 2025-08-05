@@ -52,7 +52,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   <Instagram className="w-6 h-6" />
                 </a>
                 <a 
-                  href="https://snapchat.com/add/FUN_EVENTT" 
+                  href="https://www.tiktok.com/@fun_eventt?_t=ZN-8yd95VMbOJ4&_r=1" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center bg-white/20 backdrop-blur-sm hover:bg-yellow-500 hover:text-white transition-all p-3 rounded-xl border border-white/30 hover:scale-110 transform"
