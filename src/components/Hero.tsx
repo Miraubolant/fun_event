@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Shield, Truck, Clock, Star, Users, Award, Phone, MessageCircle, Ruler, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, Shield, Truck, Clock, Star, Users, Award, Phone, MessageCircle, Ruler, Heart, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
 import StructureModal from './StructureModal';
 import SEOHead from './SEOHead';
