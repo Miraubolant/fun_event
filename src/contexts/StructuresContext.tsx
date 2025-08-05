@@ -767,12 +767,107 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
     }
   };
 
+  // Fonctions pour les liens sociaux
+  const addSocialLink = async (newLink: Omit<SocialLink, 'id'>) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
+    try {
+      const { error } = await supabase
+        .from('social_links')
+        .insert({
+          platform: newLink.platform,
+          url: newLink.url,
+          icon: newLink.icon,
+          label: newLink.label,
+          active: newLink.active,
+          order_position: newLink.order
+        });
+
+      if (error) throw error;
+      await refreshData();
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout du lien social:', error);
+      throw error;
+    }
+  };
+
+  const updateSocialLink = async (id: string, updatedLink: Partial<SocialLink>) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
+    try {
+      const updateData: any = {};
+      
+      if (updatedLink.platform !== undefined) updateData.platform = updatedLink.platform;
+      if (updatedLink.url !== undefined) updateData.url = updatedLink.url;
+      if (updatedLink.icon !== undefined) updateData.icon = updatedLink.icon;
+      if (updatedLink.label !== undefined) updateData.label = updatedLink.label;
+      if (updatedLink.active !== undefined) updateData.active = updatedLink.active;
+      if (updatedLink.order !== undefined) updateData.order_position = updatedLink.order;
+
+      const { error } = await supabase
+        .from('social_links')
+        .update(updateData)
+        .eq('id', id);
+
+      if (error) throw error;
+      await refreshData();
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du lien social:', error);
+      throw error;
+    }
+  };
+
+  const deleteSocialLink = async (id: string) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
+    try {
+      const { error } = await supabase
+        .from('social_links')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      await refreshData();
+    } catch (error) {
+      console.error('Erreur lors de la suppression du lien social:', error);
+      throw error;
+    }
+  };
+
+  const reorderSocialLinks = async (links: SocialLink[]) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
+    try {
+      // Mettre à jour l'ordre de chaque lien
+      const updates = links.map((link, index) => 
+        supabase
+          .from('social_links')
+          .update({ order_position: index + 1 })
+          .eq('id', link.id)
+      );
+
+      await Promise.all(updates);
+      await refreshData();
+    } catch (error) {
+      console.error('Erreur lors de la réorganisation des liens sociaux:', error);
+      throw error;
+    }
+  };
   return (
     <StructuresContext.Provider value={{ 
       structures, 
       categories, 
       carouselPhotos,
       faqCategories,
+      socialLinks,
       loading,
       addStructure, 
       updateStructure, 
