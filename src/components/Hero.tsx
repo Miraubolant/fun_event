@@ -5,15 +5,15 @@ import { useAuth } from '../contexts/AuthContext';
 import StructureModal from './StructureModal';
 import SEOHead from './SEOHead';
 import { Page } from '../types';
-import { Structure } from '../types';
+import { Structure, SocialLink } from '../types';
 
 interface HeroProps {
   onNavigate: (page: Page) => void;
 }
 
 const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
-  const { structures, socialLinks } = useStructures();
-  const { user } = useAuth();
+  const { structures, socialLinks, addSocialLink, updateSocialLink, deleteSocialLink } = useStructures();
+  const { user, isAdmin } = useAuth();
   const [selectedStructure, setSelectedStructure] = React.useState<Structure | null>(null);
   const [currentSlide, setCurrentSlide] = React.useState(0);
   
@@ -85,7 +85,6 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
     setSelectedStructure(null);
   };
 
-  const isAdmin = user?.email === 'admin@funevent.fr';
 
   return (
     <>
@@ -354,7 +353,13 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         </div>
         
         {/* Carrousel de photos */}
-        <TrustedClientsSection socialLinks={socialLinks} isAdmin={isAdmin} />
+        <TrustedClientsSection 
+          socialLinks={socialLinks} 
+          isAdmin={isAdmin}
+          addSocialLink={addSocialLink}
+          updateSocialLink={updateSocialLink}
+          deleteSocialLink={deleteSocialLink}
+        />
         <PhotoCarousel />
         
         {/* Transition fluide vers la section suivante */}
@@ -646,10 +651,18 @@ const PhotoCarousel: React.FC = () => {
 interface TrustedClientsSectionProps {
   socialLinks: SocialLink[];
   isAdmin: boolean;
+  addSocialLink: (link: Omit<SocialLink, 'id'>) => Promise<void>;
+  updateSocialLink: (id: string, link: Partial<SocialLink>) => Promise<void>;
+  deleteSocialLink: (id: string) => Promise<void>;
 }
 
-const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({ socialLinks, isAdmin }) => {
-  const { addSocialLink, updateSocialLink, deleteSocialLink, reorderSocialLinks } = useStructures();
+const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({ 
+  socialLinks, 
+  isAdmin, 
+  addSocialLink, 
+  updateSocialLink, 
+  deleteSocialLink 
+}) => {
   const [isEditing, setIsEditing] = React.useState(false);
   const [editingData, setEditingData] = React.useState<SocialLink[]>([]);
 
@@ -763,6 +776,7 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({ socialLin
         {/* Boutons d'édition pour l'admin */}
         {isAdmin && (
           <div className="text-center mb-8">
+            <p className="text-sm text-gray-600 mb-4">Mode admin activé - Email: {user?.email}</p>
             {!isEditing ? (
               <button
                 onClick={() => setIsEditing(true)}
