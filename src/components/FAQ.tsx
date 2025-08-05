@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, HelpCircle, Phone, MessageCircle, Search } from 'lucide-react';
+import { ChevronDown, ChevronUp, HelpCircle, Phone, MessageCircle, Search, Edit3, Save, X, Plus, Trash2 } from 'lucide-react';
 import SEOHead from './SEOHead';
+import { useAuth } from '../contexts/AuthContext';
 
 const FAQ: React.FC = () => {
   const [openItems, setOpenItems] = useState<number[]>([0]); // Premier item ouvert par défaut
   const [searchTerm, setSearchTerm] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [editableFaqData, setEditableFaqData] = useState(faqData);
+  const { user } = useAuth();
+  
+  const isAdmin = user?.email === 'admin@funevent.fr';
 
   const toggleItem = (index: number) => {
     setOpenItems(prev => 
@@ -70,8 +76,74 @@ const FAQ: React.FC = () => {
     }
   ];
 
+  const updateCategory = (categoryIndex: number, field: string, value: string) => {
+    setEditableFaqData(prev => prev.map((category, index) => 
+      index === categoryIndex ? { ...category, [field]: value } : category
+    ));
+  };
+
+  const updateQuestion = (categoryIndex: number, questionIndex: number, field: string, value: string) => {
+    setEditableFaqData(prev => prev.map((category, catIndex) => 
+      catIndex === categoryIndex 
+        ? {
+            ...category,
+            questions: category.questions.map((question, qIndex) =>
+              qIndex === questionIndex ? { ...question, [field]: value } : question
+            )
+          }
+        : category
+    ));
+  };
+
+  const addNewQuestion = (categoryIndex: number) => {
+    setEditableFaqData(prev => prev.map((category, index) => 
+      index === categoryIndex 
+        ? {
+            ...category,
+            questions: [...category.questions, { question: 'Nouvelle question', answer: 'Nouvelle réponse' }]
+          }
+        : category
+    ));
+  };
+
+  const deleteQuestion = (categoryIndex: number, questionIndex: number) => {
+    setEditableFaqData(prev => prev.map((category, catIndex) => 
+      catIndex === categoryIndex 
+        ? {
+            ...category,
+            questions: category.questions.filter((_, qIndex) => qIndex !== questionIndex)
+          }
+        : category
+    ));
+  };
+
+  const addNewCategory = () => {
+    setEditableFaqData(prev => [...prev, {
+      category: 'Nouvelle catégorie',
+      color: 'bg-gradient-to-r from-blue-500 to-orange-500',
+      icon: '🎪',
+      questions: [{ question: 'Nouvelle question', answer: 'Nouvelle réponse' }]
+    }]);
+  };
+
+  const deleteCategory = (categoryIndex: number) => {
+    setEditableFaqData(prev => prev.filter((_, index) => index !== categoryIndex));
+  };
+
+  const saveChanges = () => {
+    // Ici vous pourriez sauvegarder dans la base de données
+    console.log('Sauvegarde des modifications:', editableFaqData);
+    setIsEditing(false);
+  };
+
+  const cancelEditing = () => {
+    setEditableFaqData(faqData);
+    setIsEditing(false);
+  };
+
   // Filtrer les questions selon le terme de recherche
-  const filteredFaqData = faqData.map(category => ({
+  const dataToUse = isEditing ? editableFaqData : faqData;
+  const filteredFaqData = dataToUse.map(category => ({
     ...category,
     questions: category.questions.filter(q => 
       q.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -122,6 +194,45 @@ const FAQ: React.FC = () => {
             </p>
           </div>
         </div>
+
+        {/* Boutons d'édition pour l'admin */}
+        {isAdmin && (
+          <div className="text-center mb-8">
+            {!isEditing ? (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="bg-gradient-to-r from-blue-500 to-orange-500 text-white px-6 py-3 rounded-full font-bold hover:shadow-xl transition-all inline-flex items-center"
+              >
+                <Edit3 className="w-5 h-5 mr-2" />
+                Modifier la FAQ
+              </button>
+            ) : (
+              <div className="flex gap-4 justify-center">
+                <button
+                  onClick={saveChanges}
+                  className="bg-green-500 text-white px-6 py-3 rounded-full font-bold hover:bg-green-600 transition-all inline-flex items-center"
+                >
+                  <Save className="w-5 h-5 mr-2" />
+                  Sauvegarder
+                </button>
+                <button
+                  onClick={cancelEditing}
+                  className="bg-gray-500 text-white px-6 py-3 rounded-full font-bold hover:bg-gray-600 transition-all inline-flex items-center"
+                >
+                  <X className="w-5 h-5 mr-2" />
+                  Annuler
+                </button>
+                <button
+                  onClick={addNewCategory}
+                  className="bg-purple-500 text-white px-6 py-3 rounded-full font-bold hover:bg-purple-600 transition-all inline-flex items-center"
+                >
+                  <Plus className="w-5 h-5 mr-2" />
+                  Ajouter catégorie
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* FAQ par catégories */}
         <div className="space-y-8">
