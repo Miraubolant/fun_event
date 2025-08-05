@@ -341,6 +341,50 @@ const AdminPanel: React.FC = () => {
   };
 
   // Composant pour l'onglet Réseaux Sociaux
+  // Fonctions pour les réseaux sociaux
+  const handleSocialSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (editingSocial) {
+        await updateSocialLink(editingSocial, socialFormData);
+        setEditingSocial(null);
+      } else {
+        await addSocialLink(socialFormData);
+      }
+      setSocialFormData({ platform: '', url: '', icon: '', label: '', active: true });
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert('Erreur lors de la sauvegarde du lien social');
+    }
+  };
+
+  const handleEditSocial = (social: any) => {
+    setSocialFormData({
+      platform: social.platform,
+      url: social.url,
+      icon: social.icon,
+      label: social.label,
+      active: social.active
+    });
+    setEditingSocial(social.id);
+  };
+
+  const handleDeleteSocial = async (id: string) => {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce lien social ?')) {
+      try {
+        await deleteSocialLink(id);
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la suppression du lien social');
+      }
+    }
+  };
+
+  const cancelSocialEdit = () => {
+    setEditingSocial(null);
+    setSocialFormData({ platform: '', url: '', icon: '', label: '', active: true });
+  };
+
   const SocialLinksTab = () => {
     return (
       <div>
