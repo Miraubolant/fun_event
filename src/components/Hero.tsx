@@ -633,15 +633,6 @@ const PhotoCarousel: React.FC = () => {
           )}
         </div>
       </div>
-      
-      {/* Modal pour les détails de structure */}
-      {selectedStructure && (
-        <StructureModal
-          structure={selectedStructure}
-          isOpen={!!selectedStructure}
-          onClose={closeStructureModal}
-        />
-      )}
     </section>
   );
 };
