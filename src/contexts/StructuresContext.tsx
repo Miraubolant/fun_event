@@ -190,50 +190,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
         if (socialError) {
           if (socialError.code === '42P01') {
             console.warn('Table social_links n\'existe pas encore. Veuillez exécuter les migrations.');
-            // Utiliser les liens par défaut si la table n'existe pas
-            setSocialLinks([
-              {
-                id: 'default-instagram',
-                platform: 'Instagram',
-                url: 'https://www.instagram.com/fun_eventt/?igsh=dWtwMXUzYjJ6NTJi',
-                icon: '📷',
-                label: 'Instagram',
-                active: true,
-                order: 1
-              },
-              {
-                id: 'default-snapchat',
-                platform: 'Snapchat',
-                url: 'https://snapchat.com/add/FUN_EVENTT',
-                icon: '👻',
-                label: 'Snapchat',
-                active: true,
-                order: 2
-              }
-            ]);
+            setSocialLinks([]);
           } else {
             console.error('Erreur lors du chargement des liens sociaux:', socialError);
-            // Utiliser les liens par défaut si la table n'existe pas
-            setSocialLinks([
-              {
-                id: 'default-instagram',
-                platform: 'Instagram',
-                url: 'https://www.instagram.com/fun_eventt/?igsh=dWtwMXUzYjJ6NTJi',
-                icon: '📷',
-                label: 'Instagram',
-                active: true,
-                order: 1
-              },
-              {
-                id: 'default-snapchat',
-                platform: 'Snapchat',
-                url: 'https://snapchat.com/add/FUN_EVENTT',
-                icon: '👻',
-                label: 'Snapchat',
-                active: true,
-                order: 2
-              }
-            ]);
+            setSocialLinks([]);
           }
         } else {
           // Transformer les données pour correspondre au type SocialLink
@@ -250,47 +210,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
         }
       } catch (error) {
         console.warn('Impossible de charger les liens sociaux:', error);
-        // Utiliser les liens par défaut en cas d'erreur
-        setSocialLinks([
-          {
-            id: 'default-instagram',
-            platform: 'Instagram',
-            url: 'https://www.instagram.com/fun_eventt/?igsh=dWtwMXUzYjJ6NTJi',
-            icon: '📷',
-            label: 'Instagram',
-            active: true,
-            order: 1
-          },
-          {
-            id: 'default-snapchat',
-            platform: 'Snapchat',
-            url: 'https://snapchat.com/add/FUN_EVENTT',
-            icon: '👻',
-            label: 'Snapchat',
-            active: true,
-            order: 2
-          }
-        ]);
-        setSocialLinks([
-          {
-            id: 'default-instagram',
-            platform: 'Instagram',
-            url: 'https://www.instagram.com/fun_eventt/?igsh=dWtwMXUzYjJ6NTJi',
-            icon: '📷',
-            label: 'Instagram',
-            active: true,
-            order: 1
-          },
-          {
-            id: 'default-snapchat',
-            platform: 'Snapchat',
-            url: 'https://snapchat.com/add/FUN_EVENTT',
-            icon: '👻',
-            label: 'Snapchat',
-            active: true,
-            order: 2
-          }
-        ]);
+        setSocialLinks([]);
       }
       
     } catch (error) {
@@ -655,136 +575,11 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
     }
   };
 
-  // Fonctions pour les liens réseaux sociaux
-  const addSocialLink = async (newLink: Omit<SocialLink, 'id'>) => {
-    if (!supabase) {
-      throw new Error('Supabase non configuré');
-    }
-    
-    try {
-      // Vérifier que la table existe
-      const { error: testError } = await supabase
-        .from('social_links')
-        .select('id')
-        .limit(1);
-      
-      if (testError && testError.code === '42P01') {
-        throw new Error('Table social_links n\'existe pas. Veuillez exécuter les migrations Supabase.');
-      }
-      
-      // Obtenir la prochaine position
-      const { data: maxOrderData } = await supabase
-        .from('social_links')
-        .select('order_position')
-        .order('order_position', { ascending: false })
-        .limit(1);
-      
-      const nextOrder = maxOrderData && maxOrderData.length > 0 
-        ? (maxOrderData[0].order_position || 0) + 1 
-        : 1;
-      
-      const { error } = await supabase
-        .from('social_links')
-        .insert({
-          platform: newLink.platform,
-          url: newLink.url,
-          icon: newLink.icon,
-          label: newLink.label,
-          active: newLink.active,
-          order_position: nextOrder
-        });
-
-      if (error) throw error;
-      
-      await refreshData();
-    } catch (error) {
-      if (error.code === '42P01') {
-        console.error('Table social_links n\'existe pas. Veuillez exécuter les migrations Supabase.');
-        alert('Erreur: Les tables de la base de données n\'existent pas. Veuillez exécuter les migrations Supabase.');
-      } else {
-        console.error('Erreur lors de l\'ajout du lien social:', error);
-      }
-      throw error;
-    }
-  };
-
-  const updateSocialLink = async (id: string, updatedLink: Partial<SocialLink>) => {
-    if (!supabase) {
-      throw new Error('Supabase non configuré');
-    }
-    
-    try {
-      const updateData: any = {};
-      
-      if (updatedLink.platform !== undefined) updateData.platform = updatedLink.platform;
-      if (updatedLink.url !== undefined) updateData.url = updatedLink.url;
-      if (updatedLink.icon !== undefined) updateData.icon = updatedLink.icon;
-      if (updatedLink.label !== undefined) updateData.label = updatedLink.label;
-      if (updatedLink.active !== undefined) updateData.active = updatedLink.active;
-      if (updatedLink.order !== undefined) updateData.order_position = updatedLink.order;
-
-      const { error } = await supabase
-        .from('social_links')
-        .update(updateData)
-        .eq('id', id);
-
-      if (error) throw error;
-      
-      await refreshData();
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour du lien social:', error);
-      throw error;
-    }
-  };
-
-  const deleteSocialLink = async (id: string) => {
-    if (!supabase) {
-      throw new Error('Supabase non configuré');
-    }
-    
-    try {
-      const { error } = await supabase
-        .from('social_links')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      
-      await refreshData();
-    } catch (error) {
-      console.error('Erreur lors de la suppression du lien social:', error);
-      throw error;
-    }
-  };
-
-  const reorderSocialLinks = async (links: SocialLink[]) => {
-    if (!supabase) {
-      throw new Error('Supabase non configuré');
-    }
-    
-    try {
-      // Mettre à jour l'ordre de chaque lien
-      const updates = links.map((link, index) => 
-        supabase
-          .from('social_links')
-          .update({ order_position: index + 1 })
-          .eq('id', link.id)
-      );
-
-      await Promise.all(updates);
-      await refreshData();
-    } catch (error) {
-      console.error('Erreur lors de la réorganisation des liens sociaux:', error);
-      throw error;
-    }
-  };
-
   return (
     <StructuresContext.Provider value={{ 
       structures, 
       categories, 
       carouselPhotos,
-      socialLinks,
       loading,
       addStructure, 
       updateStructure, 
