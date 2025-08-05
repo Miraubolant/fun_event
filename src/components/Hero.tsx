@@ -265,14 +265,6 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                                   }
                                 </p>
                               </div>
-                              
-                              {/* Overlay au survol avec nom de la structure */}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
-                                <div className="text-white text-center">
-                                  <h3 className="text-lg sm:text-xl font-bold mb-2">{structure.name}</h3>
-                                  <p className="text-sm opacity-90">Cliquer pour voir les détails</p>
-                                </div>
-                              </div>
                             </div>
                           ))}
                         </div>
