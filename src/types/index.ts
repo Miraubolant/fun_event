@@ -39,6 +39,23 @@ export interface CarouselPhoto {
   structureId?: string;
 }
 
+export interface FAQCategory {
+  id: string;
+  category: string;
+  icon: string;
+  color: string;
+  order: number;
+  questions: FAQQuestion[];
+}
+
+export interface FAQQuestion {
+  id: string;
+  categoryId: string;
+  question: string;
+  answer: string;
+  order: number;
+}
+
 export type Page = 'accueil' | 'catalogue' | 'faq' | 'devis' | 'contact' | 'admin';
 
 export type Page = 'accueil' | 'catalogue' | 'galerie' | 'faq' | 'devis' | 'contact' | 'admin' | 'mentions-legales' | 'politique-confidentialite';

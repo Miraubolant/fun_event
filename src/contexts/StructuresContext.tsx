@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Structure, Category, CarouselPhoto } from '../types';
+import { Structure, Category, CarouselPhoto, FAQCategory, FAQQuestion } from '../types';
 import { supabase } from '../lib/supabase';
 
 interface StructuresContextType {
   structures: Structure[];
   categories: Category[];
   carouselPhotos: CarouselPhoto[];
+  faqCategories: FAQCategory[];
   loading: boolean;
   addStructure: (structure: Omit<Structure, 'id'>) => Promise<void>;
   updateStructure: (id: string, structure: Partial<Structure>) => Promise<void>;
@@ -18,6 +19,12 @@ interface StructuresContextType {
   deleteCarouselPhoto: (id: string) => Promise<void>;
   reorderCarouselPhotos: (photos: CarouselPhoto[]) => Promise<void>;
   reorderStructures: (structures: Structure[]) => Promise<void>;
+  addFAQCategory: (category: Omit<FAQCategory, 'id' | 'questions'>) => Promise<void>;
+  updateFAQCategory: (id: string, category: Partial<Omit<FAQCategory, 'id' | 'questions'>>) => Promise<void>;
+  deleteFAQCategory: (id: string) => Promise<void>;
+  addFAQQuestion: (question: Omit<FAQQuestion, 'id'>) => Promise<void>;
+  updateFAQQuestion: (id: string, question: Partial<FAQQuestion>) => Promise<void>;
+  deleteFAQQuestion: (id: string) => Promise<void>;
   refreshData: () => Promise<void>;
 }
 
@@ -39,6 +46,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   const [structures, setStructures] = useState<Structure[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [carouselPhotos, setCarouselPhotos] = useState<CarouselPhoto[]>([]);
+  const [faqCategories, setFaqCategories] = useState<FAQCategory[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Charger les données depuis Supabase
@@ -173,12 +181,61 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
         setCarouselPhotos([]);
       }
       
+      // Charger les FAQ avec gestion d'erreur
+      try {
+        const { data: faqCategoriesData, error: faqCategoriesError } = await supabase
+          .from('faq_categories')
+          .select('*')
+          .order('order_position');
+        
+        if (faqCategoriesError) {
+          if (faqCategoriesError.code === '42P01') {
+            console.warn('Table faq_categories n\'existe pas encore. Veuillez exécuter les migrations.');
+            setFaqCategories([]);
+          } else {
+            console.error('Erreur lors du chargement des catégories FAQ:', faqCategoriesError);
+            setFaqCategories([]);
+          }
+        } else {
+          // Charger les questions pour chaque catégorie
+          const categoriesWithQuestions = await Promise.all(
+            (faqCategoriesData || []).map(async (category) => {
+              const { data: questionsData } = await supabase
+                .from('faq_questions')
+                .select('*')
+                .eq('category_id', category.id)
+                .order('order_position');
+              
+              return {
+                id: category.id,
+                category: category.category,
+                icon: category.icon,
+                color: category.color,
+                order: category.order_position,
+                questions: (questionsData || []).map(q => ({
+                  id: q.id,
+                  categoryId: q.category_id,
+                  question: q.question,
+                  answer: q.answer,
+                  order: q.order_position
+                }))
+              };
+            })
+          );
+          setFaqCategories(categoriesWithQuestions);
+        }
+      } catch (error) {
+        console.warn('Impossible de charger les FAQ:', error);
+        setFaqCategories([]);
+      }
+      
     } catch (error) {
       console.error('Erreur lors du chargement des données:', error);
       // Initialiser avec des tableaux vides en cas d'erreur générale
       setCategories([]);
       setStructures([]);
       setCarouselPhotos([]);
+      setFaqCategories([]);
     } finally {
       setLoading(false);
     }
@@ -534,11 +591,148 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
     }
   };
 
+  // Fonctions pour les FAQ
+  const addFAQCategory = async (newCategory: Omit<FAQCategory, 'id' | 'questions'>) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
+    try {
+      const { error } = await supabase
+        .from('faq_categories')
+        .insert({
+          category: newCategory.category,
+          icon: newCategory.icon,
+          color: newCategory.color,
+          order_position: newCategory.order
+        });
+
+      if (error) throw error;
+      await refreshData();
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout de la catégorie FAQ:', error);
+      throw error;
+    }
+  };
+
+  const updateFAQCategory = async (id: string, updatedCategory: Partial<Omit<FAQCategory, 'id' | 'questions'>>) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
+    try {
+      const updateData: any = {};
+      
+      if (updatedCategory.category !== undefined) updateData.category = updatedCategory.category;
+      if (updatedCategory.icon !== undefined) updateData.icon = updatedCategory.icon;
+      if (updatedCategory.color !== undefined) updateData.color = updatedCategory.color;
+      if (updatedCategory.order !== undefined) updateData.order_position = updatedCategory.order;
+
+      const { error } = await supabase
+        .from('faq_categories')
+        .update(updateData)
+        .eq('id', id);
+
+      if (error) throw error;
+      await refreshData();
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour de la catégorie FAQ:', error);
+      throw error;
+    }
+  };
+
+  const deleteFAQCategory = async (id: string) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
+    try {
+      const { error } = await supabase
+        .from('faq_categories')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      await refreshData();
+    } catch (error) {
+      console.error('Erreur lors de la suppression de la catégorie FAQ:', error);
+      throw error;
+    }
+  };
+
+  const addFAQQuestion = async (newQuestion: Omit<FAQQuestion, 'id'>) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
+    try {
+      const { error } = await supabase
+        .from('faq_questions')
+        .insert({
+          category_id: newQuestion.categoryId,
+          question: newQuestion.question,
+          answer: newQuestion.answer,
+          order_position: newQuestion.order
+        });
+
+      if (error) throw error;
+      await refreshData();
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout de la question FAQ:', error);
+      throw error;
+    }
+  };
+
+  const updateFAQQuestion = async (id: string, updatedQuestion: Partial<FAQQuestion>) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
+    try {
+      const updateData: any = {};
+      
+      if (updatedQuestion.question !== undefined) updateData.question = updatedQuestion.question;
+      if (updatedQuestion.answer !== undefined) updateData.answer = updatedQuestion.answer;
+      if (updatedQuestion.order !== undefined) updateData.order_position = updatedQuestion.order;
+
+      const { error } = await supabase
+        .from('faq_questions')
+        .update(updateData)
+        .eq('id', id);
+
+      if (error) throw error;
+      await refreshData();
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour de la question FAQ:', error);
+      throw error;
+    }
+  };
+
+  const deleteFAQQuestion = async (id: string) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+    
+    try {
+      const { error } = await supabase
+        .from('faq_questions')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      await refreshData();
+    } catch (error) {
+      console.error('Erreur lors de la suppression de la question FAQ:', error);
+      throw error;
+    }
+  };
+
   return (
     <StructuresContext.Provider value={{ 
       structures, 
       categories, 
       carouselPhotos,
+      faqCategories,
       loading,
       addStructure, 
       updateStructure, 
@@ -551,6 +745,12 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       deleteCarouselPhoto,
       reorderCarouselPhotos,
       reorderStructures,
+      addFAQCategory,
+      updateFAQCategory,
+      deleteFAQCategory,
+      addFAQQuestion,
+      updateFAQQuestion,
+      deleteFAQQuestion,
       refreshData
     }}>
       {children}
