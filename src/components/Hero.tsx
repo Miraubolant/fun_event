@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight, Shield, Truck, Clock, Star, Users, Award, Phone, MessageCircle, Ruler, Heart, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
+import { useAuth } from '../contexts/AuthContext';
 import StructureModal from './StructureModal';
 import SEOHead from './SEOHead';
 import { Page } from '../types';
@@ -11,7 +12,8 @@ interface HeroProps {
 }
 
 const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
-  const { structures } = useStructures();
+  const { structures, socialLinks } = useStructures();
+  const { user } = useAuth();
   const [selectedStructure, setSelectedStructure] = React.useState<Structure | null>(null);
   const [currentSlide, setCurrentSlide] = React.useState(0);
   
@@ -82,6 +84,8 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   const closeModal = () => {
     setSelectedStructure(null);
   };
+
+  const isAdmin = user?.email === 'admin@funevent.fr';
 
   return (
     <>
@@ -350,6 +354,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         </div>
         
         {/* Carrousel de photos */}
+        <TrustedClientsSection socialLinks={socialLinks} isAdmin={isAdmin} />
         <PhotoCarousel />
         
         {/* Transition fluide vers la section suivante */}
@@ -639,14 +644,14 @@ const PhotoCarousel: React.FC = () => {
 
 // Composant TrustedClientsSection
 interface TrustedClientsSectionProps {
-  socialLinks: any[];
+  socialLinks: SocialLink[];
   isAdmin: boolean;
 }
 
 const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({ socialLinks, isAdmin }) => {
   const { addSocialLink, updateSocialLink, deleteSocialLink } = useStructures();
   const [isEditing, setIsEditing] = React.useState(false);
-  const [editingData, setEditingData] = React.useState<any[]>([]);
+  const [editingData, setEditingData] = React.useState<SocialLink[]>([]);
 
   // Initialiser les données d'édition
   React.useEffect(() => {
