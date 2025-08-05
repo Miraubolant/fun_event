@@ -649,7 +649,7 @@ interface TrustedClientsSectionProps {
 }
 
 const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({ socialLinks, isAdmin }) => {
-  const { addSocialLink, updateSocialLink, deleteSocialLink } = useStructures();
+  const { addSocialLink, updateSocialLink, deleteSocialLink, reorderSocialLinks } = useStructures();
   const [isEditing, setIsEditing] = React.useState(false);
   const [editingData, setEditingData] = React.useState<SocialLink[]>([]);
 
