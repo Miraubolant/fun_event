@@ -791,6 +791,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       addFAQQuestion,
       updateFAQQuestion,
       deleteFAQQuestion,
+      addSocialLink,
+      updateSocialLink,
+      deleteSocialLink,
+      reorderSocialLinks,
       refreshData
     }}>
       {children}

@@ -637,4 +637,254 @@ const PhotoCarousel: React.FC = () => {
   );
 };
 
+// Composant TrustedClientsSection
+interface TrustedClientsSectionProps {
+  socialLinks: any[];
+  isAdmin: boolean;
+}
+
+const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({ socialLinks, isAdmin }) => {
+  const { addSocialLink, updateSocialLink, deleteSocialLink } = useStructures();
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [editingData, setEditingData] = React.useState<any[]>([]);
+
+  // Initialiser les données d'édition
+  React.useEffect(() => {
+    if (isEditing) {
+      setEditingData([...socialLinks]);
+    }
+  }, [isEditing, socialLinks]);
+
+  const updateLinkInEditing = (index: number, field: string, value: string | boolean) => {
+    setEditingData(prev => prev.map((link, i) => 
+      i === index ? { ...link, [field]: value } : link
+    ));
+  };
+
+  const addNewLinkInEditing = () => {
+    setEditingData(prev => [...prev, {
+      id: `temp-${Date.now()}`,
+      platform: 'Nouveau client',
+      url: '#',
+      icon: '🤝',
+      label: 'Nouveau partenaire',
+      active: true,
+      order: prev.length + 1
+    }]);
+  };
+
+  const deleteLinkInEditing = (index: number) => {
+    setEditingData(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const saveChanges = async () => {
+    try {
+      // Sauvegarder les modifications
+      for (const link of editingData) {
+        if (link.id.startsWith('temp-')) {
+          // Nouveau lien
+          await addSocialLink({
+            platform: link.platform,
+            url: link.url,
+            icon: link.icon,
+            label: link.label,
+            active: link.active,
+            order: link.order
+          });
+        } else {
+          // Lien existant - vérifier si modifié
+          const originalLink = socialLinks.find(l => l.id === link.id);
+          if (originalLink && (
+            originalLink.platform !== link.platform ||
+            originalLink.url !== link.url ||
+            originalLink.icon !== link.icon ||
+            originalLink.label !== link.label ||
+            originalLink.active !== link.active
+          )) {
+            await updateSocialLink(link.id, {
+              platform: link.platform,
+              url: link.url,
+              icon: link.icon,
+              label: link.label,
+              active: link.active,
+              order: link.order
+            });
+          }
+        }
+      }
+      
+      // Supprimer les liens qui ont été retirés
+      for (const originalLink of socialLinks) {
+        if (!editingData.find(l => l.id === originalLink.id)) {
+          await deleteSocialLink(originalLink.id);
+        }
+      }
+      
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde:', error);
+      alert('Erreur lors de la sauvegarde. Veuillez réessayer.');
+    }
+  };
+
+  const cancelEditing = () => {
+    setEditingData([]);
+    setIsEditing(false);
+  };
+
+  const dataToUse = isEditing ? editingData : socialLinks;
+
+  if (dataToUse.length === 0 && !isAdmin) return null;
+
+  return (
+    <section className="py-16 bg-gradient-to-br from-blue-50 to-orange-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
+            <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
+              Ils nous ont
+            </span>
+            <br />
+            <span className="bg-gradient-to-r text-transparent bg-clip-text animate-pulse" style={{backgroundImage: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
+              fait confiance 🤝
+            </span>
+          </h2>
+          <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-3xl mx-auto">
+            🎪 Rejoignez nos <span className="font-bold" style={{color: '#0F97F6'}}>clients satisfaits</span> et nos 
+            <span className="font-bold text-orange-500"> partenaires</span> de confiance ! ⭐
+          </p>
+        </div>
+
+        {/* Boutons d'édition pour l'admin */}
+        {isAdmin && (
+          <div className="text-center mb-8">
+            {!isEditing ? (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="bg-gradient-to-r from-blue-500 to-orange-500 text-white px-6 py-3 rounded-full font-bold hover:shadow-xl transition-all inline-flex items-center"
+              >
+                ✏️ Modifier les partenaires
+              </button>
+            ) : (
+              <div className="flex gap-4 justify-center flex-wrap">
+                <button
+                  onClick={saveChanges}
+                  className="bg-green-500 text-white px-6 py-3 rounded-full font-bold hover:bg-green-600 transition-all inline-flex items-center"
+                >
+                  💾 Sauvegarder
+                </button>
+                <button
+                  onClick={cancelEditing}
+                  className="bg-gray-500 text-white px-6 py-3 rounded-full font-bold hover:bg-gray-600 transition-all inline-flex items-center"
+                >
+                  ❌ Annuler
+                </button>
+                <button
+                  onClick={addNewLinkInEditing}
+                  className="bg-purple-500 text-white px-6 py-3 rounded-full font-bold hover:bg-purple-600 transition-all inline-flex items-center"
+                >
+                  ➕ Ajouter
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Grille des partenaires */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+          {dataToUse.map((link, index) => (
+            <div key={link.id} className="group">
+              {isEditing ? (
+                <div className="bg-white rounded-2xl shadow-lg p-4 border-2 border-dashed border-gray-300">
+                  <div className="space-y-3">
+                    <input
+                      type="text"
+                      value={link.icon}
+                      onChange={(e) => updateLinkInEditing(index, 'icon', e.target.value)}
+                      className="w-full text-center text-2xl bg-gray-50 border border-gray-300 rounded-lg p-2"
+                      placeholder="🤝"
+                    />
+                    <input
+                      type="text"
+                      value={link.platform}
+                      onChange={(e) => updateLinkInEditing(index, 'platform', e.target.value)}
+                      className="w-full text-sm font-bold bg-gray-50 border border-gray-300 rounded-lg p-2"
+                      placeholder="Nom du client"
+                    />
+                    <input
+                      type="text"
+                      value={link.label}
+                      onChange={(e) => updateLinkInEditing(index, 'label', e.target.value)}
+                      className="w-full text-xs bg-gray-50 border border-gray-300 rounded-lg p-2"
+                      placeholder="Description"
+                    />
+                    <input
+                      type="url"
+                      value={link.url}
+                      onChange={(e) => updateLinkInEditing(index, 'url', e.target.value)}
+                      className="w-full text-xs bg-gray-50 border border-gray-300 rounded-lg p-2"
+                      placeholder="https://..."
+                    />
+                    <div className="flex items-center justify-between">
+                      <label className="flex items-center text-xs">
+                        <input
+                          type="checkbox"
+                          checked={link.active}
+                          onChange={(e) => updateLinkInEditing(index, 'active', e.target.checked)}
+                          className="mr-1"
+                        />
+                        Actif
+                      </label>
+                      <button
+                        onClick={() => deleteLinkInEditing(index)}
+                        className="bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
+                        title="Supprimer"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <a
+                  href={link.url}
+                  target={link.url.startsWith('http') ? '_blank' : undefined}
+                  rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  className="block bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 p-6 text-center"
+                >
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">
+                    {link.icon}
+                  </div>
+                  <h3 className="font-bold text-gray-900 mb-1 text-sm">
+                    {link.platform}
+                  </h3>
+                  <p className="text-xs text-gray-600">
+                    {link.label}
+                  </p>
+                </a>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {dataToUse.length === 0 && isAdmin && (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">🤝</div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Aucun partenaire</h3>
+            <p className="text-gray-600 mb-6">
+              Ajoutez vos premiers clients et partenaires de confiance.
+            </p>
+            <button
+              onClick={() => setIsEditing(true)}
+              className="bg-gradient-to-r from-blue-500 to-orange-500 text-white px-6 py-3 rounded-full font-bold hover:shadow-xl transition-all"
+            >
+              ➕ Ajouter des partenaires
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+
 export default Hero;
