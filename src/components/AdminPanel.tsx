@@ -340,6 +340,18 @@ const AdminPanel: React.FC = () => {
     });
   };
 
+  const handleUpdateSocialLink = async () => {
+    if (!editingSocialLink) return;
+    
+    try {
+      await updateSocialLink(editingSocialLink.id, editingSocialLink);
+      setEditingSocialLink(null);
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du lien social:', error);
+      alert('Erreur lors de la mise à jour du lien social');
+    }
+  };
+
   return (
     <section className="py-8 lg:py-16 bg-gradient-to-br from-gray-50 via-blue-50/30 to-orange-50/30 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
