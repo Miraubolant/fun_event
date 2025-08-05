@@ -74,7 +74,7 @@ const Events: React.FC = () => {
                 </span>
                 <br />
                 <span className="bg-gradient-to-r text-transparent bg-clip-text animate-pulse" style={{backgroundImage: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
-                  Galerie 📸
+                  Photos 📸
                 </span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium max-w-4xl mx-auto" itemProp="description">
