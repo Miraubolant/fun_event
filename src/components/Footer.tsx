@@ -122,7 +122,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 >
                   <Mail className="w-6 h-6 mr-3 text-blue-300" />
                   <div>
-                    <div className="font-semibold">contact@funevent.fr</div>
+                    <div className="font-semibold">contact@fun-event.fr</div>
                     <div className="text-sm text-blue-200">Email</div>
                   </div>
                 </a>
