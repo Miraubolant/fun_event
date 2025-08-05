@@ -1,11 +1,17 @@
 import React from 'react';
 import { Phone, Mail, MapPin, Instagram, MessageSquare, Star, Award, Shield } from 'lucide-react';
+import { useStructures } from '../contexts/StructuresContext';
 
 interface FooterProps {
   onNavigate: (page: any) => void;
 }
 
 const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+  const { socialLinks } = useStructures();
+  
+  // Filtrer les liens actifs pour l'affichage
+  const activeSocialLinks = socialLinks.filter(link => link.isActive);
+
   return (
     <footer className="relative overflow-hidden" itemScope itemType="https://schema.org/WPFooter">
       {/* Fond dégradé principal */}
