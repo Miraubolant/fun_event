@@ -131,7 +131,7 @@ const Contact: React.FC = () => {
             "@type": "Organization",
             "name": "Fun Event",
             "telephone": "+33663528072",
-            "email": "contact@funevent.fr",
+            "email": "contact@fun-event.fr",
             "address": {
               "@type": "PostalAddress",
               "addressRegion": "Île-de-France",
