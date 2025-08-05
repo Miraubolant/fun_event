@@ -685,7 +685,7 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
       id: `temp-${Date.now()}`,
       platform: 'Nouveau client',
       url: '#',
-      icon: '🤝',
+      icon: 'https://via.placeholder.com/64x64/3B82F6/FFFFFF?text=Logo',
       label: 'Nouveau partenaire',
       active: true,
       order: prev.length + 1
@@ -871,13 +871,28 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
               {isEditing ? (
                 <div className="bg-white rounded-2xl shadow-lg p-4 border-2 border-dashed border-gray-300">
                   <div className="space-y-3">
-                    <input
-                      type="text"
-                      value={link.icon}
-                      onChange={(e) => updateLinkInEditing(index, 'icon', e.target.value)}
-                      className="w-full text-center text-2xl bg-gray-50 border border-gray-300 rounded-lg p-2"
-                      placeholder="🤝"
-                    />
+                    <div className="space-y-2">
+                      <label className="block text-xs font-medium text-gray-700">Image (URL):</label>
+                      <input
+                        type="url"
+                        value={link.icon}
+                        onChange={(e) => updateLinkInEditing(index, 'icon', e.target.value)}
+                        className="w-full text-xs bg-gray-50 border border-gray-300 rounded-lg p-2"
+                        placeholder="https://imgur.com/fLqAlJ1.png"
+                      />
+                      {link.icon && (
+                        <div className="flex justify-center">
+                          <img 
+                            src={link.icon} 
+                            alt="Aperçu" 
+                            className="w-12 h-12 object-cover rounded-lg border border-gray-200"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
                     <input
                       type="text"
                       value={link.platform}
@@ -926,8 +941,15 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
                   rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}
                   className="block bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 p-6 text-center"
                 >
-                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">
-                    {link.icon}
+                  <div className="mb-3 group-hover:scale-110 transition-transform duration-300 flex justify-center">
+                    <img 
+                      src={link.icon} 
+                      alt={link.platform}
+                      className="w-16 h-16 object-cover rounded-lg shadow-md"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://via.placeholder.com/64x64/3B82F6/FFFFFF?text=🤝';
+                      }}
+                    />
                   </div>
                   <h3 className="font-bold text-gray-900 mb-1 text-sm">
                     {link.platform}
