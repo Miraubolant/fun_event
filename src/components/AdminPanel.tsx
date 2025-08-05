@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Save, X, Package, DollarSign, Tag, Image, Camera, ArrowUp, ArrowDown, AlertTriangle, LogOut, GripVertical, ImagePlus } from 'lucide-react';
+import { Plus, Edit2, Trash2, Save, X, Upload, Users, Tag, Image, Settings, BarChart3, Eye, EyeOff, GripVertical, Share2, ExternalLink, ToggleLeft, ToggleRight } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Structure, Category, CarouselPhoto } from '../types';
 
 const AdminPanel: React.FC = () => {
-  const { 
+  const { structures, categories, carouselPhotos, socialLinks, loading, addStructure, updateStructure, deleteStructure, addCategory, updateCategory, deleteCategory, addCarouselPhoto, updateCarouselPhoto, deleteCarouselPhoto, reorderCarouselPhotos, reorderStructures, addSocialLink, updateSocialLink, deleteSocialLink, reorderSocialLinks } = useStructures();
     structures, 
     categories, 
     carouselPhotos,
