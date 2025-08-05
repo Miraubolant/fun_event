@@ -37,11 +37,9 @@ const AdminPanel: React.FC = () => {
     name: string;
   } | null>(null);
   
-  const [editingSocialLink, setEditingSocialLink] = useState<SocialLink | null>(null);
   const [formData, setFormData] = useState<Partial<Structure>>({});
   const [categoryData, setCategoryData] = useState<Partial<Category>>({});
   const [photoData, setPhotoData] = useState<Partial<CarouselPhoto>>({});
-  const [showSocialForm, setShowSocialForm] = useState(false);
   const [newImageUrl, setNewImageUrl] = useState('');
   
   // États pour le glisser-déposer
