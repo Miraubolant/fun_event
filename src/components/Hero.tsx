@@ -756,7 +756,7 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
   if (dataToUse.length === 0 && !isAdmin) return null;
 
   return (
-    <section className="py-16 bg-gradient-to-br from-blue-50 to-orange-50">
+    <section className="py-16 bg-gradient-to-br from-blue-50 to-orange-50 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
@@ -774,6 +774,60 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
           </p>
         </div>
 
+        {/* Nouveau bouton admin en haut à droite */}
+        {isAdmin && (
+          <div className="absolute top-4 right-4">
+            {!isEditing ? (
+              <button
+                type="button"
+                onClick={() => {
+                  console.log('Nouveau bouton cliqué !');
+                  setIsEditing(true);
+                }}
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold shadow-lg transition-all duration-300 transform hover:scale-105"
+                style={{ cursor: 'pointer' }}
+              >
+                ✏️ Éditer
+              </button>
+            ) : (
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    console.log('Sauvegarde cliquée !');
+                    saveChanges();
+                  }}
+                  className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg font-bold shadow-lg transition-all"
+                  style={{ cursor: 'pointer' }}
+                >
+                  💾
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    console.log('Annuler cliqué !');
+                    cancelEditing();
+                  }}
+                  className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded-lg font-bold shadow-lg transition-all"
+                  style={{ cursor: 'pointer' }}
+                >
+                  ❌
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    console.log('Ajouter cliqué !');
+                    addNewLinkInEditing();
+                  }}
+                  className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-2 rounded-lg font-bold shadow-lg transition-all"
+                  style={{ cursor: 'pointer' }}
+                >
+                  ➕
+                </button>
+              </div>
+            )}
+          </div>
+        )}
         {/* Boutons d'édition pour l'admin */}
         {isAdmin && (
           <div className="text-center mb-8">
