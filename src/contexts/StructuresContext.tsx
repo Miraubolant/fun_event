@@ -190,10 +190,50 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
         if (socialError) {
           if (socialError.code === '42P01') {
             console.warn('Table social_links n\'existe pas encore. Veuillez exécuter les migrations.');
-            setSocialLinks([]);
+            // Utiliser les liens par défaut si la table n'existe pas
+            setSocialLinks([
+              {
+                id: 'default-instagram',
+                platform: 'Instagram',
+                url: 'https://www.instagram.com/fun_eventt/?igsh=dWtwMXUzYjJ6NTJi',
+                icon: '📷',
+                label: 'Instagram',
+                active: true,
+                order: 1
+              },
+              {
+                id: 'default-snapchat',
+                platform: 'Snapchat',
+                url: 'https://snapchat.com/add/FUN_EVENTT',
+                icon: '👻',
+                label: 'Snapchat',
+                active: true,
+                order: 2
+              }
+            ]);
           } else {
             console.error('Erreur lors du chargement des liens sociaux:', socialError);
-            setSocialLinks([]);
+            // Utiliser les liens par défaut si la table n'existe pas
+            setSocialLinks([
+              {
+                id: 'default-instagram',
+                platform: 'Instagram',
+                url: 'https://www.instagram.com/fun_eventt/?igsh=dWtwMXUzYjJ6NTJi',
+                icon: '📷',
+                label: 'Instagram',
+                active: true,
+                order: 1
+              },
+              {
+                id: 'default-snapchat',
+                platform: 'Snapchat',
+                url: 'https://snapchat.com/add/FUN_EVENTT',
+                icon: '👻',
+                label: 'Snapchat',
+                active: true,
+                order: 2
+              }
+            ]);
           }
         } else {
           // Transformer les données pour correspondre au type SocialLink
@@ -210,7 +250,47 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
         }
       } catch (error) {
         console.warn('Impossible de charger les liens sociaux:', error);
-        setSocialLinks([]);
+        // Utiliser les liens par défaut en cas d'erreur
+        setSocialLinks([
+          {
+            id: 'default-instagram',
+            platform: 'Instagram',
+            url: 'https://www.instagram.com/fun_eventt/?igsh=dWtwMXUzYjJ6NTJi',
+            icon: '📷',
+            label: 'Instagram',
+            active: true,
+            order: 1
+          },
+          {
+            id: 'default-snapchat',
+            platform: 'Snapchat',
+            url: 'https://snapchat.com/add/FUN_EVENTT',
+            icon: '👻',
+            label: 'Snapchat',
+            active: true,
+            order: 2
+          }
+        ]);
+        setSocialLinks([
+          {
+            id: 'default-instagram',
+            platform: 'Instagram',
+            url: 'https://www.instagram.com/fun_eventt/?igsh=dWtwMXUzYjJ6NTJi',
+            icon: '📷',
+            label: 'Instagram',
+            active: true,
+            order: 1
+          },
+          {
+            id: 'default-snapchat',
+            platform: 'Snapchat',
+            url: 'https://snapchat.com/add/FUN_EVENTT',
+            icon: '👻',
+            label: 'Snapchat',
+            active: true,
+            order: 2
+          }
+        ]);
       }
       
     } catch (error) {

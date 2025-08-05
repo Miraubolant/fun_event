@@ -10,7 +10,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   const { socialLinks } = useStructures();
   
   // Filtrer les liens actifs pour l'affichage
-  const activeSocialLinks = socialLinks.filter(link => link.isActive);
+  const activeSocialLinks = socialLinks.filter(link => link.active);
 
   return (
     <footer className="relative overflow-hidden" itemScope itemType="https://schema.org/WPFooter">
