@@ -663,6 +663,7 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
   updateSocialLink, 
   deleteSocialLink 
 }) => {
+  const { user } = useAuth();
   const [isEditing, setIsEditing] = React.useState(false);
   const [editingData, setEditingData] = React.useState<SocialLink[]>([]);
 
