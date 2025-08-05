@@ -6,21 +6,6 @@ import { Structure, Category, CarouselPhoto } from '../types';
 
 const AdminPanel: React.FC = () => {
   const { structures, categories, carouselPhotos, socialLinks, loading, addStructure, updateStructure, deleteStructure, addCategory, updateCategory, deleteCategory, addCarouselPhoto, updateCarouselPhoto, deleteCarouselPhoto, reorderCarouselPhotos, reorderStructures, addSocialLink, updateSocialLink, deleteSocialLink, reorderSocialLinks } = useStructures();
-    structures, 
-    categories, 
-    carouselPhotos,
-    addStructure, 
-    updateStructure, 
-    deleteStructure, 
-    addCategory, 
-    updateCategory, 
-    deleteCategory,
-    addCarouselPhoto,
-    updateCarouselPhoto,
-    deleteCarouselPhoto,
-    reorderCarouselPhotos,
-    reorderStructures
-  } = useStructures();
   const { logout } = useAuth();
   
   // États pour les modales
@@ -341,50 +326,6 @@ const AdminPanel: React.FC = () => {
   };
 
   // Composant pour l'onglet Réseaux Sociaux
-  // Fonctions pour les réseaux sociaux
-  const handleSocialSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      if (editingSocial) {
-        await updateSocialLink(editingSocial, socialFormData);
-        setEditingSocial(null);
-      } else {
-        await addSocialLink(socialFormData);
-      }
-      setSocialFormData({ platform: '', url: '', icon: '', label: '', active: true });
-    } catch (error) {
-      console.error('Erreur:', error);
-      alert('Erreur lors de la sauvegarde du lien social');
-    }
-  };
-
-  const handleEditSocial = (social: any) => {
-    setSocialFormData({
-      platform: social.platform,
-      url: social.url,
-      icon: social.icon,
-      label: social.label,
-      active: social.active
-    });
-    setEditingSocial(social.id);
-  };
-
-  const handleDeleteSocial = async (id: string) => {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce lien social ?')) {
-      try {
-        await deleteSocialLink(id);
-      } catch (error) {
-        console.error('Erreur:', error);
-        alert('Erreur lors de la suppression du lien social');
-      }
-    }
-  };
-
-  const cancelSocialEdit = () => {
-    setEditingSocial(null);
-    setSocialFormData({ platform: '', url: '', icon: '', label: '', active: true });
-  };
-
   const SocialLinksTab = () => {
     return (
       <div>
@@ -774,6 +715,198 @@ const AdminPanel: React.FC = () => {
             ))}
           </div>
         </div>
+
+        {/* Onglet Réseaux Sociaux */}
+        {activeTab === 'social' && (
+          <div className="space-y-8">
+            {/* Formulaire d'ajout/modification */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                <Share2 className="w-6 h-6 mr-2 text-blue-500" />
+                {editingSocial ? 'Modifier le lien social' : 'Ajouter un lien social'}
+              </h3>
+              
+              <form onSubmit={handleSocialSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Plateforme *
+                    </label>
+                    <input
+                      type="text"
+                      value={socialFormData.platform}
+                      onChange={(e) => setSocialFormData(prev => ({ ...prev, platform: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Instagram, Facebook, Twitter..."
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Libellé *
+                    </label>
+                    <input
+                      type="text"
+                      value={socialFormData.label}
+                      onChange={(e) => setSocialFormData(prev => ({ ...prev, label: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Nom affiché"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    URL *
+                  </label>
+                  <input
+                    type="url"
+                    value={socialFormData.url}
+                    onChange={(e) => setSocialFormData(prev => ({ ...prev, url: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="https://..."
+                    required
+                  />
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Icône/Emoji
+                    </label>
+                    <input
+                      type="text"
+                      value={socialFormData.icon}
+                      onChange={(e) => setSocialFormData(prev => ({ ...prev, icon: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="📷, 👻, 🔗..."
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Statut
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setSocialFormData(prev => ({ ...prev, active: !prev.active }))}
+                      className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
+                        socialFormData.active
+                          ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      {socialFormData.active ? (
+                        <>
+                          <ToggleRight className="w-5 h-5 mr-2" />
+                          Actif
+                        </>
+                      ) : (
+                        <>
+                          <ToggleLeft className="w-5 h-5 mr-2" />
+                          Inactif
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="flex gap-3">
+                  <button
+                    type="submit"
+                    className="bg-gradient-to-r from-blue-500 to-orange-500 text-white px-6 py-2 rounded-lg font-semibold hover:from-blue-600 hover:to-orange-600 transition-all flex items-center"
+                  >
+                    <Save className="w-4 h-4 mr-2" />
+                    {editingSocial ? 'Modifier' : 'Ajouter'}
+                  </button>
+                  
+                  {editingSocial && (
+                    <button
+                      type="button"
+                      onClick={cancelSocialEdit}
+                      className="bg-gray-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center"
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      Annuler
+                    </button>
+                  )}
+                </div>
+              </form>
+            </div>
+            
+            {/* Liste des liens sociaux */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-6">
+                Liens sociaux ({socialLinks.length})
+              </h3>
+              
+              {socialLinks.length === 0 ? (
+                <div className="text-center py-12">
+                  <Share2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Aucun lien social</h3>
+                  <p className="text-gray-600">Ajoutez votre premier lien social ci-dessus</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {socialLinks
+                    .sort((a, b) => a.order - b.order)
+                    .map((social) => (
+                    <div key={social.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <div className="flex items-center space-x-3">
+                            <span className="text-2xl">{social.icon || '🔗'}</span>
+                            <div>
+                              <h4 className="font-semibold text-gray-900">{social.label}</h4>
+                              <p className="text-sm text-gray-600">{social.platform}</p>
+                              <a 
+                                href={social.url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-blue-500 hover:text-blue-700 text-sm flex items-center"
+                              >
+                                <ExternalLink className="w-3 h-3 mr-1" />
+                                {social.url.length > 50 ? social.url.substring(0, 50) + '...' : social.url}
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center space-x-2">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            social.active 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            {social.active ? 'Actif' : 'Inactif'}
+                          </span>
+                          
+                          <button
+                            onClick={() => handleEditSocial(social)}
+                            className="text-blue-500 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                            title="Modifier"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                          
+                          <button
+                            onClick={() => handleDeleteSocial(social.id)}
+                            className="text-red-500 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                            title="Supprimer"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Liste des structures avec glisser-déposer */}
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
