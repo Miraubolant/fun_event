@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Users, Ruler, Heart, Weight, Shield, Clock, ShoppingCart, MessageCircle } from 'lucide-react';
+import { X, Users, Ruler, Heart, Weight, Shield, Clock, ShoppingCart, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Structure } from '../types';
 import { useCart } from '../contexts/CartContext';
 
@@ -11,6 +11,10 @@ interface StructureModalProps {
 
 const StructureModal: React.FC<StructureModalProps> = ({ structure, isOpen, onClose }) => {
   const { addToCart } = useCart();
+  const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
+  
+  // Toutes les images (principale + additionnelles)
+  const allImages = [structure.image, ...(structure.additionalImages || [])].filter(Boolean);
   
   if (!isOpen) return null;
 
@@ -19,6 +23,25 @@ const StructureModal: React.FC<StructureModalProps> = ({ structure, isOpen, onCl
       onClose();
     }
   };
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
+  };
+
+  const goToImage = (index: number) => {
+    setCurrentImageIndex(index);
+  };
+
+  // Reset l'index quand la modal s'ouvre
+  React.useEffect(() => {
+    if (isOpen) {
+      setCurrentImageIndex(0);
+    }
+  }, [isOpen, structure.id]);
 
   return (
     <div 
@@ -34,11 +57,55 @@ const StructureModal: React.FC<StructureModalProps> = ({ structure, isOpen, onCl
             <X className="w-6 h-6 text-gray-600" />
           </button>
           
-          <img 
-            src={structure.image} 
-            alt={structure.name}
-            className="w-full h-64 md:h-80 object-cover rounded-t-xl"
-          />
+          {/* Carrousel d'images */}
+          <div className="relative">
+            <img 
+              src={allImages[currentImageIndex]} 
+              alt={`${structure.name} - Image ${currentImageIndex + 1}`}
+              className="w-full h-64 md:h-80 object-cover rounded-t-xl"
+              onError={(e) => {
+                e.currentTarget.src = 'https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=400';
+              }}
+            />
+            
+            {/* Navigation si plusieurs images */}
+            {allImages.length > 1 && (
+              <>
+                <button
+                  onClick={prevImage}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg transition-all hover:scale-110"
+                >
+                  <ChevronLeft className="w-6 h-6 text-gray-700" />
+                </button>
+                <button
+                  onClick={nextImage}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg transition-all hover:scale-110"
+                >
+                  <ChevronRight className="w-6 h-6 text-gray-700" />
+                </button>
+                
+                {/* Indicateurs */}
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                  {allImages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => goToImage(index)}
+                      className={`w-3 h-3 rounded-full transition-all ${
+                        currentImageIndex === index
+                          ? 'bg-white scale-125'
+                          : 'bg-white/60 hover:bg-white/80'
+                      }`}
+                    />
+                  ))}
+                </div>
+                
+                {/* Compteur */}
+                <div className="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  {currentImageIndex + 1} / {allImages.length}
+                </div>
+              </>
+            )}
+          </div>
           
         </div>
         

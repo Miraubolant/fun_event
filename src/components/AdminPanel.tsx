@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Save, X, Package, DollarSign, Tag, Image, Camera, ArrowUp, ArrowDown, AlertTriangle, LogOut, GripVertical } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, X, Package, DollarSign, Tag, Image, Camera, ArrowUp, ArrowDown, AlertTriangle, LogOut, GripVertical, ImagePlus } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Structure, Category, CarouselPhoto } from '../types';
@@ -40,6 +40,7 @@ const AdminPanel: React.FC = () => {
   const [formData, setFormData] = useState<Partial<Structure>>({});
   const [categoryData, setCategoryData] = useState<Partial<Category>>({});
   const [photoData, setPhotoData] = useState<Partial<CarouselPhoto>>({});
+  const [newImageUrl, setNewImageUrl] = useState('');
   
   // États pour le glisser-déposer
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
@@ -73,6 +74,7 @@ const AdminPanel: React.FC = () => {
     setFormData({});
     setCategoryData({});
     setPhotoData({});
+    setNewImageUrl('');
   };
 
   const handleEditStructure = (structure: Structure) => {
@@ -112,6 +114,7 @@ const AdminPanel: React.FC = () => {
           maxWeight: formData.maxWeight,
           services: formData.services,
           image: formData.image || 'https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=400',
+          additionalImages: formData.additionalImages || [],
           description: formData.description || '',
           available: formData.available ?? true,
           customPricing: formData.customPricing ?? false
@@ -315,6 +318,26 @@ const AdminPanel: React.FC = () => {
 
     setDraggedItem(null);
     setDraggedOver(null);
+  };
+
+  // Fonctions pour gérer les images additionnelles
+  const addAdditionalImage = () => {
+    if (newImageUrl.trim()) {
+      const currentImages = formData.additionalImages || [];
+      setFormData({
+        ...formData,
+        additionalImages: [...currentImages, newImageUrl.trim()]
+      });
+      setNewImageUrl('');
+    }
+  };
+
+  const removeAdditionalImage = (index: number) => {
+    const currentImages = formData.additionalImages || [];
+    setFormData({
+      ...formData,
+      additionalImages: currentImages.filter((_, i) => i !== index)
+    });
   };
 
   return (
@@ -734,6 +757,61 @@ const AdminPanel: React.FC = () => {
                       />
                     </div>
                   )}
+                </div>
+                <div className="lg:col-span-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <ImagePlus className="w-4 h-4 inline mr-1" />
+                    Images additionnelles (optionnel)
+                  </label>
+                  <div className="space-y-3">
+                    <div className="flex gap-2">
+                      <input
+                        type="url"
+                        placeholder="https://i.imgur.com/example.png"
+                        value={newImageUrl}
+                        onChange={(e) => setNewImageUrl(e.target.value)}
+                        className="flex-1 px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={addAdditionalImage}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors text-sm font-semibold"
+                      >
+                        Ajouter
+                      </button>
+                    </div>
+                    
+                    {formData.additionalImages && formData.additionalImages.length > 0 && (
+                      <div className="space-y-2">
+                        <p className="text-sm text-gray-600">Images additionnelles ({formData.additionalImages.length}) :</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {formData.additionalImages.map((imageUrl, index) => (
+                            <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                              <img 
+                                src={imageUrl} 
+                                alt={`Image ${index + 1}`}
+                                className="w-16 h-12 object-cover rounded border"
+                                onError={(e) => {
+                                  e.currentTarget.src = 'https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=400';
+                                }}
+                              />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs text-gray-600 truncate">{imageUrl}</p>
+                                <p className="text-xs text-gray-500">Image {index + 1}</p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => removeAdditionalImage(index)}
+                                className="text-red-500 hover:text-red-700 transition-colors p-1 hover:bg-red-100 rounded"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="lg:col-span-2">
                   <label className="block text-sm font-semibold text-gray-700 mb-2">

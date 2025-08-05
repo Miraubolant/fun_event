@@ -10,6 +10,7 @@ export interface Structure {
   maxWeight?: number;
   services?: string;
   image: string;
+  additionalImages?: string[];
   description: string;
   available: boolean;
   order?: number;

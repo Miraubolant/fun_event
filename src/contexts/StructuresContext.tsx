@@ -95,6 +95,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
             max_weight,
             services,
             image,
+            additional_images,
             description,
             available,
             order_position,
@@ -126,6 +127,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
             maxWeight: item.max_weight,
             services: item.services,
             image: item.image || '',
+            additionalImages: item.additional_images || [],
             description: item.description || '',
             available: item.available ?? true,
             order: item.order_position || 1,
@@ -233,6 +235,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
           max_weight: newStructure.maxWeight,
           services: newStructure.services,
           image: newStructure.image,
+          additional_images: newStructure.additionalImages || [],
           description: newStructure.description,
           available: newStructure.available,
           order_position: nextOrder,
@@ -273,6 +276,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       if (updatedStructure.maxWeight !== undefined) updateData.max_weight = updatedStructure.maxWeight;
       if (updatedStructure.services !== undefined) updateData.services = updatedStructure.services;
       if (updatedStructure.image !== undefined) updateData.image = updatedStructure.image;
+      if (updatedStructure.additionalImages !== undefined) updateData.additional_images = updatedStructure.additionalImages;
       if (updatedStructure.description !== undefined) updateData.description = updatedStructure.description;
       if (updatedStructure.available !== undefined) updateData.available = updatedStructure.available;
       if (updatedStructure.order !== undefined) updateData.order_position = updatedStructure.order;
