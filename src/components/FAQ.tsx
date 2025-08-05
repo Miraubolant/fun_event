@@ -172,7 +172,6 @@ const FAQ: React.FC = () => {
                   </div>
                 )}
                 </div>
-              </div>
               
               <div className="divide-y divide-gray-200">
                 {category.questions.map((item, questionIndex) => {
