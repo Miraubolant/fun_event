@@ -56,6 +56,16 @@ export interface FAQQuestion {
   order: number;
 }
 
+export interface SocialLink {
+  id: string;
+  platform: string;
+  url: string;
+  icon: string;
+  label: string;
+  active: boolean;
+  order: number;
+}
+
 export type Page = 'accueil' | 'catalogue' | 'faq' | 'devis' | 'contact' | 'admin';
 
 export type Page = 'accueil' | 'catalogue' | 'galerie' | 'faq' | 'devis' | 'contact' | 'admin' | 'mentions-legales' | 'politique-confidentialite';

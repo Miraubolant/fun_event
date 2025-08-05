@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Structure, Category, CarouselPhoto, FAQCategory, FAQQuestion } from '../types';
+import { Structure, Category, CarouselPhoto, FAQCategory, FAQQuestion, SocialLink } from '../types';
 import { supabase } from '../lib/supabase';
 
 interface StructuresContextType {
@@ -7,6 +7,7 @@ interface StructuresContextType {
   categories: Category[];
   carouselPhotos: CarouselPhoto[];
   faqCategories: FAQCategory[];
+  socialLinks: SocialLink[];
   loading: boolean;
   addStructure: (structure: Omit<Structure, 'id'>) => Promise<void>;
   updateStructure: (id: string, structure: Partial<Structure>) => Promise<void>;
@@ -25,6 +26,10 @@ interface StructuresContextType {
   addFAQQuestion: (question: Omit<FAQQuestion, 'id'>) => Promise<void>;
   updateFAQQuestion: (id: string, question: Partial<FAQQuestion>) => Promise<void>;
   deleteFAQQuestion: (id: string) => Promise<void>;
+  addSocialLink: (link: Omit<SocialLink, 'id'>) => Promise<void>;
+  updateSocialLink: (id: string, link: Partial<SocialLink>) => Promise<void>;
+  deleteSocialLink: (id: string) => Promise<void>;
+  reorderSocialLinks: (links: SocialLink[]) => Promise<void>;
   refreshData: () => Promise<void>;
 }
 
@@ -47,6 +52,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   const [categories, setCategories] = useState<Category[]>([]);
   const [carouselPhotos, setCarouselPhotos] = useState<CarouselPhoto[]>([]);
   const [faqCategories, setFaqCategories] = useState<FAQCategory[]>([]);
+  const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Charger les données depuis Supabase
@@ -229,6 +235,39 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
         setFaqCategories([]);
       }
       
+      // Charger les liens sociaux avec gestion d'erreur
+      try {
+        const { data: socialLinksData, error: socialLinksError } = await supabase
+          .from('social_links')
+          .select('*')
+          .eq('active', true)
+          .order('order_position');
+        
+        if (socialLinksError) {
+          if (socialLinksError.code === '42P01') {
+            console.warn('Table social_links n\'existe pas encore. Veuillez exécuter les migrations.');
+            setSocialLinks([]);
+          } else {
+            console.error('Erreur lors du chargement des liens sociaux:', socialLinksError);
+            setSocialLinks([]);
+          }
+        } else {
+          const transformedLinks = (socialLinksData || []).map(item => ({
+            id: item.id,
+            platform: item.platform,
+            url: item.url,
+            icon: item.icon,
+            label: item.label,
+            active: item.active,
+            order: item.order_position
+          }));
+          setSocialLinks(transformedLinks);
+        }
+      } catch (error) {
+        console.warn('Impossible de charger les liens sociaux:', error);
+        setSocialLinks([]);
+      }
+      
     } catch (error) {
       console.error('Erreur lors du chargement des données:', error);
       // Initialiser avec des tableaux vides en cas d'erreur générale
@@ -236,6 +275,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       setStructures([]);
       setCarouselPhotos([]);
       setFaqCategories([]);
+      setSocialLinks([]);
     } finally {
       setLoading(false);
     }
