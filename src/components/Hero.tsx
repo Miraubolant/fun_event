@@ -764,7 +764,7 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
               Ils nous ont
             </span>
             <br />
-            <span className="bg-gradient-to-r text-transparent bg-clip-text animate-pulse" style={{backgroundImage: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
+            <span className="text-orange-500 animate-pulse">
               fait confiance 🤝
             </span>
           </h2>
