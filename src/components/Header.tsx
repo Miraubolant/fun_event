@@ -19,7 +19,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
   const menuItems = [
     { id: 'accueil', label: 'Accueil' },
     { id: 'catalogue', label: 'Catalogue' },
-    { id: 'evenements', label: 'Événements' },
+    { id: 'galerie', label: 'Galerie' },
     { id: 'faq', label: 'FAQ' },
     { id: 'devis', label: 'Devis' },
     { id: 'contact', label: 'Contact' },

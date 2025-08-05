@@ -38,11 +38,12 @@ const Events: React.FC = () => {
     <>
       <SEOHead
         title="Galerie Événements - Fun Event | Photos Structures Gonflables en Action"
-        description="📸 Découvrez nos structures gonflables en action lors d'événements réels : anniversaires, mariages, fêtes d'entreprise. Inspiration pour votre prochain événement en Île-de-France."
+        title="Galerie Photos - Fun Event | Structures Gonflables en Action"
+        description="📸 Découvrez notre galerie photos avec nos structures gonflables en action lors d'événements réels : anniversaires, mariages, fêtes d'entreprise. Inspiration pour votre prochain événement en Île-de-France."
         keywords="galerie événements structures gonflables, photos châteaux gonflables anniversaire, événements Fun Event Paris, inspiration fête enfant, structures gonflables mariage, animation entreprise Île-de-France"
-        ogTitle="Galerie Photos - Événements Fun Event en Île-de-France"
+        ogTitle="Galerie Photos - Fun Event en Île-de-France"
         ogDescription="Laissez-vous inspirer par nos plus beaux événements ! Structures gonflables premium en action lors d'anniversaires, mariages et fêtes."
-        canonicalUrl="https://funevent.fr/evenements"
+        canonicalUrl="https://funevent.fr/galerie"
         structuredData={{
           "@context": "https://schema.org",
           "@type": "ImageGallery",
@@ -73,7 +74,7 @@ const Events: React.FC = () => {
                 </span>
                 <br />
                 <span className="bg-gradient-to-r text-transparent bg-clip-text animate-pulse" style={{backgroundImage: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
-                  Événements 📸
+                  Galerie 📸
                 </span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-700 leading-relaxed font-medium max-w-4xl mx-auto" itemProp="description">

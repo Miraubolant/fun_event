@@ -127,10 +127,50 @@ const FAQ: React.FC = () => {
         <div className="space-y-8">
           {filteredFaqData.map((category, categoryIndex) => (
             <div key={categoryIndex} className="bg-white rounded-2xl shadow-lg overflow-hidden">
-              <div className={`${category.color} px-8 py-6 text-white`}>
+              <div className={`${category.color} px-8 py-6 text-white relative`}>
                 <div className="flex items-center">
-                  <span className="text-3xl mr-4">{category.icon}</span>
-                  <h2 className="text-2xl font-bold">{category.category}</h2>
+                  {isEditing ? (
+                    <>
+                      <input
+                        type="text"
+                        value={category.icon}
+                        onChange={(e) => updateCategory(categoryIndex, 'icon', e.target.value)}
+                        className="text-3xl mr-4 bg-transparent border-b border-white/50 text-white placeholder-white/70 w-16 text-center"
+                        placeholder="🎪"
+                      />
+                      <input
+                        type="text"
+                        value={category.category}
+                        onChange={(e) => updateCategory(categoryIndex, 'category', e.target.value)}
+                        className="text-2xl font-bold bg-transparent border-b border-white/50 text-white placeholder-white/70 flex-1"
+                        placeholder="Nom de la catégorie"
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-3xl mr-4">{category.icon}</span>
+                      <h2 className="text-2xl font-bold">{category.category}</h2>
+                    </>
+                  )}
+                </div>
+                {isEditing && (
+                  <div className="absolute top-4 right-4 flex gap-2">
+                    <button
+                      onClick={() => addNewQuestion(categoryIndex)}
+                      className="bg-white/20 hover:bg-white/30 p-2 rounded-full transition-colors"
+                      title="Ajouter une question"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => deleteCategory(categoryIndex)}
+                      className="bg-red-500/80 hover:bg-red-500 p-2 rounded-full transition-colors"
+                      title="Supprimer la catégorie"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
                 </div>
               </div>
               
@@ -141,21 +181,53 @@ const FAQ: React.FC = () => {
                   
                   return (
                     <div key={questionIndex} itemScope itemType="https://schema.org/Question" itemProp="mainEntity">
-                      <button
-                        onClick={() => toggleItem(itemIndex)}
-                        className="w-full px-8 py-6 text-left hover:bg-gray-50 transition-colors focus:outline-none focus:bg-gray-50 group"
-                      >
-                        <div className="flex justify-between items-center">
-                          <h3 className="text-lg font-semibold text-gray-900 pr-4 group-hover:text-blue-600 transition-colors" itemProp="name">
-                            {item.question}
-                          </h3>
-                          <div className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`}>
-                            <ChevronDown className="w-6 h-6 text-blue-500" />
+                      {isEditing ? (
+                        <div className="px-8 py-6 border-b border-gray-200 last:border-b-0">
+                          <div className="flex items-start gap-4 mb-4">
+                            <div className="flex-1">
+                              <label className="block text-sm font-medium text-gray-700 mb-2">Question:</label>
+                              <textarea
+                                value={item.question}
+                                onChange={(e) => updateQuestion(categoryIndex, questionIndex, 'question', e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                                rows={2}
+                              />
+                            </div>
+                            <button
+                              onClick={() => deleteQuestion(categoryIndex, questionIndex)}
+                              className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors flex-shrink-0 mt-6"
+                              title="Supprimer la question"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Réponse:</label>
+                            <textarea
+                              value={item.answer}
+                              onChange={(e) => updateQuestion(categoryIndex, questionIndex, 'answer', e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                              rows={4}
+                            />
                           </div>
                         </div>
-                      </button>
+                      ) : (
+                        <button
+                          onClick={() => toggleItem(itemIndex)}
+                          className="w-full px-8 py-6 text-left hover:bg-gray-50 transition-colors focus:outline-none focus:bg-gray-50 group"
+                        >
+                          <div className="flex justify-between items-center">
+                            <h3 className="text-lg font-semibold text-gray-900 pr-4 group-hover:text-blue-600 transition-colors" itemProp="name">
+                              {item.question}
+                            </h3>
+                            <div className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`}>
+                              <ChevronDown className="w-6 h-6 text-blue-500" />
+                            </div>
+                          </div>
+                        </button>
+                      )}
                       
-                      {isOpen && (
+                      {isOpen && !isEditing && (
                         <div className="px-8 pb-6 animate-fade-in">
                           <div className="bg-gray-50 rounded-xl p-6" itemScope itemType="https://schema.org/Answer" itemProp="acceptedAnswer">
                             <p className="text-gray-700 leading-relaxed" itemProp="text">

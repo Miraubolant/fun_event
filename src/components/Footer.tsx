@@ -76,6 +76,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 {[
                   { id: 'accueil', label: 'Accueil' },
                   { id: 'catalogue', label: 'Catalogue' },
+                  { id: 'galerie', label: 'Galerie' },
                   { id: 'faq', label: 'FAQ' },
                   { id: 'devis', label: 'Devis' },
                   { id: 'contact', label: 'Contact' }

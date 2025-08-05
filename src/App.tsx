@@ -38,7 +38,7 @@ const AppContent: React.FC = () => {
         );
       case 'catalogue':
         return <Catalog />;
-      case 'evenements':
+      case 'galerie':
         return <Events />;
       case 'faq':
         return <FAQ />;
