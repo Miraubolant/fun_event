@@ -16,6 +16,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   const { user, isAdmin } = useAuth();
   const [selectedStructure, setSelectedStructure] = React.useState<Structure | null>(null);
   const [currentSlide, setCurrentSlide] = React.useState(0);
+  const [imagesLoaded, setImagesLoaded] = React.useState<Set<string>>(new Set());
   
   // Toutes les structures disponibles pour le carrousel
   const availableStructures = structures
@@ -85,6 +86,23 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
     setSelectedStructure(null);
   };
 
+  // Fonction pour précharger les images
+  const preloadImage = (src: string) => {
+    if (!imagesLoaded.has(src)) {
+      const img = new Image();
+      img.onload = () => {
+        setImagesLoaded(prev => new Set(prev).add(src));
+      };
+      img.src = src;
+    }
+  };
+
+  // Précharger les images des structures visibles
+  React.useEffect(() => {
+    availableStructures.slice(0, 6).forEach(structure => {
+      preloadImage(structure.image);
+    });
+  }, [availableStructures]);
 
   return (
     <>
@@ -144,69 +162,94 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         }}
       />
       {/* Hero Principal */}
-      <main className="relative bg-white text-gray-900 overflow-hidden min-h-screen">
+      <main className="relative bg-gradient-to-br from-gray-50 via-white to-blue-50/30 text-gray-900 overflow-hidden min-h-screen">
         
-        {/* Animations de fond harmonisées */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-20 h-20 bg-blue-100 rounded-full animate-bounce" style={{backgroundColor: '#E3F2FD'}}></div>
-          <div className="absolute top-40 right-20 w-16 h-16 bg-orange-100 rounded-full animate-pulse"></div>
-          <div className="absolute bottom-32 left-1/4 w-12 h-12 bg-blue-50 rounded-full animate-bounce delay-1000" style={{backgroundColor: '#F3F9FF'}}></div>
-          <div className="absolute bottom-20 right-1/3 w-24 h-24 bg-orange-50 rounded-full animate-pulse delay-500"></div>
+        {/* Animations de fond modernisées */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-blue-100/40 to-blue-200/20 rounded-full animate-float blur-sm"></div>
+          <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-orange-100/40 to-orange-200/20 rounded-full animate-pulse-slow blur-sm"></div>
+          <div className="absolute bottom-32 left-1/4 w-20 h-20 bg-gradient-to-br from-blue-50/60 to-blue-100/30 rounded-full animate-bounce-slow delay-1000 blur-sm"></div>
+          <div className="absolute bottom-20 right-1/3 w-36 h-36 bg-gradient-to-br from-orange-50/50 to-orange-100/25 rounded-full animate-wiggle blur-sm"></div>
+          <div className="absolute top-1/2 left-1/2 w-16 h-16 bg-gradient-to-br from-purple-100/30 to-purple-200/15 rounded-full animate-twinkle blur-sm"></div>
         </div>
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           {/* Section Titre et Présentation */}
-          <div className="text-center mb-16">
+          <div className="text-center mb-20">
             <div className="animate-fade-in">
-              <h1 className="text-5xl md:text-7xl font-extrabold mb-8 leading-tight" itemProp="headline">
-                <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
+              <h1 className="text-6xl md:text-8xl font-black mb-10 leading-tight tracking-tight" itemProp="headline">
+                <span className="bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-transparent drop-shadow-sm">
                   Créez des Moments
                 </span>
                 <br />
-                <span className="bg-gradient-to-r text-transparent bg-clip-text animate-pulse" style={{backgroundImage: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
+                <span className="bg-gradient-to-r text-transparent bg-clip-text animate-pulse drop-shadow-lg" style={{backgroundImage: 'linear-gradient(135deg, #0F97F6, #FF5722, #0F97F6)'}}>
                   Magiques ✨
                 </span>
               </h1>
-              <p className="text-xl md:text-3xl mb-10 max-w-5xl mx-auto text-gray-700 leading-relaxed font-medium" itemProp="description">
+              <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 max-w-6xl mx-auto shadow-xl border border-white/20">
+                <p className="text-2xl md:text-4xl mb-6 text-gray-800 leading-relaxed font-bold" itemProp="description">
                 🎪 Des structures gonflables <span className="font-bold" style={{color: '#0F97F6'}}>premium</span> pour des événements 
                 <span className="font-bold text-orange-500"> festifs</span> et <span className="font-bold" style={{color: '#0F97F6'}}>inoubliables </span> 
                  dans toute l'Île-de-France 🎉
-              </p>
+                </p>
+                <div className="flex flex-wrap justify-center gap-4 text-sm md:text-base text-gray-600">
+                  <div className="flex items-center bg-blue-50 px-4 py-2 rounded-full">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
+                    Livraison gratuite
+                  </div>
+                  <div className="flex items-center bg-orange-50 px-4 py-2 rounded-full">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mr-2 animate-pulse"></div>
+                    Service 7j/7
+                  </div>
+                  <div className="flex items-center bg-green-50 px-4 py-2 rounded-full">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                    Devis sous 48h
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Structures en Bulles */}
           {availableStructures.length > 0 && (
-            <div className="mb-16">
+            <div className="mb-24">
+              <div className="text-center mb-12">
+                <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                  Nos <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-orange-500">Structures</span> Premium
+                </h2>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  Découvrez notre sélection de structures gonflables haut de gamme
+                </p>
+              </div>
               {/* Carrousel Container */}
-              <div className="relative max-w-6xl mx-auto">
+              <div className="relative max-w-7xl mx-auto">
                 {/* Navigation Buttons */}
                 {totalSlides > 1 && (
                   <>
                     <button
                       onClick={prevSlide}
-                      className="absolute -left-4 sm:-left-6 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all hover:scale-110 border-2 border-gray-100"
+                      className="absolute -left-4 sm:-left-8 top-1/2 transform -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-4 sm:p-5 shadow-2xl hover:shadow-3xl transition-all hover:scale-110 border border-white/50 hover:bg-white"
                     >
-                      <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7 text-gray-600" />
+                      <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8 text-gray-700" />
                     </button>
                     <button
                       onClick={nextSlide}
-                      className="absolute -right-4 sm:-right-6 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all hover:scale-110 border-2 border-gray-100"
+                      className="absolute -right-4 sm:-right-8 top-1/2 transform -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-4 sm:p-5 shadow-2xl hover:shadow-3xl transition-all hover:scale-110 border border-white/50 hover:bg-white"
                     >
-                      <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7 text-gray-600" />
+                      <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8 text-gray-700" />
                     </button>
                   </>
                 )}
                 
                 {/* Carrousel Content */}
-                <div className="overflow-hidden rounded-2xl">
+                <div className="overflow-hidden rounded-3xl">
                   <div 
                     className="flex transition-transform duration-500 ease-in-out"
                     style={{ transform: `translateX(-${currentSlide * 100}%)` }}
                   >
                     {Array.from({ length: totalSlides }, (_, slideIndex) => (
-                      <div key={slideIndex} className="w-full flex-shrink-0 px-4">
-                        <div className={`grid gap-4 md:gap-8 ${
+                      <div key={slideIndex} className="w-full flex-shrink-0 px-6">
+                        <div className={`grid gap-6 md:gap-10 ${
                           itemsPerSlide === 1 ? 'grid-cols-1' :
                           itemsPerSlide === 2 ? 'grid-cols-2' :
                           'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
@@ -216,7 +259,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                             .map((structure) => (
                             <div 
                               key={structure.id}
-                              className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 overflow-hidden cursor-pointer w-full"
+                              className="group bg-white/95 backdrop-blur-sm rounded-3xl shadow-xl hover:shadow-3xl transition-all duration-700 transform hover:scale-105 hover:-translate-y-2 overflow-hidden cursor-pointer w-full border border-white/50"
                               onClick={() => openModal(structure)}
                             >
                               {/* Image en bulle */}
@@ -226,15 +269,23 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                                     <img 
                                       src={structure.image} 
                                       alt={structure.name}
-                                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                      loading="lazy"
+                                      className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${
+                                        imagesLoaded.has(structure.image) ? 'opacity-100' : 'opacity-0'
+                                      }`}
+                                      loading="eager"
+                                      onLoad={() => preloadImage(structure.image)}
                                       onError={(e) => {
                                         e.currentTarget.src = 'https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=400';
                                       }}
                                     />
+                                    {!imagesLoaded.has(structure.image) && (
+                                      <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-orange-100 animate-pulse flex items-center justify-center">
+                                        <div className="text-4xl">🎪</div>
+                                      </div>
+                                    )}
                                   </div>
                                   {/* Badge prix */}
-                                  <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                                  <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-xl border-2 border-white">
                                     {structure.customPricing ? 'Prix sur Devis' : `${structure.price}€`}
                                   </div>
                                 </div>
@@ -246,22 +297,28 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                                   {structure.name}
                                 </h3>
                                 
-                                <div className="space-y-2 mb-4">
+                                <div className="space-y-3 mb-6">
                                   <div className="flex items-center text-xs sm:text-sm text-gray-600">
-                                    <Ruler className="w-4 h-4 mr-2 text-blue-500" />
+                                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                      <Ruler className="w-4 h-4 text-blue-600" />
+                                    </div>
                                     <span>{structure.size}</span>
                                   </div>
                                   <div className="flex items-center text-xs sm:text-sm text-gray-600">
-                                    <Users className="w-4 h-4 mr-2 text-orange-500" />
+                                    <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mr-3">
+                                      <Users className="w-4 h-4 text-orange-600" />
+                                    </div>
                                     <span>{structure.capacity}</span>
                                   </div>
                                   <div className="flex items-center text-xs sm:text-sm text-gray-600">
-                                    <Heart className="w-4 h-4 mr-2 text-pink-500" />
+                                    <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center mr-3">
+                                      <Heart className="w-4 h-4 text-pink-600" />
+                                    </div>
                                     <span>{structure.age}</span>
                                   </div>
                                 </div>
 
-                                <p className="text-gray-600 text-xs sm:text-sm mb-4 line-clamp-3">
+                                <p className="text-gray-600 text-sm mb-6 line-clamp-3 leading-relaxed">
                                   {structure.description.length > 100 
                                     ? structure.description.substring(0, 100) + '...' 
                                     : structure.description
@@ -278,14 +335,14 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 
                 {/* Dots Indicators */}
                 {totalSlides > 1 && (
-                  <div className="flex justify-center mt-8 space-x-2">
+                  <div className="flex justify-center mt-12 space-x-3">
                     {Array.from({ length: totalSlides }, (_, index) => (
                       <button
                         key={index}
                         onClick={() => goToSlide(index)}
-                        className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
+                        className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
                           currentSlide === index
-                            ? 'bg-gradient-to-r from-blue-500 to-orange-500 scale-125'
+                            ? 'bg-gradient-to-r from-blue-500 to-orange-500 scale-125 shadow-lg'
                             : 'bg-gray-300 hover:bg-gray-400'
                         }`}
                       />
@@ -297,56 +354,56 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           )}
 
           {/* Boutons d'action principaux */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16 animate-slide-up">
+          <div className="flex flex-col sm:flex-row gap-8 justify-center items-center mb-20 animate-slide-up">
             <button 
               onClick={() => onNavigate('catalogue')}
-              className="group text-white px-10 py-4 rounded-full font-bold text-lg transition-all duration-500 transform hover:scale-110 shadow-2xl hover:shadow-3xl flex items-center animate-bounce-slow"
+              className="group text-white px-12 py-5 rounded-full font-bold text-xl transition-all duration-500 transform hover:scale-110 shadow-2xl hover:shadow-3xl flex items-center animate-bounce-slow backdrop-blur-sm border border-white/20"
               style={{background: 'linear-gradient(to right, #0F97F6, #FF5722)'}}
               onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #0E87E0, #E64A19)'}
               onMouseLeave={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #0F97F6, #FF5722)'}
             >
               Découvrir toutes nos Structures
-              <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-2 transition-transform duration-300" />
+              <ArrowRight className="w-6 h-6 ml-4 group-hover:translate-x-2 transition-transform duration-300" />
             </button>
           </div>
 
           {/* Stats harmonisées */}
-          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-3xl shadow-2xl p-8 max-w-6xl mx-auto animate-fade-in-up">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl p-10 max-w-7xl mx-auto animate-fade-in-up border border-white/50">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
               <div className="text-center group">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                  <Shield className="w-8 h-8 text-white animate-pulse" />
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300 shadow-xl">
+                  <Shield className="w-10 h-10 text-white animate-pulse" />
                 </div>
-                <h3 className="text-3xl font-bold mb-2 text-gray-900">100%</h3>
-                <p className="text-lg font-semibold text-gray-800 mb-1">Sécurisé</p>
-                <p className="text-sm text-gray-600">Normes CE & AFNOR</p>
+                <h3 className="text-4xl font-bold mb-3 text-gray-900">100%</h3>
+                <p className="text-xl font-semibold text-gray-800 mb-2">Sécurisé</p>
+                <p className="text-sm text-gray-600 leading-relaxed">Normes CE & AFNOR</p>
               </div>
               
               <div className="text-center group">
-                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                  <Truck className="w-8 h-8 text-white animate-bounce" />
+                <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300 shadow-xl">
+                  <Truck className="w-10 h-10 text-white animate-bounce" />
                 </div>
-                <h3 className="text-3xl font-bold mb-2 text-gray-900">Gratuit</h3>
-                <p className="text-lg font-semibold text-gray-800 mb-1">Livraison</p>
-                <p className="text-sm text-gray-600">Toute l'Île-de-France</p>
+                <h3 className="text-4xl font-bold mb-3 text-gray-900">Gratuit</h3>
+                <p className="text-xl font-semibold text-gray-800 mb-2">Livraison</p>
+                <p className="text-sm text-gray-600 leading-relaxed">Toute l'Île-de-France</p>
               </div>
               
               <div className="text-center group">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                  <Clock className="w-8 h-8 text-white animate-spin-slow" />
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300 shadow-xl">
+                  <Clock className="w-10 h-10 text-white animate-spin-slow" />
                 </div>
-                <h3 className="text-3xl font-bold mb-2 text-gray-900">7j/7</h3>
-                <p className="text-lg font-semibold text-gray-800 mb-1">Service</p>
-                <p className="text-sm text-gray-600">Disponible toujours</p>
+                <h3 className="text-4xl font-bold mb-3 text-gray-900">7j/7</h3>
+                <p className="text-xl font-semibold text-gray-800 mb-2">Service</p>
+                <p className="text-sm text-gray-600 leading-relaxed">Disponible toujours</p>
               </div>
               
               <div className="text-center group">
-                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
-                  <Star className="w-8 h-8 text-white animate-twinkle" />
+                <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all duration-300 shadow-xl">
+                  <Star className="w-10 h-10 text-white animate-twinkle" />
                 </div>
-                <h3 className="text-3xl font-bold mb-2 text-gray-900">5★</h3>
-                <p className="text-lg font-semibold text-gray-800 mb-1">Satisfaction</p>
-                <p className="text-sm text-gray-600">Clients ravis</p>
+                <h3 className="text-4xl font-bold mb-3 text-gray-900">5★</h3>
+                <p className="text-xl font-semibold text-gray-800 mb-2">Satisfaction</p>
+                <p className="text-sm text-gray-600 leading-relaxed">Clients ravis</p>
               </div>
             </div>
           </div>
@@ -386,80 +443,82 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
       )}
 
       {/* Call to action final harmonisé */}
-      <section className="py-20 bg-white text-gray-900 relative overflow-hidden">
+      <section className="py-24 bg-gradient-to-br from-white via-blue-50/30 to-orange-50/20 text-gray-900 relative overflow-hidden">
         {/* Animations de fond harmonisées */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-10 left-10 w-32 h-32 rounded-full animate-float" style={{backgroundColor: '#E3F2FD'}}></div>
-          <div className="absolute bottom-10 right-10 w-24 h-24 bg-orange-100 rounded-full animate-bounce-slow"></div>
-          <div className="absolute top-1/2 left-1/4 w-16 h-16 rounded-full animate-pulse-slow delay-1000" style={{backgroundColor: '#F3F9FF'}}></div>
-          <div className="absolute top-20 right-1/4 w-20 h-20 bg-blue-100 rounded-full animate-wiggle"></div>
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-10 left-10 w-40 h-40 bg-gradient-to-br from-blue-100/30 to-blue-200/15 rounded-full animate-float blur-sm"></div>
+          <div className="absolute bottom-10 right-10 w-32 h-32 bg-gradient-to-br from-orange-100/30 to-orange-200/15 rounded-full animate-bounce-slow blur-sm"></div>
+          <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-gradient-to-br from-purple-100/25 to-purple-200/10 rounded-full animate-pulse-slow delay-1000 blur-sm"></div>
+          <div className="absolute top-20 right-1/4 w-28 h-28 bg-gradient-to-br from-green-100/25 to-green-200/10 rounded-full animate-wiggle blur-sm"></div>
         </div>
         
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-12">
-            <h2 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="mb-16">
+            <h2 className="text-5xl md:text-7xl font-black mb-8 leading-tight tracking-tight">
               Prêt à Créer des Souvenirs <span className="text-orange-500">Inoubliables</span> ?
             </h2>
-            <p className="text-xl md:text-2xl mb-4 text-gray-700 max-w-5xl mx-auto">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 max-w-5xl mx-auto shadow-xl border border-white/20 mb-8">
+              <p className="text-2xl md:text-3xl mb-4 text-gray-800 font-bold max-w-4xl mx-auto">
               Transformez votre événement en moment magique avec nos structures gonflables premium
-            </p>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              </p>
+              <p className="text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed">
               Devis gratuit sous 48h • Livraison incluse • Service 7j/7 dans toute l'Île-de-France
-            </p>
+              </p>
+            </div>
           </div>
 
           {/* Boutons d'action harmonisés */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-8 justify-center items-center mb-16">
             <button 
               onClick={() => onNavigate('devis')}
-              className="group text-white px-10 py-4 rounded-full font-bold text-lg transition-all duration-500 transform hover:scale-110 shadow-2xl flex items-center"
+              className="group text-white px-12 py-5 rounded-full font-bold text-xl transition-all duration-500 transform hover:scale-110 shadow-2xl flex items-center backdrop-blur-sm border border-white/20"
               style={{background: 'linear-gradient(to right, #0F97F6, #FF5722)'}}
               onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #0E87E0, #E64A19)'}
               onMouseLeave={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #0F97F6, #FF5722)'}
             >
-              <ArrowRight className="w-5 h-5 mr-3 group-hover:translate-x-2 transition-transform duration-300" />
+              <ArrowRight className="w-6 h-6 mr-4 group-hover:translate-x-2 transition-transform duration-300" />
               Demander un Devis Gratuit
             </button>
             <a
               href="https://wa.me/33663528072"
               target="_blank"
               rel="noopener noreferrer"
-              className="group border-2 px-10 py-4 rounded-full font-bold text-lg transition-all duration-500 transform hover:scale-110 flex items-center hover:shadow-xl"
+              className="group border-2 px-12 py-5 rounded-full font-bold text-xl transition-all duration-500 transform hover:scale-110 flex items-center hover:shadow-xl backdrop-blur-sm bg-white/50"
               style={{borderColor: '#0F97F6', color: '#0F97F6'}}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = '#0F97F6';
                 e.currentTarget.style.color = 'white';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
                 e.currentTarget.style.color = '#0F97F6';
               }}
             >
-              <MessageCircle className="w-5 h-5 mr-3 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
+              <MessageCircle className="w-6 h-6 mr-4 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
               WhatsApp : 06 63 52 80 72
             </a>
           </div>
 
           {/* Contact rapide harmonisé */}
-          <div className="bg-gray-50 rounded-2xl p-8 max-w-3xl mx-auto shadow-lg">
-            <h3 className="text-2xl font-bold mb-4">Besoin d'un conseil personnalisé ?</h3>
-            <p className="text-lg text-gray-600 mb-6">
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-10 max-w-4xl mx-auto shadow-2xl border border-white/50">
+            <h3 className="text-3xl font-bold mb-6">Besoin d'un conseil personnalisé ?</h3>
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
               Notre équipe d'experts vous accompagne dans le choix des structures parfaites pour votre événement
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <a 
                 href="tel:0663528072" 
-                className="text-white px-8 py-3 rounded-full font-bold transition-all transform hover:scale-105 flex items-center justify-center shadow-lg"
+                className="text-white px-10 py-4 rounded-full font-bold transition-all transform hover:scale-105 flex items-center justify-center shadow-xl backdrop-blur-sm border border-white/20"
                 style={{background: 'linear-gradient(to right, #FF5722, #E64A19)'}}
                 onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #E64A19, #D84315)'}
                 onMouseLeave={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #FF5722, #E64A19)'}
               >
-                <Phone className="w-5 h-5 mr-2" />
+                <Phone className="w-6 h-6 mr-3" />
                 Appeler maintenant
               </a>
               <button 
                 onClick={() => onNavigate('contact')}
-                className="text-white px-8 py-3 rounded-full font-bold transition-all transform hover:scale-105 shadow-lg"
+                className="text-white px-10 py-4 rounded-full font-bold transition-all transform hover:scale-105 shadow-xl backdrop-blur-sm border border-white/20"
                 style={{background: 'linear-gradient(to right, #0F97F6, #0E87E0)'}}
                 onMouseEnter={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #0E87E0, #0D77CC)'}
                 onMouseLeave={(e) => e.currentTarget.style.background = 'linear-gradient(to right, #0F97F6, #0E87E0)'}
@@ -489,6 +548,7 @@ const PhotoCarousel: React.FC = () => {
   const [currentSlide, setCurrentSlide] = React.useState(0);
   const [itemsPerSlide, setItemsPerSlide] = React.useState(3);
   const [selectedStructure, setSelectedStructure] = React.useState<Structure | null>(null);
+  const [imagesLoaded, setImagesLoaded] = React.useState<Set<string>>(new Set());
   
   // Trier les photos par ordre
   const sortedPhotos = [...carouselPhotos].sort((a, b) => a.order - b.order);
@@ -553,57 +613,83 @@ const PhotoCarousel: React.FC = () => {
     setSelectedStructure(null);
   };
 
+  // Fonction pour précharger les images
+  const preloadImage = (src: string) => {
+    if (!imagesLoaded.has(src)) {
+      const img = new Image();
+      img.onload = () => {
+        setImagesLoaded(prev => new Set(prev).add(src));
+      };
+      img.src = src;
+    }
+  };
+
+  // Précharger les images visibles
+  React.useEffect(() => {
+    sortedPhotos.slice(0, 6).forEach(photo => {
+      preloadImage(photo.url);
+    });
+  }, [sortedPhotos]);
+
   if (sortedPhotos.length === 0) return null;
 
   return (
     <>
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
-              <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
+      <section className="py-20 bg-gradient-to-br from-white via-blue-50/20 to-orange-50/10 relative overflow-hidden">
+        {/* Animations de fond */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-br from-blue-100/20 to-blue-200/10 rounded-full animate-float blur-sm"></div>
+          <div className="absolute bottom-20 right-20 w-28 h-28 bg-gradient-to-br from-orange-100/20 to-orange-200/10 rounded-full animate-bounce-slow blur-sm"></div>
+        </div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl md:text-6xl font-black mb-6 leading-tight tracking-tight">
+              <span className="bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-transparent drop-shadow-sm">
                 Nos Structures
               </span>
               <br />
-              <span className="bg-gradient-to-r text-transparent bg-clip-text animate-pulse" style={{backgroundImage: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
+              <span className="bg-gradient-to-r text-transparent bg-clip-text animate-pulse drop-shadow-lg" style={{backgroundImage: 'linear-gradient(135deg, #0F97F6, #FF5722, #0F97F6)'}}>
                 en Action 📸
               </span>
             </h2>
-            <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-3xl mx-auto">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 max-w-4xl mx-auto shadow-xl border border-white/20">
+              <p className="text-2xl text-gray-800 leading-relaxed font-bold">
               🎪 Découvrez nos structures gonflables <span className="font-bold" style={{color: '#0F97F6'}}>en situation</span> lors d'événements 
               <span className="font-bold text-orange-500"> réels</span> ! 🎉
-            </p>
+              </p>
+            </div>
           </div>
 
           {/* Carrousel Container */}
-          <div className="relative max-w-6xl mx-auto">
+          <div className="relative max-w-7xl mx-auto">
             {/* Navigation Buttons */}
             {totalSlides > 1 && (
               <>
                 <button
                   onClick={prevSlide}
-                  className="absolute -left-4 sm:-left-6 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all hover:scale-110 border-2 border-gray-100"
+                  className="absolute -left-4 sm:-left-8 top-1/2 transform -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-4 sm:p-5 shadow-2xl hover:shadow-3xl transition-all hover:scale-110 border border-white/50 hover:bg-white"
                 >
-                  <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7 text-gray-600" />
+                  <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8 text-gray-700" />
                 </button>
                 <button
                   onClick={nextSlide}
-                  className="absolute -right-4 sm:-right-6 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-3 sm:p-4 shadow-lg hover:shadow-xl transition-all hover:scale-110 border-2 border-gray-100"
+                  className="absolute -right-4 sm:-right-8 top-1/2 transform -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-4 sm:p-5 shadow-2xl hover:shadow-3xl transition-all hover:scale-110 border border-white/50 hover:bg-white"
                 >
-                  <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7 text-gray-600" />
+                  <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8 text-gray-700" />
                 </button>
               </>
             )}
             
             {/* Carrousel Content */}
-            <div className="overflow-hidden rounded-2xl">
+            <div className="overflow-hidden rounded-3xl">
               <div 
                 className="flex transition-transform duration-500 ease-in-out"
                 style={{ transform: `translateX(-${currentSlide * 100}%)` }}
               >
                 {Array.from({ length: totalSlides }, (_, slideIndex) => (
-                  <div key={slideIndex} className="w-full flex-shrink-0 px-4">
-                    <div className={`grid gap-4 md:gap-8 ${
+                  <div key={slideIndex} className="w-full flex-shrink-0 px-6">
+                    <div className={`grid gap-6 md:gap-10 ${
                       itemsPerSlide === 1 ? 'grid-cols-1' :
                       itemsPerSlide === 2 ? 'grid-cols-2' :
                       'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
@@ -613,27 +699,35 @@ const PhotoCarousel: React.FC = () => {
                         .map((photo) => (
                         <div 
                           key={photo.id}
-                          className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 overflow-hidden w-full"
+                          className="group bg-white/95 backdrop-blur-sm rounded-3xl shadow-xl hover:shadow-3xl transition-all duration-700 transform hover:scale-105 hover:-translate-y-2 overflow-hidden w-full border border-white/50"
                         >
                           <div className="relative">
                             <img 
                               src={photo.url} 
                               alt={photo.alt}
-                              className="w-full h-64 sm:h-80 object-cover group-hover:scale-110 transition-transform duration-500"
-                              loading="lazy"
+                              className={`w-full h-64 sm:h-80 object-cover group-hover:scale-110 transition-transform duration-700 ${
+                                imagesLoaded.has(photo.url) ? 'opacity-100' : 'opacity-0'
+                              }`}
+                              loading="eager"
+                              onLoad={() => preloadImage(photo.url)}
                               onError={(e) => {
                                 e.currentTarget.src = 'https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=400';
                               }}
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            <div className="absolute bottom-4 left-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                              <h3 className="text-lg font-bold mb-1" itemProp="name">{photo.title || photo.alt}</h3>
-                              <div className="flex items-center text-sm">
-                                <MapPin className="w-4 h-4 mr-1" />
+                            {!imagesLoaded.has(photo.url) && (
+                              <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-orange-100 animate-pulse flex items-center justify-center">
+                                <div className="text-6xl">📸</div>
+                              </div>
+                            )}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div className="absolute bottom-6 left-6 right-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                              <h3 className="text-xl font-bold mb-2 drop-shadow-lg" itemProp="name">{photo.title || photo.alt}</h3>
+                              <div className="flex items-center text-sm mb-3">
+                                <MapPin className="w-5 h-5 mr-2" />
                                 <span>{photo.location || 'Île-de-France'}</span>
                               </div>
                               {photo.structureId && (
-                                <div className="mt-2">
+                                <div className="mt-3">
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();
@@ -642,7 +736,7 @@ const PhotoCarousel: React.FC = () => {
                                         openStructureModal(structure);
                                       }
                                     }}
-                                    className="bg-gradient-to-r from-blue-500 to-orange-500 px-3 py-1 rounded-full text-xs font-bold inline-block hover:from-blue-600 hover:to-orange-600 transition-all transform hover:scale-105"
+                                    className="bg-gradient-to-r from-blue-500 to-orange-500 px-4 py-2 rounded-full text-sm font-bold inline-block hover:from-blue-600 hover:to-orange-600 transition-all transform hover:scale-105 shadow-lg backdrop-blur-sm border border-white/20"
                                   >
                                     🎪 {structures.find(s => s.id === photo.structureId)?.name || 'Structure'} - Voir détails
                                   </button>
@@ -660,14 +754,14 @@ const PhotoCarousel: React.FC = () => {
             
             {/* Dots Indicators */}
             {totalSlides > 1 && (
-              <div className="flex justify-center mt-8 space-x-2">
+              <div className="flex justify-center mt-12 space-x-3">
                 {Array.from({ length: totalSlides }, (_, index) => (
                   <button
                     key={index}
                     onClick={() => goToSlide(index)}
-                    className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
+                    className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${
                       currentSlide === index
-                        ? 'bg-gradient-to-r from-blue-500 to-orange-500 scale-125'
+                        ? 'bg-gradient-to-r from-blue-500 to-orange-500 scale-125 shadow-lg'
                         : 'bg-gray-300 hover:bg-gray-400'
                     }`}
                   />
@@ -799,11 +893,17 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
   if (dataToUse.length === 0 && !isAdmin) return null;
 
   return (
-    <section className="py-16 bg-gradient-to-br from-blue-50 to-orange-50 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
-            <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
+    <section className="py-20 bg-gradient-to-br from-blue-50/50 to-orange-50/30 relative overflow-hidden">
+      {/* Animations de fond */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-10 right-10 w-40 h-40 bg-gradient-to-br from-blue-100/20 to-blue-200/10 rounded-full animate-float blur-sm"></div>
+        <div className="absolute bottom-10 left-10 w-32 h-32 bg-gradient-to-br from-orange-100/20 to-orange-200/10 rounded-full animate-bounce-slow blur-sm"></div>
+      </div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-5xl md:text-6xl font-black mb-6 leading-tight tracking-tight">
+            <span className="bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-transparent drop-shadow-sm">
               Ils nous ont
             </span>
             <br />
@@ -811,15 +911,17 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
               fait confiance 🤝
             </span>
           </h2>
-          <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-3xl mx-auto">
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 max-w-4xl mx-auto shadow-xl border border-white/20">
+            <p className="text-2xl text-gray-800 leading-relaxed font-bold">
             🎪 Rejoignez nos <span className="font-bold" style={{color: '#0F97F6'}}>clients satisfaits</span> et nos 
             <span className="font-bold text-orange-500"> partenaires</span> de confiance ! ⭐
-          </p>
+            </p>
+          </div>
         </div>
 
         {/* Nouveau bouton admin en haut à droite */}
         {isAdmin && (
-          <div className="absolute top-4 right-4">
+          <div className="absolute top-6 right-6">
             {!isEditing ? (
               <button
                 type="button"
@@ -827,20 +929,20 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
                   console.log('Nouveau bouton cliqué !');
                   setIsEditing(true);
                 }}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold shadow-lg transition-all duration-300 transform hover:scale-105"
+                className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-full font-bold shadow-xl transition-all duration-300 transform hover:scale-105 backdrop-blur-sm border border-white/20"
                 style={{ cursor: 'pointer' }}
               >
                 ✏️ Éditer
               </button>
             ) : (
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 <button
                   type="button"
                   onClick={() => {
                     console.log('Sauvegarde cliquée !');
                     saveChanges();
                   }}
-                  className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg font-bold shadow-lg transition-all"
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-full font-bold shadow-xl transition-all backdrop-blur-sm border border-white/20"
                   style={{ cursor: 'pointer' }}
                 >
                   💾
@@ -851,7 +953,7 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
                     console.log('Annuler cliqué !');
                     cancelEditing();
                   }}
-                  className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded-lg font-bold shadow-lg transition-all"
+                  className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-3 rounded-full font-bold shadow-xl transition-all backdrop-blur-sm border border-white/20"
                   style={{ cursor: 'pointer' }}
                 >
                   ❌
@@ -862,7 +964,7 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
                     console.log('Ajouter cliqué !');
                     addNewLinkInEditing();
                   }}
-                  className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-2 rounded-lg font-bold shadow-lg transition-all"
+                  className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-3 rounded-full font-bold shadow-xl transition-all backdrop-blur-sm border border-white/20"
                   style={{ cursor: 'pointer' }}
                 >
                   ➕
@@ -871,48 +973,13 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
             )}
           </div>
         )}
-        {/* Boutons d'édition pour l'admin */}
-        {isAdmin && (
-          <div className="text-center mb-8">
-            <p className="text-sm text-gray-600 mb-4">Mode admin activé - Email: {user?.email}</p>
-            {!isEditing ? (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="bg-gradient-to-r from-blue-500 to-orange-500 text-white px-6 py-3 rounded-full font-bold hover:shadow-xl transition-all inline-flex items-center"
-              >
-                ✏️ Modifier les partenaires
-              </button>
-            ) : (
-              <div className="flex gap-4 justify-center flex-wrap">
-                <button
-                  onClick={saveChanges}
-                  className="bg-green-500 text-white px-6 py-3 rounded-full font-bold hover:bg-green-600 transition-all inline-flex items-center"
-                >
-                  💾 Sauvegarder
-                </button>
-                <button
-                  onClick={cancelEditing}
-                  className="bg-gray-500 text-white px-6 py-3 rounded-full font-bold hover:bg-gray-600 transition-all inline-flex items-center"
-                >
-                  ❌ Annuler
-                </button>
-                <button
-                  onClick={addNewLinkInEditing}
-                  className="bg-purple-500 text-white px-6 py-3 rounded-full font-bold hover:bg-purple-600 transition-all inline-flex items-center"
-                >
-                  ➕ Ajouter
-                </button>
-              </div>
-            )}
-          </div>
-        )}
 
         {/* Grille des partenaires */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
           {dataToUse.map((link, index) => (
             <div key={link.id} className="group">
               {isEditing ? (
-                <div className="bg-white rounded-2xl shadow-lg p-4 border-2 border-dashed border-gray-300">
+                <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-xl p-6 border-2 border-dashed border-gray-300">
                   <div className="space-y-3">
                     <div className="space-y-2">
                       <label className="block text-xs font-medium text-gray-700">Image (URL):</label>
@@ -920,7 +987,7 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
                         type="url"
                         value={link.icon}
                         onChange={(e) => updateLinkInEditing(index, 'icon', e.target.value)}
-                        className="w-full text-xs bg-gray-50 border border-gray-300 rounded-lg p-2"
+                        className="w-full text-xs bg-gray-50 border border-gray-300 rounded-xl p-3"
                         placeholder="https://imgur.com/fLqAlJ1.png"
                       />
                       {link.icon && (
@@ -928,7 +995,7 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
                           <img 
                             src={link.icon} 
                             alt="Aperçu" 
-                            className="w-12 h-12 object-cover rounded-lg border border-gray-200"
+                            className="w-16 h-16 object-cover rounded-xl border border-gray-200 shadow-md"
                             onError={(e) => {
                               e.currentTarget.style.display = 'none';
                             }}
@@ -940,21 +1007,21 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
                       type="text"
                       value={link.platform}
                       onChange={(e) => updateLinkInEditing(index, 'platform', e.target.value)}
-                      className="w-full text-sm font-bold bg-gray-50 border border-gray-300 rounded-lg p-2"
+                      className="w-full text-sm font-bold bg-gray-50 border border-gray-300 rounded-xl p-3"
                       placeholder="Nom du client"
                     />
                     <input
                       type="text"
                       value={link.label}
                       onChange={(e) => updateLinkInEditing(index, 'label', e.target.value)}
-                      className="w-full text-xs bg-gray-50 border border-gray-300 rounded-lg p-2"
+                      className="w-full text-xs bg-gray-50 border border-gray-300 rounded-xl p-3"
                       placeholder="Description"
                     />
                     <input
                       type="url"
                       value={link.url}
                       onChange={(e) => updateLinkInEditing(index, 'url', e.target.value)}
-                      className="w-full text-xs bg-gray-50 border border-gray-300 rounded-lg p-2"
+                      className="w-full text-xs bg-gray-50 border border-gray-300 rounded-xl p-3"
                       placeholder="https://..."
                     />
                     <div className="flex items-center justify-between">
@@ -963,13 +1030,13 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
                           type="checkbox"
                           checked={link.active}
                           onChange={(e) => updateLinkInEditing(index, 'active', e.target.checked)}
-                          className="mr-1"
+                          className="mr-2 rounded"
                         />
                         Actif
                       </label>
                       <button
                         onClick={() => deleteLinkInEditing(index)}
-                        className="bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
+                        className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors shadow-lg"
                         title="Supprimer"
                       >
                         🗑️
@@ -982,22 +1049,22 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
                   href={link.url}
                   target={link.url.startsWith('http') ? '_blank' : undefined}
                   rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className="block bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 p-6 text-center"
+                  className="block bg-white/95 backdrop-blur-sm rounded-3xl shadow-xl hover:shadow-3xl transition-all duration-700 transform hover:scale-105 hover:-translate-y-2 p-8 text-center border border-white/50"
                 >
-                  <div className="mb-3 group-hover:scale-110 transition-transform duration-300 flex justify-center">
+                  <div className="mb-4 group-hover:scale-110 transition-transform duration-300 flex justify-center">
                     <img 
                       src={link.icon} 
                       alt={link.platform}
-                      className="w-16 h-16 object-cover rounded-lg shadow-md"
+                      className="w-20 h-20 object-cover rounded-xl shadow-lg"
                       onError={(e) => {
                         e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iOCIgZmlsbD0iIzNCODJGNiIvPgo8dGV4dCB4PSIzMiIgeT0iNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPvCfpI08L3RleHQ+Cjwvc3ZnPgo=';
                       }}
                     />
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-1 text-sm">
+                  <h3 className="font-bold text-gray-900 mb-2 text-base">
                     {link.platform}
                   </h3>
-                  <p className="text-xs text-gray-600">
+                  <p className="text-sm text-gray-600 leading-relaxed">
                     {link.label}
                   </p>
                 </a>
@@ -1007,15 +1074,15 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
         </div>
 
         {dataToUse.length === 0 && isAdmin && (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">🤝</div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Aucun partenaire</h3>
-            <p className="text-gray-600 mb-6">
+          <div className="text-center py-16">
+            <div className="text-8xl mb-6">🤝</div>
+            <h3 className="text-3xl font-bold text-gray-900 mb-4">Aucun partenaire</h3>
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
               Ajoutez vos premiers clients et partenaires de confiance.
             </p>
             <button
               onClick={() => setIsEditing(true)}
-              className="bg-gradient-to-r from-blue-500 to-orange-500 text-white px-6 py-3 rounded-full font-bold hover:shadow-xl transition-all"
+              className="bg-gradient-to-r from-blue-500 to-orange-500 text-white px-8 py-4 rounded-full font-bold hover:shadow-xl transition-all transform hover:scale-105"
             >
               ➕ Ajouter des partenaires
             </button>
