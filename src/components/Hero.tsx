@@ -144,7 +144,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         }}
       />
       {/* Hero Principal */}
-      <main className="relative bg-gray-50 text-gray-900 overflow-hidden min-h-screen">
+      <main className="relative bg-white text-gray-900 overflow-hidden min-h-screen">
         
         {/* Animations de fond harmonisées */}
         <div className="absolute inset-0 overflow-hidden">
@@ -386,7 +386,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
       )}
 
       {/* Call to action final harmonisé */}
-      <section className="py-20 bg-gray-50 text-gray-900 relative overflow-hidden">
+      <section className="py-20 bg-white text-gray-900 relative overflow-hidden">
         {/* Animations de fond harmonisées */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-10 left-10 w-32 h-32 rounded-full animate-float" style={{backgroundColor: '#E3F2FD'}}></div>
@@ -547,8 +547,24 @@ const PhotoCarousel: React.FC = () => {
   if (sortedPhotos.length === 0) return null;
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
+            <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
+              Nos Structures
+            </span>
+            <br />
+            <span className="bg-gradient-to-r text-transparent bg-clip-text animate-pulse" style={{backgroundImage: 'linear-gradient(to right, #0F97F6, #FF5722)'}}>
+              en Action 📸
+            </span>
+          </h2>
+          <p className="text-xl text-gray-700 leading-relaxed font-medium max-w-3xl mx-auto">
+            🎪 Découvrez nos structures gonflables <span className="font-bold" style={{color: '#0F97F6'}}>en situation</span> lors d'événements 
+            <span className="font-bold text-orange-500"> réels</span> ! 🎉
+          </p>
+        </div>
+
         {/* Carrousel Container */}
         <div className="relative max-w-6xl mx-auto">
           {/* Navigation Buttons */}
