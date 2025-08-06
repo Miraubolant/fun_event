@@ -144,14 +144,14 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         }}
       />
       {/* Hero Principal */}
-      <main className="relative bg-gradient-to-br from-gray-50 via-white to-blue-50/30 text-gray-900 overflow-hidden min-h-screen">
+      <main className="relative bg-white text-gray-900 overflow-hidden min-h-screen">
         
         {/* Animations de fond harmonisées */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-20 h-20 bg-blue-100/40 rounded-full animate-bounce backdrop-blur-sm"></div>
-          <div className="absolute top-40 right-20 w-16 h-16 bg-orange-100/40 rounded-full animate-pulse backdrop-blur-sm"></div>
-          <div className="absolute bottom-32 left-1/4 w-12 h-12 bg-blue-50/40 rounded-full animate-bounce delay-1000 backdrop-blur-sm"></div>
-          <div className="absolute bottom-20 right-1/3 w-24 h-24 bg-orange-50/40 rounded-full animate-pulse delay-500 backdrop-blur-sm"></div>
+          <div className="absolute top-20 left-10 w-20 h-20 bg-blue-100 rounded-full animate-bounce" style={{backgroundColor: '#E3F2FD'}}></div>
+          <div className="absolute top-40 right-20 w-16 h-16 bg-orange-100 rounded-full animate-pulse"></div>
+          <div className="absolute bottom-32 left-1/4 w-12 h-12 bg-blue-50 rounded-full animate-bounce delay-1000" style={{backgroundColor: '#F3F9FF'}}></div>
+          <div className="absolute bottom-20 right-1/3 w-24 h-24 bg-orange-50 rounded-full animate-pulse delay-500"></div>
         </div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -311,10 +311,10 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           </div>
 
           {/* Stats harmonisées */}
-          <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-xl border border-white/20 p-8 max-w-6xl mx-auto animate-fade-in-up">
+          <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-3xl shadow-2xl p-8 max-w-6xl mx-auto animate-fade-in-up">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               <div className="text-center group">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg backdrop-blur-sm">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-all duration-300 shadow-lg">
                   <Shield className="w-8 h-8 text-white animate-pulse" />
                 </div>
                 <h3 className="text-3xl font-bold mb-2 text-gray-900">100%</h3>
@@ -363,12 +363,12 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         <PhotoCarousel />
         
         {/* Transition fluide vers la section suivante */}
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-gray-50 to-transparent"></div>
       </main>
 
       {/* Message si aucune structure */}
       {availableStructures.length === 0 && (
-        <section className="py-20 bg-gradient-to-br from-blue-50/30 via-white to-orange-50/30">
+        <section className="py-20 bg-gray-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="text-6xl mb-4">🎪</div>
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Structures en Préparation</h2>
@@ -386,13 +386,13 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
       )}
 
       {/* Call to action final harmonisé */}
-      <section className="py-20 bg-gradient-to-br from-white via-blue-50/20 to-orange-50/20 text-gray-900 relative overflow-hidden">
+      <section className="py-20 bg-white text-gray-900 relative overflow-hidden">
         {/* Animations de fond harmonisées */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-10 left-10 w-32 h-32 bg-blue-100/30 rounded-full animate-float backdrop-blur-sm"></div>
-          <div className="absolute bottom-10 right-10 w-24 h-24 bg-orange-100/30 rounded-full animate-bounce-slow backdrop-blur-sm"></div>
-          <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-blue-50/30 rounded-full animate-pulse-slow delay-1000 backdrop-blur-sm"></div>
-          <div className="absolute top-20 right-1/4 w-20 h-20 bg-blue-100/30 rounded-full animate-wiggle backdrop-blur-sm"></div>
+          <div className="absolute top-10 left-10 w-32 h-32 rounded-full animate-float" style={{backgroundColor: '#E3F2FD'}}></div>
+          <div className="absolute bottom-10 right-10 w-24 h-24 bg-orange-100 rounded-full animate-bounce-slow"></div>
+          <div className="absolute top-1/2 left-1/4 w-16 h-16 rounded-full animate-pulse-slow delay-1000" style={{backgroundColor: '#F3F9FF'}}></div>
+          <div className="absolute top-20 right-1/4 w-20 h-20 bg-blue-100 rounded-full animate-wiggle"></div>
         </div>
         
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -441,7 +441,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           </div>
 
           {/* Contact rapide harmonisé */}
-          <div className="bg-white/60 backdrop-blur-md rounded-2xl p-8 max-w-3xl mx-auto shadow-lg border border-white/20">
+          <div className="bg-gray-50 rounded-2xl p-8 max-w-3xl mx-auto shadow-lg">
             <h3 className="text-2xl font-bold mb-4">Besoin d'un conseil personnalisé ?</h3>
             <p className="text-lg text-gray-600 mb-6">
               Notre équipe d'experts vous accompagne dans le choix des structures parfaites pour votre événement
@@ -557,7 +557,7 @@ const PhotoCarousel: React.FC = () => {
 
   return (
     <>
-      <section className="py-16 bg-gradient-to-br from-blue-50/20 via-white to-orange-50/20">
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
@@ -619,10 +619,8 @@ const PhotoCarousel: React.FC = () => {
                             <img 
                               src={photo.url} 
                               alt={photo.alt}
-                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                              loading="eager"
-                              decoding="async"
-                              fetchPriority="high"
+                              className="w-full h-64 sm:h-80 object-cover group-hover:scale-110 transition-transform duration-500"
+                              loading="lazy"
                               onError={(e) => {
                                 e.currentTarget.src = 'https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=400';
                               }}
@@ -801,7 +799,7 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
   if (dataToUse.length === 0 && !isAdmin) return null;
 
   return (
-    <section className="py-16 bg-gradient-to-br from-blue-50/30 via-white to-orange-50/30 relative backdrop-blur-sm">
+    <section className="py-16 bg-gradient-to-br from-blue-50 to-orange-50 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
@@ -929,10 +927,8 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
                         <div className="flex justify-center">
                           <img 
                             src={link.icon} 
-                            className="w-full h-64 sm:h-80 object-cover group-hover:scale-110 transition-transform duration-500"
-                            loading="eager"
-                            decoding="async"
-                            fetchPriority="high"
+                            alt="Aperçu" 
+                            className="w-12 h-12 object-cover rounded-lg border border-gray-200"
                             onError={(e) => {
                               e.currentTarget.style.display = 'none';
                             }}
@@ -986,15 +982,13 @@ const TrustedClientsSection: React.FC<TrustedClientsSectionProps> = ({
                   href={link.url}
                   target={link.url.startsWith('http') ? '_blank' : undefined}
                   rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className="block bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 p-6 text-center border border-white/20"
+                  className="block bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 p-6 text-center"
                 >
                   <div className="mb-3 group-hover:scale-110 transition-transform duration-300 flex justify-center">
                     <img 
                       src={link.icon} 
                       alt={link.platform}
                       className="w-16 h-16 object-cover rounded-lg shadow-md"
-                      loading="eager"
-                      decoding="async"
                       onError={(e) => {
                         e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iOCIgZmlsbD0iIzNCODJGNiIvPgo8dGV4dCB4PSIzMiIgeT0iNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPvCfpI08L3RleHQ+Cjwvc3ZnPgo=';
                       }}
