@@ -376,7 +376,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 </div>
                 <h3 className="text-4xl font-bold mb-3 text-gray-900">100%</h3>
                 <p className="text-xl font-semibold text-gray-800 mb-2">Sécurisé</p>
-                <p className="text-sm text-gray-600 leading-relaxed">Normes CE & AFNOR</p>
+                <p className="text-sm text-gray-600 leading-relaxed">Normes NF EN 14960</p>
               </div>
               
               <div className="text-center group">
