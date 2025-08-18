@@ -17,6 +17,9 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   const [selectedStructure, setSelectedStructure] = React.useState<Structure | null>(null);
   const [currentSlide, setCurrentSlide] = React.useState(0);
   const [imagesLoaded, setImagesLoaded] = React.useState<Set<string>>(new Set());
+  const [touchStart, setTouchStart] = React.useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = React.useState<number | null>(null);
+  const [isDragging, setIsDragging] = React.useState(false);
   
   // Toutes les structures disponibles pour le carrousel
   const availableStructures = structures
@@ -56,6 +59,39 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   
   // Calcul du nombre total de slides
   const totalSlides = Math.max(1, Math.ceil(availableStructures.length / itemsPerSlide));
+  
+  // Distance minimale pour déclencher un swipe
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+    setIsDragging(false);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (!touchStart) return;
+    setTouchEnd(e.targetTouches[0].clientX);
+    setIsDragging(true);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      nextSlide();
+    } else if (isRightSwipe) {
+      prevSlide();
+    }
+    
+    setTouchStart(null);
+    setTouchEnd(null);
+    setIsDragging(false);
+  };
   
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % totalSlides);
@@ -245,6 +281,9 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 <div className="overflow-hidden rounded-3xl">
                   <div 
                     className="flex transition-transform duration-500 ease-in-out"
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={onTouchEnd}
                     style={{ transform: `translateX(-${currentSlide * 100}%)` }}
                   >
                     {Array.from({ length: totalSlides }, (_, slideIndex) => (
@@ -271,7 +310,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                                       alt={structure.name}
                                       className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ${
                                         imagesLoaded.has(structure.image) ? 'opacity-100' : 'opacity-0'
-                                      }`}
+                                      } ${isDragging ? 'pointer-events-none' : ''}`}
                                       loading="eager"
                                       onLoad={() => preloadImage(structure.image)}
                                       onError={(e) => {
@@ -335,7 +374,16 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 
                 {/* Dots Indicators */}
                 {totalSlides > 1 && (
-                  <div className="flex justify-center mt-12 space-x-3">
+                  <div className="flex justify-center mt-12 space-x-3 relative">
+                    {/* Indicateur de swipe sur mobile */}
+                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 md:hidden">
+                      <div className="flex items-center text-xs text-gray-500 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full border border-gray-200/50">
+                        <span className="mr-2">👈</span>
+                        <span>Glissez</span>
+                        <span className="ml-2">👉</span>
+                      </div>
+                    </div>
+                    
                     {Array.from({ length: totalSlides }, (_, index) => (
                       <button
                         key={index}
