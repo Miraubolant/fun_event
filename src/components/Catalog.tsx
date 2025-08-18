@@ -9,7 +9,7 @@ import { Structure } from '../types';
 const Catalog: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('tous');
   const [selectedStructure, setSelectedStructure] = useState<Structure | null>(null);
-  const { structures, categories } = useStructures();
+  const { structures, categories, loading } = useStructures();
   const { addToCart, items } = useCart();
 
   const allCategories = [
@@ -45,6 +45,27 @@ const Catalog: React.FC = () => {
     const item = items.find(item => item.structure.id === structureId);
     return item ? item.quantity : 0;
   };
+
+  if (loading) {
+    return (
+      <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-orange-50 relative overflow-hidden min-h-screen">
+        {/* Formes décoratives en arrière-plan */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-10 left-10 w-72 h-72 bg-blue-200/20 rounded-full blur-3xl animate-float"></div>
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-orange-200/20 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
+        </div>
+        
+        <div className="text-center">
+          <div className="relative z-10">
+            <div className="animate-spin w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-6 shadow-lg"></div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Chargement du catalogue...</h2>
+            <p className="text-xl text-gray-600">Préparation de nos structures premium</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   const openModal = (structure: Structure) => {
     setSelectedStructure(structure);
   };
