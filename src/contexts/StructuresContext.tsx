@@ -63,6 +63,8 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       setCategories([]);
       setStructures([]);
       setCarouselPhotos([]);
+      setFaqCategories([]);
+      setSocialLinks([]);
       setLoading(false);
       return;
     }
@@ -70,108 +72,83 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
     try {
       setLoading(true);
       
-      // Charger les catégories avec gestion d'erreur
-      try {
-        const { data: categoriesData, error: categoriesError } = await supabase
-          .from('categories')
-          .select('*')
-          .order('label');
-        
-        if (categoriesError) {
-          if (categoriesError.code === '42P01') {
-            console.warn('Table categories n\'existe pas encore. Veuillez exécuter les migrations.');
-            setCategories([]);
-          } else {
-            console.error('Erreur lors du chargement des catégories:', categoriesError);
-            setCategories([]);
-          }
-        } else {
-          setCategories(categoriesData || []);
-        }
-      } catch (error) {
-        console.warn('Impossible de charger les catégories:', error);
+      // Charger les données critiques en parallèle (structures + catégories)
+      const [categoriesResult, structuresResult] = await Promise.allSettled([
+        // Charger les catégories
+        supabase.from('categories').select('*').order('label'),
+        // Charger les structures (données critiques)
+        supabase.from('structures').select(`
+          id,
+          name,
+          category_id,
+          size,
+          capacity,
+          age,
+          price,
+          price_2_days,
+          max_weight,
+          services,
+          image,
+          additional_images,
+          description,
+          available,
+          order_position,
+          custom_pricing,
+          created_at,
+          updated_at
+        `).order('order_position', { ascending: true })
+      ]);
+
+      // Traiter les catégories
+      if (categoriesResult.status === 'fulfilled' && !categoriesResult.value.error) {
+        setCategories(categoriesResult.value.data || []);
+      } else {
+        console.warn('Erreur lors du chargement des catégories');
         setCategories([]);
       }
 
-      // Charger les structures sans jointure complexe
-      try {
-        const { data: structuresData, error: structuresError } = await supabase
-          .from('structures')
-          .select(`
-            id,
-            name,
-            category_id,
-            size,
-            capacity,
-            age,
-            price,
-            price_2_days,
-            max_weight,
-            services,
-            image,
-            additional_images,
-            description,
-            available,
-            order_position,
-            custom_pricing,
-            created_at,
-            updated_at
-          `)
-          .order('order_position', { ascending: true });
-        
-        if (structuresError) {
-          if (structuresError.code === '42P01') {
-            console.warn('Table structures n\'existe pas encore. Veuillez exécuter les migrations.');
-            setStructures([]);
-          } else {
-            console.error('Erreur lors du chargement des structures:', structuresError);
-            setStructures([]);
-          }
-        } else {
-          // Transformer les données pour correspondre au type Structure
-          const transformedStructures = (structuresData || []).map(item => ({
-            id: item.id,
-            name: item.name,
-            category: item.category_id, // Utiliser l'ID de la catégorie
-            size: item.size || '',
-            capacity: item.capacity || '',
-            age: item.age || '',
-            price: item.price || 0,
-            price2Days: item.price_2_days,
-            maxWeight: item.max_weight,
-            services: item.services,
-            image: item.image || '',
-            additionalImages: item.additional_images || [],
-            description: item.description || '',
-            available: item.available ?? true,
-            order: item.order_position || 1,
-            customPricing: item.custom_pricing ?? false
-          }));
-          setStructures(transformedStructures);
-        }
-      } catch (error) {
-        console.warn('Impossible de charger les structures:', error);
+      // Traiter les structures (priorité)
+      if (structuresResult.status === 'fulfilled' && !structuresResult.value.error) {
+        const transformedStructures = (structuresResult.value.data || []).map(item => ({
+          id: item.id,
+          name: item.name,
+          category: item.category_id,
+          size: item.size || '',
+          capacity: item.capacity || '',
+          age: item.age || '',
+          price: item.price || 0,
+          price2Days: item.price_2_days,
+          maxWeight: item.max_weight,
+          services: item.services,
+          image: item.image || '',
+          additionalImages: item.additional_images || [],
+          description: item.description || '',
+          available: item.available ?? true,
+          order: item.order_position || 1,
+          customPricing: item.custom_pricing ?? false
+        }));
+        setStructures(transformedStructures);
+      } else {
+        console.warn('Erreur lors du chargement des structures');
         setStructures([]);
       }
 
-      // Charger les photos du carrousel avec gestion d'erreur
-      try {
-        const { data: photosData, error: photosError } = await supabase
-          .from('carousel_photos')
-          .select('*')
-          .order('order_position');
+      // Arrêter le loading principal une fois les structures chargées
+      setLoading(false);
+
+      // Charger les données secondaires en arrière-plan (non bloquantes)
+      Promise.allSettled([
+        // Photos du carrousel
+        supabase.from('carousel_photos').select('*').order('order_position'),
+        // FAQ catégories
+        supabase.from('faq_categories').select('*').order('order_position'),
+        // Liens sociaux
+        supabase.from('social_links').select('*').eq('active', true).order('order_position')
+      ]).then(async ([photosResult, faqCategoriesResult, socialLinksResult]) => {
         
-        if (photosError) {
-          if (photosError.code === '42P01') {
-            console.warn('Table carousel_photos n\'existe pas encore. Veuillez exécuter les migrations.');
-            setCarouselPhotos([]);
-          } else {
-            console.error('Erreur lors du chargement des photos:', photosError);
-            setCarouselPhotos([]);
-          }
-        } else {
-          // Transformer les données pour correspondre au type CarouselPhoto
-          const transformedPhotos = (photosData || []).map(item => ({
+        // Traiter les photos du carrousel
+        if (photosResult.status === 'fulfilled' && !photosResult.value.error) {
+          const transformedPhotos = (photosResult.value.data || []).map(item => ({
             id: item.id,
             url: item.url,
             alt: item.alt,
@@ -182,30 +159,11 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
           }));
           setCarouselPhotos(transformedPhotos);
         }
-      } catch (error) {
-        console.warn('Impossible de charger les photos du carrousel:', error);
-        setCarouselPhotos([]);
-      }
-      
-      // Charger les FAQ avec gestion d'erreur
-      try {
-        const { data: faqCategoriesData, error: faqCategoriesError } = await supabase
-          .from('faq_categories')
-          .select('*')
-          .order('order_position');
-        
-        if (faqCategoriesError) {
-          if (faqCategoriesError.code === '42P01') {
-            console.warn('Table faq_categories n\'existe pas encore. Veuillez exécuter les migrations.');
-            setFaqCategories([]);
-          } else {
-            console.error('Erreur lors du chargement des catégories FAQ:', faqCategoriesError);
-            setFaqCategories([]);
-          }
-        } else {
-          // Charger les questions pour chaque catégorie
+
+        // Traiter les FAQ
+        if (faqCategoriesResult.status === 'fulfilled' && !faqCategoriesResult.value.error) {
           const categoriesWithQuestions = await Promise.all(
-            (faqCategoriesData || []).map(async (category) => {
+            (faqCategoriesResult.value.data || []).map(async (category) => {
               const { data: questionsData } = await supabase
                 .from('faq_questions')
                 .select('*')
@@ -230,29 +188,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
           );
           setFaqCategories(categoriesWithQuestions);
         }
-      } catch (error) {
-        console.warn('Impossible de charger les FAQ:', error);
-        setFaqCategories([]);
-      }
-      
-      // Charger les liens sociaux avec gestion d'erreur
-      try {
-        const { data: socialLinksData, error: socialLinksError } = await supabase
-          .from('social_links')
-          .select('*')
-          .eq('active', true)
-          .order('order_position');
-        
-        if (socialLinksError) {
-          if (socialLinksError.code === '42P01') {
-            console.warn('Table social_links n\'existe pas encore. Veuillez exécuter les migrations.');
-            setSocialLinks([]);
-          } else {
-            console.error('Erreur lors du chargement des liens sociaux:', socialLinksError);
-            setSocialLinks([]);
-          }
-        } else {
-          const transformedLinks = (socialLinksData || []).map(item => ({
+
+        // Traiter les liens sociaux
+        if (socialLinksResult.status === 'fulfilled' && !socialLinksResult.value.error) {
+          const transformedLinks = (socialLinksResult.value.data || []).map(item => ({
             id: item.id,
             platform: item.platform,
             url: item.url,
@@ -263,10 +202,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
           }));
           setSocialLinks(transformedLinks);
         }
-      } catch (error) {
-        console.warn('Impossible de charger les liens sociaux:', error);
-        setSocialLinks([]);
-      }
+      });
       
     } catch (error) {
       console.error('Erreur lors du chargement des données:', error);
@@ -276,7 +212,6 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       setCarouselPhotos([]);
       setFaqCategories([]);
       setSocialLinks([]);
-    } finally {
       setLoading(false);
     }
   };

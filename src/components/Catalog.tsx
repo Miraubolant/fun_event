@@ -21,6 +21,20 @@ const Catalog: React.FC = () => {
     ? structures.filter(s => s.available).sort((a, b) => (a.order || 1) - (b.order || 1))
     : structures.filter(s => s.category === activeCategory && s.available).sort((a, b) => (a.order || 1) - (b.order || 1));
 
+  // Précharger les images des premières structures
+  React.useEffect(() => {
+    const preloadImages = () => {
+      filteredStructures.slice(0, 6).forEach(structure => {
+        const img = new Image();
+        img.src = structure.image;
+      });
+    };
+    
+    if (filteredStructures.length > 0) {
+      preloadImages();
+    }
+  }, [filteredStructures]);
+
   // Vérifier si une structure est dans le panier
   const isInCart = (structureId: string) => {
     return items.some(item => item.structure.id === structureId);
