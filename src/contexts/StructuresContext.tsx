@@ -93,6 +93,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
           id,
           name,
           category_id,
+          subcategory_id,
           size,
           capacity,
           age,
@@ -125,7 +126,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
           id: item.id,
           name: item.name,
           category: item.category_id,
-          subcategory: item.subcategory_id,
+          subcategory_id: item.subcategory_id,
           size: item.size || '',
           capacity: item.capacity || '',
           age: item.age || '',
@@ -303,7 +304,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
         .insert({
           name: newStructure.name,
           category_id: newStructure.category,
-          subcategory_id: newStructure.subcategory || null,
+          subcategory_id: newStructure.subcategory_id || null,
           size: newStructure.size,
           capacity: newStructure.capacity,
           age: newStructure.age,
@@ -345,7 +346,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       
       if (updatedStructure.name !== undefined) updateData.name = updatedStructure.name;
       if (updatedStructure.category !== undefined) updateData.category_id = updatedStructure.category;
-      if (updatedStructure.subcategory !== undefined) updateData.subcategory_id = updatedStructure.subcategory || null;
+      if (updatedStructure.subcategory_id !== undefined) updateData.subcategory_id = updatedStructure.subcategory_id || null;
       if (updatedStructure.size !== undefined) updateData.size = updatedStructure.size;
       if (updatedStructure.capacity !== undefined) updateData.capacity = updatedStructure.capacity;
       if (updatedStructure.age !== undefined) updateData.age = updatedStructure.age;

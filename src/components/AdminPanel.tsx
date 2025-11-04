@@ -138,6 +138,7 @@ const AdminPanel: React.FC = () => {
         const newStructure = {
           name: formData.name,
           category: formData.category,
+          subcategory_id: formData.subcategory_id,
           size: formData.size || '',
           capacity: formData.capacity || '',
           age: formData.age || '',
@@ -835,9 +836,18 @@ const AdminPanel: React.FC = () => {
                       </div>
                     </td>
                     <td className="px-3 lg:px-6 py-4">
-                      <span className="px-2 py-1 inline-flex text-xs leading-4 font-semibold rounded-full bg-blue-100 text-blue-800">
-                        {categories.find(c => c.id === structure.category)?.label}
-                      </span>
+                      <div className="space-y-1">
+                        <span className="px-2 py-1 inline-flex text-xs leading-4 font-semibold rounded-full bg-blue-100 text-blue-800">
+                          {categories.find(c => c.id === structure.category)?.label}
+                        </span>
+                        {structure.subcategory_id && (
+                          <div>
+                            <span className="px-2 py-1 inline-flex text-xs leading-4 font-semibold rounded-full bg-purple-100 text-purple-800">
+                              {subcategories.find(s => s.id === structure.subcategory_id)?.icon} {subcategories.find(s => s.id === structure.subcategory_id)?.name}
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </td>
                     <td className="px-3 lg:px-6 py-4">
                       <div className="text-xs lg:text-sm font-semibold text-gray-900">
@@ -920,6 +930,22 @@ const AdminPanel: React.FC = () => {
                   {categories.map(cat => (
                     <option key={cat.id} value={cat.id}>{cat.label}</option>
                   ))}
+                </select>
+                <select
+                  value={formData.subcategory_id || ''}
+                  onChange={(e) => setFormData({...formData, subcategory_id: e.target.value || undefined})}
+                  className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  disabled={!formData.category}
+                >
+                  <option value="">Sélectionner une sous-catégorie (optionnel)</option>
+                  {subcategories
+                    .filter(sub => sub.category_id === formData.category && sub.active)
+                    .sort((a, b) => a.order_position - b.order_position)
+                    .map(sub => (
+                      <option key={sub.id} value={sub.id}>
+                        {sub.icon} {sub.name}
+                      </option>
+                    ))}
                 </select>
                 <input
                   type="text"

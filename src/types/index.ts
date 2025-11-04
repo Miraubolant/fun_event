@@ -2,7 +2,7 @@ export interface Structure {
   id: string;
   name: string;
   category: string;
-  subcategory?: string;
+  subcategory_id?: string;
   size: string;
   capacity: string;
   age: string;
