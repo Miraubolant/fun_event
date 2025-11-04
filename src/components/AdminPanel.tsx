@@ -899,408 +899,345 @@ const AdminPanel: React.FC = () => {
       {/* Modale Structure */}
       {showStructureModal && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-6xl w-full max-h-[95vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-xl">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[95vh] overflow-hidden flex flex-col">
+            
+            {/* Header */}
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 text-white">
               <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900">
-                    {editingStructureId ? '✏️ Modifier la structure' : '➕ Ajouter une nouvelle structure'}
+                  <h3 className="text-xl font-bold">
+                    {editingStructureId ? '📝 Modifier la structure' : '✨ Nouvelle structure'}
                   </h3>
-                  <p className="text-sm text-gray-600 mt-1">
-                    Remplissez les informations ci-dessous pour {editingStructureId ? 'modifier' : 'créer'} votre structure
+                  <p className="text-blue-100 text-sm mt-1">
+                    {editingStructureId ? 'Modifiez les informations ci-dessous' : 'Créez une nouvelle structure pour votre catalogue'}
                   </p>
                 </div>
                 <button
                   onClick={closeAllModals}
-                  className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-lg"
+                  className="text-white hover:bg-blue-800 transition-colors p-2 rounded-lg"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
             </div>
             
-            <div className="p-6 space-y-8">
-              {/* Section 1: Informations de base */}
-              <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                <div className="flex items-center mb-4">
-                  <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
-                    <Package className="w-5 h-5 text-white" />
-                  </div>
-                  <h4 className="text-lg font-semibold text-gray-900">Informations de base</h4>
-                </div>
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      📝 Nom de la structure *
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="ex: Château Gonflable Royal"
-                      value={formData.name || ''}
-                      onChange={(e) => setFormData({...formData, name: e.target.value})}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      🏷️ Catégorie *
-                    </label>
-                    <select
-                      value={formData.category || ''}
-                      onChange={(e) => setFormData({...formData, category: e.target.value, subcategory_id: undefined})}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-                    >
-                      <option value="">Sélectionner une catégorie</option>
-                      {categories.map(cat => (
-                        <option key={cat.id} value={cat.id}>{cat.icon} {cat.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      🎯 Sous-catégorie
-                    </label>
-                    <select
-                      value={formData.subcategory_id || ''}
-                      onChange={(e) => setFormData({...formData, subcategory_id: e.target.value || undefined})}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
-                      disabled={!formData.category}
-                    >
-                      <option value="">
-                        {!formData.category ? 'Sélectionnez d\'abord une catégorie' : 'Aucune sous-catégorie'}
-                      </option>
-                      {subcategories
-                        .filter(sub => sub.category_id === formData.category && sub.active)
-                        .sort((a, b) => a.order_position - b.order_position)
-                        .map(sub => (
-                          <option key={sub.id} value={sub.id}>
-                            {sub.icon} {sub.name}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 2: Caractéristiques techniques */}
-              <div className="bg-green-50 rounded-xl p-6 border border-green-200">
-                <div className="flex items-center mb-4">
-                  <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center mr-3">
-                    <span className="text-white font-bold">📏</span>
-                  </div>
-                  <h4 className="text-lg font-semibold text-gray-900">Caractéristiques techniques</h4>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      📐 Dimensions
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="ex: 7,7m x 6,6m x 1,5m"
-                      value={formData.size || ''}
-                      onChange={(e) => setFormData({...formData, size: e.target.value})}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      👥 Capacité
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="ex: 2 personnes max"
-                      value={formData.capacity || ''}
-                      onChange={(e) => setFormData({...formData, capacity: e.target.value})}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      🎂 Âge recommandé
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="ex: 3-77 ans"
-                      value={formData.age || ''}
-                      onChange={(e) => setFormData({...formData, age: e.target.value})}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
-                    />
-                  </div>
-                  
-                  <div className="md:col-span-2 lg:col-span-1">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      ⚖️ Poids maximum (kg)
-                    </label>
-                    <input
-                      type="number"
-                      placeholder="ex: 150"
-                      value={formData.maxWeight || ''}
-                      onChange={(e) => setFormData({...formData, maxWeight: Number(e.target.value) || undefined})}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 3: Tarification */}
-              <div className="bg-orange-50 rounded-xl p-6 border border-orange-200">
-                <div className="flex items-center mb-4">
-                  <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center mr-3">
-                    <DollarSign className="w-5 h-5 text-white" />
-                  </div>
-                  <h4 className="text-lg font-semibold text-gray-900">Tarification</h4>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center p-3 bg-white rounded-lg border">
-                    <input
-                      type="checkbox"
-                      checked={formData.customPricing ?? false}
-                      onChange={(e) => setFormData({...formData, customPricing: e.target.checked})}
-                      className="mr-3 w-5 h-5 text-orange-600 rounded focus:ring-orange-500"
-                    />
-                    <div>
-                      <span className="text-sm font-semibold text-gray-700">Prix sur mesure (devis personnalisé)</span>
-                      <p className="text-xs text-gray-500">Cochez cette case si le prix dépend de paramètres spécifiques</p>
-                    </div>
-                  </div>
-                  
-                  {!formData.customPricing && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Colonne 1: Informations de base */}
+                <div className="lg:col-span-1 space-y-4">
+                  <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500">
+                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                      <Package className="w-4 h-4 mr-2 text-blue-500" />
+                      Informations générales
+                    </h4>
+                    
+                    <div className="space-y-3">
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                          💰 Prix 1 jour (€) *
-                        </label>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Nom de la structure *</label>
                         <input
-                          type="number"
-                          placeholder="ex: 150"
-                          value={formData.price || ''}
-                          onChange={(e) => setFormData({...formData, price: Number(e.target.value) || 0})}
-                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
+                          type="text"
+                          placeholder="ex: Château Gonflable Royal"
+                          value={formData.name || ''}
+                          onChange={(e) => setFormData({...formData, name: e.target.value})}
+                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
                         />
                       </div>
                       
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
-                          💰 Prix 2 jours (€)
-                        </label>
-                        <input
-                          type="number"
-                          placeholder="ex: 250"
-                          value={formData.price2Days || ''}
-                          onChange={(e) => setFormData({...formData, price2Days: Number(e.target.value) || undefined})}
-                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all"
-                        />
-                      </div>
-                    </div>
-                  )}
-                  
-                  {formData.customPricing && (
-                    <div className="p-4 bg-orange-100 border border-orange-300 rounded-lg">
-                      <p className="text-sm text-orange-800 flex items-center">
-                        <span className="mr-2">⚠️</span>
-                        <strong>Prix sur mesure activé</strong> - Cette structure affichera "Prix sur devis"
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Section 4: Images */}
-              <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
-                <div className="flex items-center mb-4">
-                  <div className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center mr-3">
-                    <Image className="w-5 h-5 text-white" />
-                  </div>
-                  <h4 className="text-lg font-semibold text-gray-900">Images</h4>
-                </div>
-                
-                <div className="space-y-6">
-                  {/* Image principale */}
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      🖼️ Image principale *
-                    </label>
-                    <input
-                      type="url"
-                      placeholder="https://i.imgur.com/fLqAlJ1.png"
-                      value={formData.image || ''}
-                      onChange={(e) => setFormData({...formData, image: e.target.value})}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                      💡 <strong>Astuce:</strong> Pour Imgur, utilisez le lien direct (https://i.imgur.com/ID.extension)
-                    </p>
-                    {formData.image && (
-                      <div className="mt-3 flex items-center gap-4 p-3 bg-white rounded-lg border">
-                        <img 
-                          src={formData.image} 
-                          alt="Aperçu" 
-                          className="w-20 h-16 object-cover rounded-lg border-2 border-gray-200 shadow-sm"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
+                      <div className="grid grid-cols-1 gap-3">
                         <div>
-                          <p className="text-sm font-medium text-green-600">✅ Image chargée avec succès</p>
-                          <p className="text-xs text-gray-500">Aperçu de l'image principale</p>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Catégorie *</label>
+                          <select
+                            value={formData.category || ''}
+                            onChange={(e) => setFormData({...formData, category: e.target.value, subcategory_id: undefined})}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                          >
+                            <option value="">Sélectionner</option>
+                            {categories.map(cat => (
+                              <option key={cat.id} value={cat.id}>{cat.icon} {cat.label}</option>
+                            ))}
+                          </select>
+                        </div>
+                        
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Sous-catégorie</label>
+                          <select
+                            value={formData.subcategory_id || ''}
+                            onChange={(e) => setFormData({...formData, subcategory_id: e.target.value || undefined})}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all disabled:bg-gray-100"
+                            disabled={!formData.category}
+                          >
+                            <option value="">{!formData.category ? 'Catégorie requise' : 'Aucune'}</option>
+                            {subcategories
+                              .filter(sub => sub.category_id === formData.category && sub.active)
+                              .sort((a, b) => a.order_position - b.order_position)
+                              .map(sub => (
+                                <option key={sub.id} value={sub.id}>{sub.icon} {sub.name}</option>
+                              ))}
+                          </select>
                         </div>
                       </div>
-                    )}
+                      
+                      <div className="flex items-center space-x-2 pt-2">
+                        <input
+                          type="checkbox"
+                          checked={formData.available ?? true}
+                          onChange={(e) => setFormData({...formData, available: e.target.checked})}
+                          className="w-4 h-4 text-blue-600 rounded"
+                        />
+                        <label className="text-sm text-gray-700">Structure disponible</label>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Caractéristiques techniques */}
+                  <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-green-500">
+                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                      <span className="w-4 h-4 mr-2 text-green-500">📏</span>
+                      Caractéristiques
+                    </h4>
+                    
+                    <div className="grid grid-cols-1 gap-3">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Dimensions</label>
+                        <input
+                          type="text"
+                          placeholder="7,7m x 6,6m x 1,5m"
+                          value={formData.size || ''}
+                          onChange={(e) => setFormData({...formData, size: e.target.value})}
+                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all"
+                        />
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Capacité</label>
+                          <input
+                            type="text"
+                            placeholder="2 pers."
+                            value={formData.capacity || ''}
+                            onChange={(e) => setFormData({...formData, capacity: e.target.value})}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">Âge</label>
+                          <input
+                            type="text"
+                            placeholder="3-77 ans"
+                            value={formData.age || ''}
+                            onChange={(e) => setFormData({...formData, age: e.target.value})}
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Poids max. (kg)</label>
+                        <input
+                          type="number"
+                          placeholder="150"
+                          value={formData.maxWeight || ''}
+                          onChange={(e) => setFormData({...formData, maxWeight: Number(e.target.value) || undefined})}
+                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Colonne 2: Tarification & Images */}
+                <div className="lg:col-span-1 space-y-4">
+                  {/* Tarification */}
+                  <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-orange-500">
+                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                      <DollarSign className="w-4 h-4 mr-2 text-orange-500" />
+                      Tarification
+                    </h4>
+                    
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          checked={formData.customPricing ?? false}
+                          onChange={(e) => setFormData({...formData, customPricing: e.target.checked})}
+                          className="w-4 h-4 text-orange-600 rounded"
+                        />
+                        <label className="text-sm text-gray-700">Prix sur devis</label>
+                      </div>
+                      
+                      {!formData.customPricing && (
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Prix 1j (€) *</label>
+                            <input
+                              type="number"
+                              placeholder="150"
+                              value={formData.price || ''}
+                              onChange={(e) => setFormData({...formData, price: Number(e.target.value) || 0})}
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
+                            />
+                          </div>
+                          
+                          <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Prix 2j (€)</label>
+                            <input
+                              type="number"
+                              placeholder="250"
+                              value={formData.price2Days || ''}
+                              onChange={(e) => setFormData({...formData, price2Days: Number(e.target.value) || undefined})}
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
+                            />
+                          </div>
+                        </div>
+                      )}
+                      
+                      {formData.customPricing && (
+                        <div className="text-xs text-orange-700 bg-orange-100 p-2 rounded border">
+                          ⚠️ Affichera "Prix sur devis"
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Image principale */}
+                  <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-purple-500">
+                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                      <Image className="w-4 h-4 mr-2 text-purple-500" />
+                      Image principale *
+                    </h4>
+                    
+                    <div className="space-y-3">
+                      <input
+                        type="url"
+                        placeholder="https://i.imgur.com/exemple.png"
+                        value={formData.image || ''}
+                        onChange={(e) => setFormData({...formData, image: e.target.value})}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                      />
+                      
+                      {formData.image && (
+                        <div className="relative">
+                          <img 
+                            src={formData.image} 
+                            alt="Aperçu" 
+                            className="w-full h-24 object-cover rounded-md border"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                          <div className="absolute top-1 right-1 bg-green-500 text-white text-xs px-1 rounded">✓</div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   
                   {/* Images additionnelles */}
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      📸 Images additionnelles (optionnel)
-                    </label>
-                    <div className="space-y-3">
+                  <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-indigo-500">
+                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                      <span className="w-4 h-4 mr-2 text-indigo-500">📷</span>
+                      Images supplémentaires
+                    </h4>
+                    
+                    <div className="space-y-2">
                       <div className="flex gap-2">
                         <input
                           type="url"
-                          placeholder="https://i.imgur.com/example.png"
+                          placeholder="URL image"
                           value={newImageUrl}
                           onChange={(e) => setNewImageUrl(e.target.value)}
-                          className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
+                          className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
                         />
                         <button
                           type="button"
                           onClick={addAdditionalImage}
                           disabled={!newImageUrl.trim()}
-                          className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors font-semibold disabled:bg-gray-300 disabled:cursor-not-allowed"
+                          className="bg-indigo-500 text-white px-3 py-2 rounded-md text-sm hover:bg-indigo-600 disabled:bg-gray-300 transition-colors"
                         >
-                          Ajouter
+                          +
                         </button>
                       </div>
                       
                       {formData.additionalImages && formData.additionalImages.length > 0 && (
-                        <div className="space-y-2">
-                          <p className="text-sm text-gray-600 font-medium">
-                            Images additionnelles ({formData.additionalImages.length}) :
-                          </p>
-                          <div className="grid grid-cols-1 gap-3 max-h-40 overflow-y-auto">
-                            {formData.additionalImages.map((imageUrl, index) => (
-                              <div key={index} className="flex items-center gap-3 p-3 bg-white rounded-lg border">
-                                <img 
-                                  src={imageUrl} 
-                                  alt={`Image ${index + 1}`}
-                                  className="w-16 h-12 object-cover rounded border"
-                                  onError={(e) => {
-                                    e.currentTarget.src = 'https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=400';
-                                  }}
-                                />
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-xs text-gray-600 truncate">{imageUrl}</p>
-                                  <p className="text-xs text-gray-500">Image #{index + 1}</p>
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={() => removeAdditionalImage(index)}
-                                  className="text-red-500 hover:text-red-700 transition-colors p-2 hover:bg-red-100 rounded-lg"
-                                  title="Supprimer cette image"
-                                >
-                                  <X className="w-4 h-4" />
-                                </button>
-                              </div>
-                            ))}
-                          </div>
+                        <div className="max-h-32 overflow-y-auto space-y-1">
+                          {formData.additionalImages.map((imageUrl, index) => (
+                            <div key={index} className="flex items-center gap-2 p-2 bg-white rounded border text-sm">
+                              <img 
+                                src={imageUrl} 
+                                alt={`${index + 1}`}
+                                className="w-8 h-6 object-cover rounded"
+                                onError={(e) => {
+                                  e.currentTarget.src = 'https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=400';
+                                }}
+                              />
+                              <span className="flex-1 truncate text-xs text-gray-600">#{index + 1}</span>
+                              <button
+                                type="button"
+                                onClick={() => removeAdditionalImage(index)}
+                                className="text-red-500 hover:text-red-700 p-1"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </div>
+                          ))}
                         </div>
                       )}
                     </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Section 5: Description et services */}
-              <div className="bg-teal-50 rounded-xl p-6 border border-teal-200">
-                <div className="flex items-center mb-4">
-                  <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center mr-3">
-                    <span className="text-white font-bold">📋</span>
-                  </div>
-                  <h4 className="text-lg font-semibold text-gray-900">Description et services</h4>
-                </div>
                 
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      📝 Description complète *
-                    </label>
+                {/* Colonne 3: Descriptions */}
+                <div className="lg:col-span-1 space-y-4">
+                  <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-teal-500">
+                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                      <span className="w-4 h-4 mr-2 text-teal-500">📝</span>
+                      Description *
+                    </h4>
+                    
                     <textarea
-                      placeholder="Décrivez votre structure en détail avec des émojis pour rendre la description attrayante..."
+                      placeholder="Décrivez votre structure en détail...&#10;&#10;💡 Utilisez des émojis et des puces pour structurer"
                       value={formData.description || ''}
                       onChange={(e) => setFormData({...formData, description: e.target.value})}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all resize-none"
-                      rows={4}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all resize-none"
+                      rows={8}
                     />
-                    <p className="text-xs text-gray-500 mt-1">
-                      💡 <strong>Conseil:</strong> Utilisez des émojis et des points pour structurer votre description
-                    </p>
                   </div>
                   
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      🛠️ Services et normes
-                    </label>
+                  <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-cyan-500">
+                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                      <span className="w-4 h-4 mr-2 text-cyan-500">🛠️</span>
+                      Services & Normes
+                    </h4>
+                    
                     <textarea
-                      placeholder="ex: • Enrouleur électrique inclus&#10;• Conforme EN 14960&#10;• Installation par nos soins..."
+                      placeholder="• Enrouleur électrique inclus&#10;• Conforme EN 14960&#10;• Installation comprise"
                       value={formData.services || ''}
                       onChange={(e) => setFormData({...formData, services: e.target.value})}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all resize-none"
-                      rows={3}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all resize-none"
+                      rows={5}
                     />
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 6: Options */}
-              <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-                <div className="flex items-center mb-4">
-                  <div className="w-8 h-8 bg-gray-500 rounded-lg flex items-center justify-center mr-3">
-                    <span className="text-white font-bold">⚙️</span>
-                  </div>
-                  <h4 className="text-lg font-semibold text-gray-900">Options</h4>
-                </div>
-                
-                <div className="flex items-center p-4 bg-white rounded-lg border">
-                  <input
-                    type="checkbox"
-                    checked={formData.available ?? true}
-                    onChange={(e) => setFormData({...formData, available: e.target.checked})}
-                    className="mr-3 w-5 h-5 text-green-600 rounded focus:ring-green-500"
-                  />
-                  <div>
-                    <span className="text-sm font-semibold text-gray-700">Structure disponible à la location</span>
-                    <p className="text-xs text-gray-500">Décochez si la structure est temporairement indisponible</p>
                   </div>
                 </div>
               </div>
             </div>
             
-            {/* Boutons d'action fixes en bas */}
-            <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 rounded-b-xl">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <button
-                  onClick={handleSaveStructure}
-                  className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105"
-                >
-                  <Save className="w-5 h-5 mr-2" />
-                  {editingStructureId ? '💾 Enregistrer les modifications' : '✨ Créer la structure'}
-                </button>
-                <button
-                  onClick={closeAllModals}
-                  className="flex-1 bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center justify-center shadow-lg hover:shadow-xl"
-                >
-                  <X className="w-5 h-5 mr-2" />
-                  Annuler
-                </button>
-              </div>
+            {/* Footer */}
+            <div className="bg-gray-50 px-6 py-4 border-t flex justify-end gap-3">
+              <button
+                onClick={closeAllModals}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={handleSaveStructure}
+                className="px-6 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-md hover:from-blue-700 hover:to-blue-800 transition-all flex items-center"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                {editingStructureId ? 'Enregistrer' : 'Créer'}
+              </button>
             </div>
           </div>
         </div>
