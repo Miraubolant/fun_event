@@ -2,6 +2,7 @@ export interface Structure {
   id: string;
   name: string;
   category: string;
+  subcategory?: string;
   size: string;
   capacity: string;
   age: string;
@@ -70,6 +71,15 @@ export interface DeliveryZone {
   id: string;
   name: string;
   code: string;
+  active: boolean;
+  order_position: number;
+}
+
+export interface Subcategory {
+  id: string;
+  name: string;
+  category_id: string;
+  icon: string;
   active: boolean;
   order_position: number;
 }

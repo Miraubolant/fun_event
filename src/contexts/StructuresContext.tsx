@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Structure, Category, CarouselPhoto, FAQCategory, FAQQuestion, SocialLink, DeliveryZone } from '../types';
+import { Structure, Category, CarouselPhoto, FAQCategory, FAQQuestion, SocialLink, DeliveryZone, Subcategory } from '../types';
 import { supabase } from '../lib/supabase';
 
 interface StructuresContextType {
@@ -9,6 +9,7 @@ interface StructuresContextType {
   faqCategories: FAQCategory[];
   socialLinks: SocialLink[];
   deliveryZones: DeliveryZone[];
+  subcategories: Subcategory[];
   loading: boolean;
   addStructure: (structure: Omit<Structure, 'id'>) => Promise<void>;
   updateStructure: (id: string, structure: Partial<Structure>) => Promise<void>;
@@ -34,6 +35,9 @@ interface StructuresContextType {
   addDeliveryZone: (zone: Omit<DeliveryZone, 'id'>) => Promise<void>;
   updateDeliveryZone: (id: string, zone: Partial<DeliveryZone>) => Promise<void>;
   deleteDeliveryZone: (id: string) => Promise<void>;
+  addSubcategory: (subcategory: Omit<Subcategory, 'id'>) => Promise<void>;
+  updateSubcategory: (id: string, subcategory: Partial<Subcategory>) => Promise<void>;
+  deleteSubcategory: (id: string) => Promise<void>;
   refreshData: () => Promise<void>;
 }
 
@@ -58,6 +62,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   const [faqCategories, setFaqCategories] = useState<FAQCategory[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [deliveryZones, setDeliveryZones] = useState<DeliveryZone[]>([]);
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Charger les données depuis Supabase
@@ -71,6 +76,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       setFaqCategories([]);
       setSocialLinks([]);
       setDeliveryZones([]);
+      setSubcategories([]);
       setLoading(false);
       return;
     }
@@ -119,6 +125,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
           id: item.id,
           name: item.name,
           category: item.category_id,
+          subcategory: item.subcategory_id,
           size: item.size || '',
           capacity: item.capacity || '',
           age: item.age || '',
@@ -151,8 +158,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
         // Liens sociaux
         supabase.from('social_links').select('*').eq('active', true).order('order_position'),
         // Zones de livraison
-        supabase.from('delivery_zones').select('*').eq('active', true).order('order_position')
-      ]).then(async ([photosResult, faqCategoriesResult, socialLinksResult, deliveryZonesResult]) => {
+        supabase.from('delivery_zones').select('*').eq('active', true).order('order_position'),
+        // Sous-catégories
+        supabase.from('subcategories').select('*').eq('active', true).order('order_position')
+      ]).then(async ([photosResult, faqCategoriesResult, socialLinksResult, deliveryZonesResult, subcategoriesResult]) => {
         
         // Traiter les photos du carrousel
         if (photosResult.status === 'fulfilled' && !photosResult.value.error) {
@@ -222,6 +231,19 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
           }));
           setDeliveryZones(transformedZones);
         }
+
+        // Traiter les sous-catégories
+        if (subcategoriesResult.status === 'fulfilled' && !subcategoriesResult.value.error) {
+          const transformedSubcategories = (subcategoriesResult.value.data || []).map(item => ({
+            id: item.id,
+            name: item.name,
+            category_id: item.category_id,
+            icon: item.icon,
+            active: item.active,
+            order_position: item.order_position
+          }));
+          setSubcategories(transformedSubcategories);
+        }
       });
       
     } catch (error) {
@@ -233,6 +255,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       setFaqCategories([]);
       setSocialLinks([]);
       setDeliveryZones([]);
+      setSubcategories([]);
       setLoading(false);
     }
   };
@@ -275,11 +298,12 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
         ? (maxOrderData[0].order_position || 0) + 1 
         : 1;
       
-      const { data, error } = await supabase
+      const { data, error} = await supabase
         .from('structures')
         .insert({
           name: newStructure.name,
           category_id: newStructure.category,
+          subcategory_id: newStructure.subcategory || null,
           size: newStructure.size,
           capacity: newStructure.capacity,
           age: newStructure.age,
@@ -321,6 +345,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       
       if (updatedStructure.name !== undefined) updateData.name = updatedStructure.name;
       if (updatedStructure.category !== undefined) updateData.category_id = updatedStructure.category;
+      if (updatedStructure.subcategory !== undefined) updateData.subcategory_id = updatedStructure.subcategory || null;
       if (updatedStructure.size !== undefined) updateData.size = updatedStructure.size;
       if (updatedStructure.capacity !== undefined) updateData.capacity = updatedStructure.capacity;
       if (updatedStructure.age !== undefined) updateData.age = updatedStructure.age;
@@ -887,6 +912,77 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
     }
   };
 
+  // Fonctions pour les sous-catégories
+  const addSubcategory = async (newSubcategory: Omit<Subcategory, 'id'>) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+
+    try {
+      const { error } = await supabase
+        .from('subcategories')
+        .insert({
+          name: newSubcategory.name,
+          category_id: newSubcategory.category_id,
+          icon: newSubcategory.icon,
+          active: newSubcategory.active,
+          order_position: newSubcategory.order_position
+        });
+
+      if (error) throw error;
+      await refreshData();
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout de la sous-catégorie:', error);
+      throw error;
+    }
+  };
+
+  const updateSubcategory = async (id: string, updatedSubcategory: Partial<Subcategory>) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+
+    try {
+      const updateData: any = {};
+
+      if (updatedSubcategory.name !== undefined) updateData.name = updatedSubcategory.name;
+      if (updatedSubcategory.category_id !== undefined) updateData.category_id = updatedSubcategory.category_id;
+      if (updatedSubcategory.icon !== undefined) updateData.icon = updatedSubcategory.icon;
+      if (updatedSubcategory.active !== undefined) updateData.active = updatedSubcategory.active;
+      if (updatedSubcategory.order_position !== undefined) updateData.order_position = updatedSubcategory.order_position;
+
+      const { error } = await supabase
+        .from('subcategories')
+        .update(updateData)
+        .eq('id', id);
+
+      if (error) throw error;
+      await refreshData();
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour de la sous-catégorie:', error);
+      throw error;
+    }
+  };
+
+  const deleteSubcategory = async (id: string) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+
+    try {
+      const { error } = await supabase
+        .from('subcategories')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      await refreshData();
+    } catch (error) {
+      console.error('Erreur lors de la suppression de la sous-catégorie:', error);
+      throw error;
+    }
+  };
+
   return (
     <StructuresContext.Provider value={{
       structures,
@@ -895,6 +991,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       faqCategories,
       socialLinks,
       deliveryZones,
+      subcategories,
       loading,
       addStructure,
       updateStructure,
@@ -920,6 +1017,9 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       addDeliveryZone,
       updateDeliveryZone,
       deleteDeliveryZone,
+      addSubcategory,
+      updateSubcategory,
+      deleteSubcategory,
       refreshData
     }}>
       {children}

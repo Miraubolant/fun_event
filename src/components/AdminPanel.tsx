@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Plus, Edit, Trash2, Save, X, Package, DollarSign, Tag, Image, Camera, ArrowUp, ArrowDown, AlertTriangle, LogOut, GripVertical, ImagePlus } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
 import { useAuth } from '../contexts/AuthContext';
-import { Structure, Category, CarouselPhoto, DeliveryZone } from '../types';
+import { Structure, Category, CarouselPhoto, DeliveryZone, Subcategory } from '../types';
 
 const AdminPanel: React.FC = () => {
   const {
@@ -10,6 +10,7 @@ const AdminPanel: React.FC = () => {
     categories,
     carouselPhotos,
     deliveryZones,
+    subcategories,
     addStructure,
     updateStructure,
     deleteStructure,
@@ -23,7 +24,10 @@ const AdminPanel: React.FC = () => {
     reorderStructures,
     addDeliveryZone,
     updateDeliveryZone,
-    deleteDeliveryZone
+    deleteDeliveryZone,
+    addSubcategory,
+    updateSubcategory,
+    deleteSubcategory
   } = useStructures();
   const { logout } = useAuth();
   
@@ -32,13 +36,15 @@ const AdminPanel: React.FC = () => {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [showZoneModal, setShowZoneModal] = useState(false);
+  const [showSubcategoryModal, setShowSubcategoryModal] = useState(false);
   const [editingStructureId, setEditingStructureId] = useState<string | null>(null);
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [editingZoneId, setEditingZoneId] = useState<string | null>(null);
+  const [editingSubcategoryId, setEditingSubcategoryId] = useState<string | null>(null);
 
   const [deleteConfirm, setDeleteConfirm] = useState<{
     isOpen: boolean;
-    type: 'structure' | 'category' | 'photo' | 'zone';
+    type: 'structure' | 'category' | 'photo' | 'zone' | 'subcategory';
     id: string;
     name: string;
   } | null>(null);
@@ -47,6 +53,7 @@ const AdminPanel: React.FC = () => {
   const [categoryData, setCategoryData] = useState<Partial<Category>>({});
   const [photoData, setPhotoData] = useState<Partial<CarouselPhoto>>({});
   const [zoneData, setZoneData] = useState<Partial<DeliveryZone>>({});
+  const [subcategoryData, setSubcategoryData] = useState<Partial<Subcategory>>({});
   const [newImageUrl, setNewImageUrl] = useState('');
   
   // États pour le glisser-déposer
@@ -77,19 +84,28 @@ const AdminPanel: React.FC = () => {
     setShowZoneModal(true);
   };
 
+  const openSubcategoryModal = () => {
+    setSubcategoryData({});
+    setEditingSubcategoryId(null);
+    setShowSubcategoryModal(true);
+  };
+
   // Fonctions pour fermer les modales
   const closeAllModals = () => {
     setShowStructureModal(false);
     setShowCategoryModal(false);
     setShowPhotoModal(false);
     setShowZoneModal(false);
+    setShowSubcategoryModal(false);
     setEditingStructureId(null);
     setEditingPhotoId(null);
     setEditingZoneId(null);
+    setEditingSubcategoryId(null);
     setFormData({});
     setCategoryData({});
     setPhotoData({});
     setZoneData({});
+    setSubcategoryData({});
     setNewImageUrl('');
   };
 
@@ -233,6 +249,16 @@ const AdminPanel: React.FC = () => {
     });
   };
 
+  const handleDeleteSubcategory = (id: string) => {
+    const subcategory = subcategories.find(s => s.id === id);
+    setDeleteConfirm({
+      isOpen: true,
+      type: 'subcategory',
+      id,
+      name: subcategory?.name || 'cette sous-catégorie'
+    });
+  };
+
   const confirmDelete = () => {
     if (!deleteConfirm) return;
 
@@ -248,6 +274,9 @@ const AdminPanel: React.FC = () => {
         break;
       case 'zone':
         deleteDeliveryZone(deleteConfirm.id);
+        break;
+      case 'subcategory':
+        deleteSubcategory(deleteConfirm.id);
         break;
     }
 
@@ -412,6 +441,51 @@ const AdminPanel: React.FC = () => {
     setShowZoneModal(true);
   };
 
+  // Fonctions pour gérer les sous-catégories
+  const handleSaveSubcategory = () => {
+    if (subcategoryData.name && subcategoryData.category_id) {
+      if (editingSubcategoryId) {
+        // Modification
+        updateSubcategory(editingSubcategoryId, subcategoryData).then(() => {
+          closeAllModals();
+        }).catch(error => {
+          console.error('Erreur lors de la modification:', error);
+          alert(`Erreur lors de la modification de la sous-catégorie: ${error.message || 'Vérifiez votre connexion.'}`);
+        });
+      } else {
+        // Ajout
+        const maxOrder = Math.max(...subcategories.filter(s => s.category_id === subcategoryData.category_id).map(s => s.order_position), 0);
+        const newSubcategory = {
+          name: subcategoryData.name,
+          category_id: subcategoryData.category_id,
+          icon: subcategoryData.icon || '🎯',
+          active: subcategoryData.active ?? true,
+          order_position: subcategoryData.order_position || maxOrder + 1
+        };
+
+        addSubcategory(newSubcategory).then(() => {
+          setSubcategoryData({});
+          closeAllModals();
+        }).catch(error => {
+          console.error('Erreur lors de l\'ajout:', error);
+          alert(`Erreur lors de l'ajout de la sous-catégorie: ${error.message || 'Vérifiez votre connexion.'}`);
+        });
+      }
+    }
+  };
+
+  const handleEditSubcategory = (subcategory: Subcategory) => {
+    setEditingSubcategoryId(subcategory.id);
+    setSubcategoryData({
+      name: subcategory.name,
+      category_id: subcategory.category_id,
+      icon: subcategory.icon,
+      active: subcategory.active,
+      order_position: subcategory.order_position
+    });
+    setShowSubcategoryModal(true);
+  };
+
   return (
     <section className="py-8 lg:py-16 bg-gradient-to-br from-gray-50 via-blue-50/30 to-orange-50/30 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -558,6 +632,51 @@ const AdminPanel: React.FC = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Section des sous-catégories */}
+        <div className="bg-white rounded-xl shadow-lg p-4 lg:p-6 mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl lg:text-2xl font-bold text-gray-900">Sous-catégories ({subcategories.length})</h2>
+            <button
+              onClick={openSubcategoryModal}
+              className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-purple-600 hover:to-purple-700 transition-all flex items-center text-sm shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Nouvelle sous-catégorie
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {subcategories.map((subcategory) => {
+              const parentCategory = categories.find(c => c.id === subcategory.category_id);
+              return (
+                <div key={subcategory.id} className="bg-gray-50 p-3 lg:p-4 rounded-lg flex items-center justify-between hover:bg-gray-100 transition-colors">
+                  <div className="flex items-center flex-1">
+                    <span className="text-lg lg:text-xl mr-2 lg:mr-3">{subcategory.icon}</span>
+                    <div>
+                      <span className="font-medium text-sm lg:text-base block">{subcategory.name}</span>
+                      <span className="text-xs text-gray-500">{parentCategory?.label || 'N/A'}</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-1">
+                    <button
+                      onClick={() => handleEditSubcategory(subcategory)}
+                      className="text-blue-600 hover:text-blue-800 transition-colors p-1 hover:bg-blue-100 rounded"
+                    >
+                      <Edit className="w-3 h-3 lg:w-4 lg:h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteSubcategory(subcategory.id)}
+                      className="text-red-600 hover:text-red-800 transition-colors p-1 hover:bg-red-100 rounded"
+                    >
+                      <Trash2 className="w-3 h-3 lg:w-4 lg:h-4" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -1161,6 +1280,97 @@ const AdminPanel: React.FC = () => {
                 >
                   <Save className="w-5 h-5 mr-2" />
                   {editingPhotoId ? 'Modifier' : 'Ajouter'}
+                </button>
+                <button
+                  onClick={closeAllModals}
+                  className="bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center justify-center shadow-lg hover:shadow-xl"
+                >
+                  <X className="w-5 h-5 mr-2" />
+                  Annuler
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modale Sous-catégorie */}
+      {showSubcategoryModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-gray-900">
+                  {editingSubcategoryId ? 'Modifier la sous-catégorie' : 'Ajouter une sous-catégorie'}
+                </h3>
+                <button
+                  onClick={closeAllModals}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Nom *
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="ex: Châteaux"
+                    value={subcategoryData.name || ''}
+                    onChange={(e) => setSubcategoryData({...subcategoryData, name: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Catégorie parente *
+                  </label>
+                  <select
+                    value={subcategoryData.category_id || ''}
+                    onChange={(e) => setSubcategoryData({...subcategoryData, category_id: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
+                  >
+                    <option value="">Sélectionnez une catégorie</option>
+                    {categories.map(cat => (
+                      <option key={cat.id} value={cat.id}>{cat.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Icône (emoji) *
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="ex: 🏰"
+                    value={subcategoryData.icon || ''}
+                    onChange={(e) => setSubcategoryData({...subcategoryData, icon: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={subcategoryData.active ?? true}
+                      onChange={(e) => setSubcategoryData({...subcategoryData, active: e.target.checked})}
+                      className="mr-2 w-4 h-4 text-purple-600 rounded focus:ring-purple-500"
+                    />
+                    <span className="text-sm font-semibold text-gray-700">Sous-catégorie active</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                <button
+                  onClick={handleSaveSubcategory}
+                  className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-purple-700 transition-all flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  <Save className="w-5 h-5 mr-2" />
+                  {editingSubcategoryId ? 'Modifier' : 'Ajouter'}
                 </button>
                 <button
                   onClick={closeAllModals}

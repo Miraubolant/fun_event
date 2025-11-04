@@ -8,8 +8,9 @@ import { Structure } from '../types';
 
 const Catalog: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('tous');
+  const [activeSubcategory, setActiveSubcategory] = useState<string | null>(null);
   const [selectedStructure, setSelectedStructure] = useState<Structure | null>(null);
-  const { structures, categories, loading } = useStructures();
+  const { structures, categories, subcategories, loading } = useStructures();
   const { addToCart, items } = useCart();
 
   const allCategories = [
@@ -17,9 +18,24 @@ const Catalog: React.FC = () => {
     ...categories
   ];
 
-  const filteredStructures = activeCategory === 'tous'
-    ? structures.filter(s => s.available).sort((a, b) => (a.order || 1) - (b.order || 1))
-    : structures.filter(s => s.category === activeCategory && s.available).sort((a, b) => (a.order || 1) - (b.order || 1));
+  const filteredStructures = structures.filter(s => {
+    if (!s.available) return false;
+    if (activeCategory === 'tous') return true;
+    if (s.category !== activeCategory) return false;
+    if (activeSubcategory && s.subcategory !== activeSubcategory) return false;
+    return true;
+  }).sort((a, b) => (a.order || 1) - (b.order || 1));
+
+  // Obtenir les sous-catégories de la catégorie active
+  const availableSubcategories = activeCategory !== 'tous'
+    ? subcategories.filter(sub => sub.category_id === activeCategory)
+    : [];
+
+  // Reset sous-catégorie quand on change de catégorie
+  const handleCategoryChange = (categoryId: string) => {
+    setActiveCategory(categoryId);
+    setActiveSubcategory(null);
+  };
 
   // Précharger les images des premières structures
   React.useEffect(() => {
@@ -153,12 +169,12 @@ const Catalog: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-6 mb-16">
+        <div className="flex flex-wrap justify-center gap-6 mb-8">
           {allCategories.map((category) => {
             return (
               <button
                 key={category.id}
-                onClick={() => setActiveCategory(category.id)}
+                onClick={() => handleCategoryChange(category.id)}
                 className={`flex items-center px-8 py-4 rounded-full font-bold transition-all duration-700 transform hover:scale-110 backdrop-blur-sm border border-white/20 shadow-xl hover:shadow-2xl ${
                   activeCategory === category.id
                     ? 'bg-gradient-to-r from-blue-500 to-orange-500 text-white shadow-2xl border-white/30'
@@ -172,6 +188,40 @@ const Catalog: React.FC = () => {
             );
           })}
         </div>
+
+        {/* Menu déroulant des sous-catégories */}
+        {availableSubcategories.length > 0 && (
+          <div className="max-w-4xl mx-auto mb-16 animate-fade-in">
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-4">
+              <div className="flex flex-wrap justify-center gap-3">
+                <button
+                  onClick={() => setActiveSubcategory(null)}
+                  className={`px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 transform hover:scale-105 ${
+                    activeSubcategory === null
+                      ? 'bg-gradient-to-r from-blue-400 to-blue-500 text-white shadow-md'
+                      : 'bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+                  }`}
+                >
+                  Toutes
+                </button>
+                {availableSubcategories.map((subcategory) => (
+                  <button
+                    key={subcategory.id}
+                    onClick={() => setActiveSubcategory(subcategory.id)}
+                    className={`flex items-center px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 transform hover:scale-105 ${
+                      activeSubcategory === subcategory.id
+                        ? 'bg-gradient-to-r from-blue-400 to-blue-500 text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+                    }`}
+                  >
+                    <span className="mr-2">{subcategory.icon}</span>
+                    {subcategory.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {filteredStructures.map((structure) => (
