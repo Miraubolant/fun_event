@@ -1,0 +1,49 @@
+{
+    "departement": {
+        "code": "75",
+        "nom": "Paris",
+        "slug": "paris"
+    },
+    "region": {
+        "id": 11,
+        "code": "10",
+        "nom": "Île-de-France",
+        "slug": "ile-de-france"
+    },
+    "voisins": [
+        {
+            "dep_code": "77",
+            "dep_nom": "Seine-et-Marne",
+            "dep_slug": "seine-et-marne"
+        },
+        {
+            "dep_code": "78",
+            "dep_nom": "Yvelines",
+            "dep_slug": "yvelines"
+        },
+        {
+            "dep_code": "91",
+            "dep_nom": "Essonne",
+            "dep_slug": "essonne"
+        },
+        {
+            "dep_code": "92",
+            "dep_nom": "Hauts-de-Seine",
+            "dep_slug": "hauts-de-seine"
+        }
+    ],
+    "villes_count": 1,
+    "villes": [
+        {
+            "id": 7897,
+            "code_insee": "75056",
+            "nom_standard": "Paris",
+            "slug_ville": "paris",
+            "code_postal": "75000",
+            "population": 2133111,
+            "superficie_km2": "105.00",
+            "latitude_centre": "48.8534000",
+            "longitude_centre": "2.3488000"
+        }
+    ]
+}

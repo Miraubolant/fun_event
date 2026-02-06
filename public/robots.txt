@@ -1,0 +1,15 @@
+# Fun Event - Robots.txt
+# https://funevent.fr/robots.txt
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://funevent.fr/sitemap.xml
+
+# Disallow admin pages
+User-agent: *
+Disallow: /admin
+
+# Crawl-delay for courtesy
+Crawl-delay: 1

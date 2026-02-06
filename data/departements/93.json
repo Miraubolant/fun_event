@@ -1,0 +1,478 @@
+{
+    "departement": {
+        "code": "93",
+        "nom": "Seine-Saint-Denis",
+        "slug": "seine-saint-denis"
+    },
+    "region": {
+        "id": 11,
+        "code": "10",
+        "nom": "Île-de-France",
+        "slug": "ile-de-france"
+    },
+    "voisins": [
+        {
+            "dep_code": "75",
+            "dep_nom": "Paris",
+            "dep_slug": "paris"
+        },
+        {
+            "dep_code": "77",
+            "dep_nom": "Seine-et-Marne",
+            "dep_slug": "seine-et-marne"
+        },
+        {
+            "dep_code": "78",
+            "dep_nom": "Yvelines",
+            "dep_slug": "yvelines"
+        },
+        {
+            "dep_code": "91",
+            "dep_nom": "Essonne",
+            "dep_slug": "essonne"
+        }
+    ],
+    "villes_count": 40,
+    "villes": [
+        {
+            "id": 9662,
+            "code_insee": "93001",
+            "nom_standard": "Aubervilliers",
+            "slug_ville": "aubervilliers",
+            "code_postal": "93300",
+            "population": 90071,
+            "superficie_km2": "6.00",
+            "latitude_centre": "48.9119988",
+            "longitude_centre": "2.3840001"
+        },
+        {
+            "id": 9663,
+            "code_insee": "93005",
+            "nom_standard": "Aulnay-sous-Bois",
+            "slug_ville": "aulnay-sous-bois",
+            "code_postal": "93600",
+            "population": 86135,
+            "superficie_km2": "16.00",
+            "latitude_centre": "48.9459992",
+            "longitude_centre": "2.4930000"
+        },
+        {
+            "id": 9664,
+            "code_insee": "93006",
+            "nom_standard": "Bagnolet",
+            "slug_ville": "bagnolet",
+            "code_postal": "93170",
+            "population": 39366,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.8689995",
+            "longitude_centre": "2.4230001"
+        },
+        {
+            "id": 9665,
+            "code_insee": "93007",
+            "nom_standard": "Le Blanc-Mesnil",
+            "slug_ville": "le-blanc-mesnil",
+            "code_postal": "93150",
+            "population": 58257,
+            "superficie_km2": "8.00",
+            "latitude_centre": "48.9399986",
+            "longitude_centre": "2.4610000"
+        },
+        {
+            "id": 9666,
+            "code_insee": "93008",
+            "nom_standard": "Bobigny",
+            "slug_ville": "bobigny",
+            "code_postal": "93000",
+            "population": 55056,
+            "superficie_km2": "7.00",
+            "latitude_centre": "48.9080010",
+            "longitude_centre": "2.4389999"
+        },
+        {
+            "id": 9667,
+            "code_insee": "93010",
+            "nom_standard": "Bondy",
+            "slug_ville": "bondy",
+            "code_postal": "93140",
+            "population": 52905,
+            "superficie_km2": "5.00",
+            "latitude_centre": "48.9020004",
+            "longitude_centre": "2.4840000"
+        },
+        {
+            "id": 9668,
+            "code_insee": "93013",
+            "nom_standard": "Le Bourget",
+            "slug_ville": "le-bourget",
+            "code_postal": "93350",
+            "population": 14832,
+            "superficie_km2": "2.00",
+            "latitude_centre": "48.9360008",
+            "longitude_centre": "2.4280000"
+        },
+        {
+            "id": 9669,
+            "code_insee": "93014",
+            "nom_standard": "Clichy-sous-Bois",
+            "slug_ville": "clichy-sous-bois",
+            "code_postal": "93390",
+            "population": 29735,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.9080010",
+            "longitude_centre": "2.5460000"
+        },
+        {
+            "id": 9670,
+            "code_insee": "93015",
+            "nom_standard": "Coubron",
+            "slug_ville": "coubron",
+            "code_postal": "93470",
+            "population": 5063,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.9179993",
+            "longitude_centre": "2.5760000"
+        },
+        {
+            "id": 9671,
+            "code_insee": "93027",
+            "nom_standard": "La Courneuve",
+            "slug_ville": "la-courneuve",
+            "code_postal": "93120",
+            "population": 47160,
+            "superficie_km2": "8.00",
+            "latitude_centre": "48.9319992",
+            "longitude_centre": "2.4000001"
+        },
+        {
+            "id": 9672,
+            "code_insee": "93029",
+            "nom_standard": "Drancy",
+            "slug_ville": "drancy",
+            "code_postal": "93700",
+            "population": 71363,
+            "superficie_km2": "8.00",
+            "latitude_centre": "48.9230003",
+            "longitude_centre": "2.4449999"
+        },
+        {
+            "id": 9673,
+            "code_insee": "93030",
+            "nom_standard": "Dugny",
+            "slug_ville": "dugny",
+            "code_postal": "93440",
+            "population": 11328,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.9500008",
+            "longitude_centre": "2.4240000"
+        },
+        {
+            "id": 9674,
+            "code_insee": "93031",
+            "nom_standard": "Épinay-sur-Seine",
+            "slug_ville": "epinay-sur-seine",
+            "code_postal": "93800",
+            "population": 53489,
+            "superficie_km2": "5.00",
+            "latitude_centre": "48.9550018",
+            "longitude_centre": "2.3139999"
+        },
+        {
+            "id": 9675,
+            "code_insee": "93032",
+            "nom_standard": "Gagny",
+            "slug_ville": "gagny",
+            "code_postal": "93220",
+            "population": 40189,
+            "superficie_km2": "7.00",
+            "latitude_centre": "48.8820000",
+            "longitude_centre": "2.5450001"
+        },
+        {
+            "id": 9676,
+            "code_insee": "93033",
+            "nom_standard": "Gournay-sur-Marne",
+            "slug_ville": "gournay-sur-marne",
+            "code_postal": "93460",
+            "population": 6882,
+            "superficie_km2": "2.00",
+            "latitude_centre": "48.8610001",
+            "longitude_centre": "2.5750000"
+        },
+        {
+            "id": 9677,
+            "code_insee": "93039",
+            "nom_standard": "L'Île-Saint-Denis",
+            "slug_ville": "l-ile-saint-denis",
+            "code_postal": "93450",
+            "population": 8664,
+            "superficie_km2": "2.00",
+            "latitude_centre": "48.9399986",
+            "longitude_centre": "2.3260000"
+        },
+        {
+            "id": 9678,
+            "code_insee": "93045",
+            "nom_standard": "Les Lilas",
+            "slug_ville": "les-lilas",
+            "code_postal": "93260",
+            "population": 23469,
+            "superficie_km2": "1.00",
+            "latitude_centre": "48.8820000",
+            "longitude_centre": "2.4200001"
+        },
+        {
+            "id": 9679,
+            "code_insee": "93046",
+            "nom_standard": "Livry-Gargan",
+            "slug_ville": "livry-gargan",
+            "code_postal": "93190",
+            "population": 46028,
+            "superficie_km2": "7.00",
+            "latitude_centre": "48.9199982",
+            "longitude_centre": "2.5350001"
+        },
+        {
+            "id": 9680,
+            "code_insee": "93047",
+            "nom_standard": "Montfermeil",
+            "slug_ville": "montfermeil",
+            "code_postal": "93370",
+            "population": 27980,
+            "superficie_km2": "5.00",
+            "latitude_centre": "48.8979988",
+            "longitude_centre": "2.5669999"
+        },
+        {
+            "id": 9681,
+            "code_insee": "93048",
+            "nom_standard": "Montreuil",
+            "slug_ville": "montreuil",
+            "code_postal": "93100",
+            "population": 111455,
+            "superficie_km2": "9.00",
+            "latitude_centre": "48.8629990",
+            "longitude_centre": "2.4480000"
+        },
+        {
+            "id": 9682,
+            "code_insee": "93049",
+            "nom_standard": "Neuilly-Plaisance",
+            "slug_ville": "neuilly-plaisance",
+            "code_postal": "93360",
+            "population": 21415,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.8639984",
+            "longitude_centre": "2.5100000"
+        },
+        {
+            "id": 9683,
+            "code_insee": "93050",
+            "nom_standard": "Neuilly-sur-Marne",
+            "slug_ville": "neuilly-sur-marne",
+            "code_postal": "93330",
+            "population": 37531,
+            "superficie_km2": "7.00",
+            "latitude_centre": "48.8619995",
+            "longitude_centre": "2.5400000"
+        },
+        {
+            "id": 9684,
+            "code_insee": "93051",
+            "nom_standard": "Noisy-le-Grand",
+            "slug_ville": "noisy-le-grand",
+            "code_postal": "93160",
+            "population": 70374,
+            "superficie_km2": "13.00",
+            "latitude_centre": "48.8359985",
+            "longitude_centre": "2.5639999"
+        },
+        {
+            "id": 9685,
+            "code_insee": "93053",
+            "nom_standard": "Noisy-le-Sec",
+            "slug_ville": "noisy-le-sec",
+            "code_postal": "93130",
+            "population": 46094,
+            "superficie_km2": "5.00",
+            "latitude_centre": "48.8909988",
+            "longitude_centre": "2.4590001"
+        },
+        {
+            "id": 9686,
+            "code_insee": "93055",
+            "nom_standard": "Pantin",
+            "slug_ville": "pantin",
+            "code_postal": "93500",
+            "population": 60800,
+            "superficie_km2": "5.00",
+            "latitude_centre": "48.8979988",
+            "longitude_centre": "2.4089999"
+        },
+        {
+            "id": 9687,
+            "code_insee": "93057",
+            "nom_standard": "Les Pavillons-sous-Bois",
+            "slug_ville": "les-pavillons-sous-bois",
+            "code_postal": "93320",
+            "population": 24165,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.9080010",
+            "longitude_centre": "2.5030000"
+        },
+        {
+            "id": 9688,
+            "code_insee": "93059",
+            "nom_standard": "Pierrefitte-sur-Seine",
+            "slug_ville": "pierrefitte-sur-seine",
+            "code_postal": "93380",
+            "population": 32379,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.9609985",
+            "longitude_centre": "2.3629999"
+        },
+        {
+            "id": 9689,
+            "code_insee": "93061",
+            "nom_standard": "Le Pré-Saint-Gervais",
+            "slug_ville": "le-pre-saint-gervais",
+            "code_postal": "93310",
+            "population": 16865,
+            "superficie_km2": "1.00",
+            "latitude_centre": "48.8849983",
+            "longitude_centre": "2.4050000"
+        },
+        {
+            "id": 9690,
+            "code_insee": "93062",
+            "nom_standard": "Le Raincy",
+            "slug_ville": "le-raincy",
+            "code_postal": "93340",
+            "population": 14877,
+            "superficie_km2": "2.00",
+            "latitude_centre": "48.8969994",
+            "longitude_centre": "2.5200000"
+        },
+        {
+            "id": 9691,
+            "code_insee": "93063",
+            "nom_standard": "Romainville",
+            "slug_ville": "romainville",
+            "code_postal": "93230",
+            "population": 33266,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.8849983",
+            "longitude_centre": "2.4380000"
+        },
+        {
+            "id": 9692,
+            "code_insee": "93064",
+            "nom_standard": "Rosny-sous-Bois",
+            "slug_ville": "rosny-sous-bois",
+            "code_postal": "93110",
+            "population": 45655,
+            "superficie_km2": "6.00",
+            "latitude_centre": "48.8750000",
+            "longitude_centre": "2.4860001"
+        },
+        {
+            "id": 9693,
+            "code_insee": "93066",
+            "nom_standard": "Saint-Denis",
+            "slug_ville": "saint-denis",
+            "code_postal": "93210",
+            "population": 113942,
+            "superficie_km2": "12.00",
+            "latitude_centre": "48.9300003",
+            "longitude_centre": "2.3590000"
+        },
+        {
+            "id": 9694,
+            "code_insee": "93070",
+            "nom_standard": "Saint-Ouen-sur-Seine",
+            "slug_ville": "saint-ouen-sur-seine",
+            "code_postal": "93400",
+            "population": 53207,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.9099999",
+            "longitude_centre": "2.3329999"
+        },
+        {
+            "id": 9695,
+            "code_insee": "93071",
+            "nom_standard": "Sevran",
+            "slug_ville": "sevran",
+            "code_postal": "93270",
+            "population": 51845,
+            "superficie_km2": "7.00",
+            "latitude_centre": "48.9389992",
+            "longitude_centre": "2.5309999"
+        },
+        {
+            "id": 9696,
+            "code_insee": "93072",
+            "nom_standard": "Stains",
+            "slug_ville": "stains",
+            "code_postal": "93240",
+            "population": 40359,
+            "superficie_km2": "5.00",
+            "latitude_centre": "48.9570007",
+            "longitude_centre": "2.3850000"
+        },
+        {
+            "id": 9697,
+            "code_insee": "93073",
+            "nom_standard": "Tremblay-en-France",
+            "slug_ville": "tremblay-en-france",
+            "code_postal": "93290",
+            "population": 37271,
+            "superficie_km2": "23.00",
+            "latitude_centre": "48.9780006",
+            "longitude_centre": "2.5550001"
+        },
+        {
+            "id": 9698,
+            "code_insee": "93074",
+            "nom_standard": "Vaujours",
+            "slug_ville": "vaujours",
+            "code_postal": "93410",
+            "population": 7478,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.9319992",
+            "longitude_centre": "2.5810001"
+        },
+        {
+            "id": 9699,
+            "code_insee": "93077",
+            "nom_standard": "Villemomble",
+            "slug_ville": "villemomble",
+            "code_postal": "93250",
+            "population": 30332,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.8849983",
+            "longitude_centre": "2.5090001"
+        },
+        {
+            "id": 9700,
+            "code_insee": "93078",
+            "nom_standard": "Villepinte",
+            "slug_ville": "villepinte",
+            "code_postal": "93420",
+            "population": 38725,
+            "superficie_km2": "10.00",
+            "latitude_centre": "48.9589996",
+            "longitude_centre": "2.5360000"
+        },
+        {
+            "id": 9701,
+            "code_insee": "93079",
+            "nom_standard": "Villetaneuse",
+            "slug_ville": "villetaneuse",
+            "code_postal": "93430",
+            "population": 12663,
+            "superficie_km2": "2.00",
+            "latitude_centre": "48.9570007",
+            "longitude_centre": "2.3450000"
+        }
+    ]
+}

@@ -1,0 +1,434 @@
+{
+    "departement": {
+        "code": "92",
+        "nom": "Hauts-de-Seine",
+        "slug": "hauts-de-seine"
+    },
+    "region": {
+        "id": 11,
+        "code": "10",
+        "nom": "Île-de-France",
+        "slug": "ile-de-france"
+    },
+    "voisins": [
+        {
+            "dep_code": "75",
+            "dep_nom": "Paris",
+            "dep_slug": "paris"
+        },
+        {
+            "dep_code": "77",
+            "dep_nom": "Seine-et-Marne",
+            "dep_slug": "seine-et-marne"
+        },
+        {
+            "dep_code": "78",
+            "dep_nom": "Yvelines",
+            "dep_slug": "yvelines"
+        },
+        {
+            "dep_code": "91",
+            "dep_nom": "Essonne",
+            "dep_slug": "essonne"
+        }
+    ],
+    "villes_count": 36,
+    "villes": [
+        {
+            "id": 9626,
+            "code_insee": "92002",
+            "nom_standard": "Antony",
+            "slug_ville": "antony",
+            "code_postal": "92160",
+            "population": 63232,
+            "superficie_km2": "10.00",
+            "latitude_centre": "48.7500000",
+            "longitude_centre": "2.2990000"
+        },
+        {
+            "id": 9627,
+            "code_insee": "92004",
+            "nom_standard": "Asnières-sur-Seine",
+            "slug_ville": "asnieres-sur-seine",
+            "code_postal": "92600",
+            "population": 89662,
+            "superficie_km2": "5.00",
+            "latitude_centre": "48.9150009",
+            "longitude_centre": "2.2880001"
+        },
+        {
+            "id": 9628,
+            "code_insee": "92007",
+            "nom_standard": "Bagneux",
+            "slug_ville": "bagneux",
+            "code_postal": "92220",
+            "population": 43699,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.7980003",
+            "longitude_centre": "2.3099999"
+        },
+        {
+            "id": 9629,
+            "code_insee": "92009",
+            "nom_standard": "Bois-Colombes",
+            "slug_ville": "bois-colombes",
+            "code_postal": "92270",
+            "population": 29765,
+            "superficie_km2": "2.00",
+            "latitude_centre": "48.9150009",
+            "longitude_centre": "2.2670000"
+        },
+        {
+            "id": 9630,
+            "code_insee": "92012",
+            "nom_standard": "Boulogne-Billancourt",
+            "slug_ville": "boulogne-billancourt",
+            "code_postal": "92100",
+            "population": 119808,
+            "superficie_km2": "6.00",
+            "latitude_centre": "48.8370018",
+            "longitude_centre": "2.2390001"
+        },
+        {
+            "id": 9631,
+            "code_insee": "92014",
+            "nom_standard": "Bourg-la-Reine",
+            "slug_ville": "bourg-la-reine",
+            "code_postal": "92340",
+            "population": 20810,
+            "superficie_km2": "2.00",
+            "latitude_centre": "48.7799988",
+            "longitude_centre": "2.3160000"
+        },
+        {
+            "id": 9632,
+            "code_insee": "92019",
+            "nom_standard": "Châtenay-Malabry",
+            "slug_ville": "chatenay-malabry",
+            "code_postal": "92290",
+            "population": 34898,
+            "superficie_km2": "6.00",
+            "latitude_centre": "48.7680016",
+            "longitude_centre": "2.2630000"
+        },
+        {
+            "id": 9633,
+            "code_insee": "92020",
+            "nom_standard": "Châtillon",
+            "slug_ville": "chatillon",
+            "code_postal": "92320",
+            "population": 36777,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.8030014",
+            "longitude_centre": "2.2880001"
+        },
+        {
+            "id": 9634,
+            "code_insee": "92022",
+            "nom_standard": "Chaville",
+            "slug_ville": "chaville",
+            "code_postal": "92370",
+            "population": 19991,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.8079987",
+            "longitude_centre": "2.1919999"
+        },
+        {
+            "id": 9635,
+            "code_insee": "92023",
+            "nom_standard": "Clamart",
+            "slug_ville": "clamart",
+            "code_postal": "92140",
+            "population": 54491,
+            "superficie_km2": "9.00",
+            "latitude_centre": "48.7960014",
+            "longitude_centre": "2.2550001"
+        },
+        {
+            "id": 9636,
+            "code_insee": "92024",
+            "nom_standard": "Clichy",
+            "slug_ville": "clichy",
+            "code_postal": "92110",
+            "population": 64849,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.9039993",
+            "longitude_centre": "2.3060000"
+        },
+        {
+            "id": 9637,
+            "code_insee": "92025",
+            "nom_standard": "Colombes",
+            "slug_ville": "colombes",
+            "code_postal": "92700",
+            "population": 88870,
+            "superficie_km2": "8.00",
+            "latitude_centre": "48.9220009",
+            "longitude_centre": "2.2470000"
+        },
+        {
+            "id": 9638,
+            "code_insee": "92026",
+            "nom_standard": "Courbevoie",
+            "slug_ville": "courbevoie",
+            "code_postal": "92400",
+            "population": 81516,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.8979988",
+            "longitude_centre": "2.2560000"
+        },
+        {
+            "id": 9639,
+            "code_insee": "92032",
+            "nom_standard": "Fontenay-aux-Roses",
+            "slug_ville": "fontenay-aux-roses",
+            "code_postal": "92260",
+            "population": 24772,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.7900009",
+            "longitude_centre": "2.2869999"
+        },
+        {
+            "id": 9640,
+            "code_insee": "92033",
+            "nom_standard": "Garches",
+            "slug_ville": "garches",
+            "code_postal": "92380",
+            "population": 17898,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.8450012",
+            "longitude_centre": "2.1870000"
+        },
+        {
+            "id": 9641,
+            "code_insee": "92035",
+            "nom_standard": "La Garenne-Colombes",
+            "slug_ville": "la-garenne-colombes",
+            "code_postal": "92250",
+            "population": 29932,
+            "superficie_km2": "2.00",
+            "latitude_centre": "48.9070015",
+            "longitude_centre": "2.2449999"
+        },
+        {
+            "id": 9642,
+            "code_insee": "92036",
+            "nom_standard": "Gennevilliers",
+            "slug_ville": "gennevilliers",
+            "code_postal": "92230",
+            "population": 49410,
+            "superficie_km2": "12.00",
+            "latitude_centre": "48.9339981",
+            "longitude_centre": "2.2939999"
+        },
+        {
+            "id": 9643,
+            "code_insee": "92040",
+            "nom_standard": "Issy-les-Moulineaux",
+            "slug_ville": "issy-les-moulineaux",
+            "code_postal": "92130",
+            "population": 68580,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.8240013",
+            "longitude_centre": "2.2639999"
+        },
+        {
+            "id": 9644,
+            "code_insee": "92044",
+            "nom_standard": "Levallois-Perret",
+            "slug_ville": "levallois-perret",
+            "code_postal": "92300",
+            "population": 68009,
+            "superficie_km2": "2.00",
+            "latitude_centre": "48.8950005",
+            "longitude_centre": "2.2869999"
+        },
+        {
+            "id": 9645,
+            "code_insee": "92046",
+            "nom_standard": "Malakoff",
+            "slug_ville": "malakoff",
+            "code_postal": "92240",
+            "population": 30292,
+            "superficie_km2": "2.00",
+            "latitude_centre": "48.8170013",
+            "longitude_centre": "2.2969999"
+        },
+        {
+            "id": 9646,
+            "code_insee": "92047",
+            "nom_standard": "Marnes-la-Coquette",
+            "slug_ville": "marnes-la-coquette",
+            "code_postal": "92430",
+            "population": 1745,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.8300018",
+            "longitude_centre": "2.1659999"
+        },
+        {
+            "id": 9647,
+            "code_insee": "92048",
+            "nom_standard": "Meudon",
+            "slug_ville": "meudon",
+            "code_postal": "92190",
+            "population": 46342,
+            "superficie_km2": "10.00",
+            "latitude_centre": "48.8040009",
+            "longitude_centre": "2.2270000"
+        },
+        {
+            "id": 9648,
+            "code_insee": "92049",
+            "nom_standard": "Montrouge",
+            "slug_ville": "montrouge",
+            "code_postal": "92120",
+            "population": 47657,
+            "superficie_km2": "2.00",
+            "latitude_centre": "48.8149986",
+            "longitude_centre": "2.3160000"
+        },
+        {
+            "id": 9649,
+            "code_insee": "92050",
+            "nom_standard": "Nanterre",
+            "slug_ville": "nanterre",
+            "code_postal": "92000",
+            "population": 97351,
+            "superficie_km2": "12.00",
+            "latitude_centre": "48.8959999",
+            "longitude_centre": "2.2070000"
+        },
+        {
+            "id": 9650,
+            "code_insee": "92051",
+            "nom_standard": "Neuilly-sur-Seine",
+            "slug_ville": "neuilly-sur-seine",
+            "code_postal": "92200",
+            "population": 59267,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.8849983",
+            "longitude_centre": "2.2660000"
+        },
+        {
+            "id": 9651,
+            "code_insee": "92060",
+            "nom_standard": "Le Plessis-Robinson",
+            "slug_ville": "le-plessis-robinson",
+            "code_postal": "92350",
+            "population": 29228,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.7799988",
+            "longitude_centre": "2.2609999"
+        },
+        {
+            "id": 9652,
+            "code_insee": "92062",
+            "nom_standard": "Puteaux",
+            "slug_ville": "puteaux",
+            "code_postal": "92800",
+            "population": 43672,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.8839989",
+            "longitude_centre": "2.2379999"
+        },
+        {
+            "id": 9653,
+            "code_insee": "92063",
+            "nom_standard": "Rueil-Malmaison",
+            "slug_ville": "rueil-malmaison",
+            "code_postal": "92500",
+            "population": 78186,
+            "superficie_km2": "15.00",
+            "latitude_centre": "48.8689995",
+            "longitude_centre": "2.1770000"
+        },
+        {
+            "id": 9654,
+            "code_insee": "92064",
+            "nom_standard": "Saint-Cloud",
+            "slug_ville": "saint-cloud",
+            "code_postal": "92210",
+            "population": 29727,
+            "superficie_km2": "8.00",
+            "latitude_centre": "48.8429985",
+            "longitude_centre": "2.2090001"
+        },
+        {
+            "id": 9655,
+            "code_insee": "92071",
+            "nom_standard": "Sceaux",
+            "slug_ville": "sceaux",
+            "code_postal": "92330",
+            "population": 20488,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.7770004",
+            "longitude_centre": "2.2950001"
+        },
+        {
+            "id": 9656,
+            "code_insee": "92072",
+            "nom_standard": "Sèvres",
+            "slug_ville": "sevres",
+            "code_postal": "92310",
+            "population": 22618,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.8219986",
+            "longitude_centre": "2.2100000"
+        },
+        {
+            "id": 9657,
+            "code_insee": "92073",
+            "nom_standard": "Suresnes",
+            "slug_ville": "suresnes",
+            "code_postal": "92150",
+            "population": 49104,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.8699989",
+            "longitude_centre": "2.2200000"
+        },
+        {
+            "id": 9658,
+            "code_insee": "92075",
+            "nom_standard": "Vanves",
+            "slug_ville": "vanves",
+            "code_postal": "92170",
+            "population": 28014,
+            "superficie_km2": "2.00",
+            "latitude_centre": "48.8219986",
+            "longitude_centre": "2.2869999"
+        },
+        {
+            "id": 9659,
+            "code_insee": "92076",
+            "nom_standard": "Vaucresson",
+            "slug_ville": "vaucresson",
+            "code_postal": "92420",
+            "population": 8566,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.8409996",
+            "longitude_centre": "2.1600001"
+        },
+        {
+            "id": 9660,
+            "code_insee": "92077",
+            "nom_standard": "Ville-d'Avray",
+            "slug_ville": "ville-d-avray",
+            "code_postal": "92410",
+            "population": 10694,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.8219986",
+            "longitude_centre": "2.1780000"
+        },
+        {
+            "id": 9661,
+            "code_insee": "92078",
+            "nom_standard": "Villeneuve-la-Garenne",
+            "slug_ville": "villeneuve-la-garenne",
+            "code_postal": "92390",
+            "population": 25371,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.9360008",
+            "longitude_centre": "2.3239999"
+        }
+    ]
+}

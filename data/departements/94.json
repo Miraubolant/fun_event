@@ -1,0 +1,555 @@
+{
+    "departement": {
+        "code": "94",
+        "nom": "Val-de-Marne",
+        "slug": "val-de-marne"
+    },
+    "region": {
+        "id": 11,
+        "code": "10",
+        "nom": "Île-de-France",
+        "slug": "ile-de-france"
+    },
+    "voisins": [
+        {
+            "dep_code": "75",
+            "dep_nom": "Paris",
+            "dep_slug": "paris"
+        },
+        {
+            "dep_code": "77",
+            "dep_nom": "Seine-et-Marne",
+            "dep_slug": "seine-et-marne"
+        },
+        {
+            "dep_code": "78",
+            "dep_nom": "Yvelines",
+            "dep_slug": "yvelines"
+        },
+        {
+            "dep_code": "91",
+            "dep_nom": "Essonne",
+            "dep_slug": "essonne"
+        }
+    ],
+    "villes_count": 47,
+    "villes": [
+        {
+            "id": 9702,
+            "code_insee": "94001",
+            "nom_standard": "Ablon-sur-Seine",
+            "slug_ville": "ablon-sur-seine",
+            "code_postal": "94480",
+            "population": 5946,
+            "superficie_km2": "1.00",
+            "latitude_centre": "48.7239990",
+            "longitude_centre": "2.4210000"
+        },
+        {
+            "id": 9703,
+            "code_insee": "94002",
+            "nom_standard": "Alfortville",
+            "slug_ville": "alfortville",
+            "code_postal": "94140",
+            "population": 45046,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.7960014",
+            "longitude_centre": "2.4210000"
+        },
+        {
+            "id": 9704,
+            "code_insee": "94003",
+            "nom_standard": "Arcueil",
+            "slug_ville": "arcueil",
+            "code_postal": "94110",
+            "population": 21557,
+            "superficie_km2": "2.00",
+            "latitude_centre": "48.8059998",
+            "longitude_centre": "2.3340001"
+        },
+        {
+            "id": 9705,
+            "code_insee": "94004",
+            "nom_standard": "Boissy-Saint-Léger",
+            "slug_ville": "boissy-saint-leger",
+            "code_postal": "94470",
+            "population": 17570,
+            "superficie_km2": "9.00",
+            "latitude_centre": "48.7470017",
+            "longitude_centre": "2.5250001"
+        },
+        {
+            "id": 9706,
+            "code_insee": "94011",
+            "nom_standard": "Bonneuil-sur-Marne",
+            "slug_ville": "bonneuil-sur-marne",
+            "code_postal": "94380",
+            "population": 18750,
+            "superficie_km2": "6.00",
+            "latitude_centre": "48.7729988",
+            "longitude_centre": "2.4879999"
+        },
+        {
+            "id": 9707,
+            "code_insee": "94015",
+            "nom_standard": "Bry-sur-Marne",
+            "slug_ville": "bry-sur-marne",
+            "code_postal": "94360",
+            "population": 17400,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.8380013",
+            "longitude_centre": "2.5230000"
+        },
+        {
+            "id": 9708,
+            "code_insee": "94016",
+            "nom_standard": "Cachan",
+            "slug_ville": "cachan",
+            "code_postal": "94230",
+            "population": 30592,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.7919998",
+            "longitude_centre": "2.3320000"
+        },
+        {
+            "id": 9709,
+            "code_insee": "94017",
+            "nom_standard": "Champigny-sur-Marne",
+            "slug_ville": "champigny-sur-marne",
+            "code_postal": "94500",
+            "population": 77724,
+            "superficie_km2": "11.00",
+            "latitude_centre": "48.8170013",
+            "longitude_centre": "2.5170000"
+        },
+        {
+            "id": 9710,
+            "code_insee": "94018",
+            "nom_standard": "Charenton-le-Pont",
+            "slug_ville": "charenton-le-pont",
+            "code_postal": "94220",
+            "population": 29445,
+            "superficie_km2": "2.00",
+            "latitude_centre": "48.8230019",
+            "longitude_centre": "2.4080000"
+        },
+        {
+            "id": 9711,
+            "code_insee": "94019",
+            "nom_standard": "Chennevières-sur-Marne",
+            "slug_ville": "chennevieres-sur-marne",
+            "code_postal": "94430",
+            "population": 18367,
+            "superficie_km2": "5.00",
+            "latitude_centre": "48.7980003",
+            "longitude_centre": "2.5420001"
+        },
+        {
+            "id": 9712,
+            "code_insee": "94021",
+            "nom_standard": "Chevilly-Larue",
+            "slug_ville": "chevilly-larue",
+            "code_postal": "94550",
+            "population": 20326,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.7669983",
+            "longitude_centre": "2.3529999"
+        },
+        {
+            "id": 9713,
+            "code_insee": "94022",
+            "nom_standard": "Choisy-le-Roi",
+            "slug_ville": "choisy-le-roi",
+            "code_postal": "94600",
+            "population": 46129,
+            "superficie_km2": "5.00",
+            "latitude_centre": "48.7639999",
+            "longitude_centre": "2.4170001"
+        },
+        {
+            "id": 9714,
+            "code_insee": "94028",
+            "nom_standard": "Créteil",
+            "slug_ville": "creteil",
+            "code_postal": "94000",
+            "population": 92989,
+            "superficie_km2": "11.00",
+            "latitude_centre": "48.7840004",
+            "longitude_centre": "2.4549999"
+        },
+        {
+            "id": 9715,
+            "code_insee": "94033",
+            "nom_standard": "Fontenay-sous-Bois",
+            "slug_ville": "fontenay-sous-bois",
+            "code_postal": "94120",
+            "population": 51812,
+            "superficie_km2": "6.00",
+            "latitude_centre": "48.8510017",
+            "longitude_centre": "2.4740000"
+        },
+        {
+            "id": 9716,
+            "code_insee": "94034",
+            "nom_standard": "Fresnes",
+            "slug_ville": "fresnes",
+            "code_postal": "94260",
+            "population": 28780,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.7570000",
+            "longitude_centre": "2.3260000"
+        },
+        {
+            "id": 9717,
+            "code_insee": "94037",
+            "nom_standard": "Gentilly",
+            "slug_ville": "gentilly",
+            "code_postal": "94250",
+            "population": 19048,
+            "superficie_km2": "1.00",
+            "latitude_centre": "48.8129997",
+            "longitude_centre": "2.3440001"
+        },
+        {
+            "id": 9718,
+            "code_insee": "94038",
+            "nom_standard": "L'Haÿ-les-Roses",
+            "slug_ville": "l-hay-les-roses",
+            "code_postal": "94240",
+            "population": 31392,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.7760010",
+            "longitude_centre": "2.3380001"
+        },
+        {
+            "id": 9719,
+            "code_insee": "94041",
+            "nom_standard": "Ivry-sur-Seine",
+            "slug_ville": "ivry-sur-seine",
+            "code_postal": "94200",
+            "population": 64001,
+            "superficie_km2": "6.00",
+            "latitude_centre": "48.8129997",
+            "longitude_centre": "2.3880000"
+        },
+        {
+            "id": 9720,
+            "code_insee": "94042",
+            "nom_standard": "Joinville-le-Pont",
+            "slug_ville": "joinville-le-pont",
+            "code_postal": "94340",
+            "population": 20413,
+            "superficie_km2": "2.00",
+            "latitude_centre": "48.8190002",
+            "longitude_centre": "2.4700000"
+        },
+        {
+            "id": 9721,
+            "code_insee": "94043",
+            "nom_standard": "Le Kremlin-Bicêtre",
+            "slug_ville": "le-kremlin-bicetre",
+            "code_postal": "94270",
+            "population": 24380,
+            "superficie_km2": "2.00",
+            "latitude_centre": "48.8089981",
+            "longitude_centre": "2.3570001"
+        },
+        {
+            "id": 9722,
+            "code_insee": "94044",
+            "nom_standard": "Limeil-Brévannes",
+            "slug_ville": "limeil-brevannes",
+            "code_postal": "94450",
+            "population": 27999,
+            "superficie_km2": "7.00",
+            "latitude_centre": "48.7449989",
+            "longitude_centre": "2.4890001"
+        },
+        {
+            "id": 9723,
+            "code_insee": "94046",
+            "nom_standard": "Maisons-Alfort",
+            "slug_ville": "maisons-alfort",
+            "code_postal": "94700",
+            "population": 58068,
+            "superficie_km2": "5.00",
+            "latitude_centre": "48.8059998",
+            "longitude_centre": "2.4380000"
+        },
+        {
+            "id": 9724,
+            "code_insee": "94047",
+            "nom_standard": "Mandres-les-Roses",
+            "slug_ville": "mandres-les-roses",
+            "code_postal": "94520",
+            "population": 4825,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.7060013",
+            "longitude_centre": "2.5480001"
+        },
+        {
+            "id": 9725,
+            "code_insee": "94048",
+            "nom_standard": "Marolles-en-Brie",
+            "slug_ville": "marolles-en-brie",
+            "code_postal": "94440",
+            "population": 4689,
+            "superficie_km2": "5.00",
+            "latitude_centre": "48.7400017",
+            "longitude_centre": "2.5550001"
+        },
+        {
+            "id": 9726,
+            "code_insee": "94052",
+            "nom_standard": "Nogent-sur-Marne",
+            "slug_ville": "nogent-sur-marne",
+            "code_postal": "94130",
+            "population": 33472,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.8370018",
+            "longitude_centre": "2.4820001"
+        },
+        {
+            "id": 9727,
+            "code_insee": "94053",
+            "nom_standard": "Noiseau",
+            "slug_ville": "noiseau",
+            "code_postal": "94880",
+            "population": 4610,
+            "superficie_km2": "5.00",
+            "latitude_centre": "48.7739983",
+            "longitude_centre": "2.5550001"
+        },
+        {
+            "id": 9728,
+            "code_insee": "94054",
+            "nom_standard": "Orly",
+            "slug_ville": "orly",
+            "code_postal": "94310",
+            "population": 24482,
+            "superficie_km2": "7.00",
+            "latitude_centre": "48.7430000",
+            "longitude_centre": "2.3950000"
+        },
+        {
+            "id": 9729,
+            "code_insee": "94055",
+            "nom_standard": "Ormesson-sur-Marne",
+            "slug_ville": "ormesson-sur-marne",
+            "code_postal": "94490",
+            "population": 10540,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.7859993",
+            "longitude_centre": "2.5390000"
+        },
+        {
+            "id": 9730,
+            "code_insee": "94056",
+            "nom_standard": "Périgny",
+            "slug_ville": "perigny",
+            "code_postal": "94520",
+            "population": 2725,
+            "superficie_km2": "3.00",
+            "latitude_centre": "48.6969986",
+            "longitude_centre": "2.5620000"
+        },
+        {
+            "id": 9731,
+            "code_insee": "94058",
+            "nom_standard": "Le Perreux-sur-Marne",
+            "slug_ville": "le-perreux-sur-marne",
+            "code_postal": "94170",
+            "population": 34213,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.8419991",
+            "longitude_centre": "2.5039999"
+        },
+        {
+            "id": 9732,
+            "code_insee": "94059",
+            "nom_standard": "Le Plessis-Trévise",
+            "slug_ville": "le-plessis-trevise",
+            "code_postal": "94420",
+            "population": 20218,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.8059998",
+            "longitude_centre": "2.5760000"
+        },
+        {
+            "id": 9733,
+            "code_insee": "94060",
+            "nom_standard": "La Queue-en-Brie",
+            "slug_ville": "la-queue-en-brie",
+            "code_postal": "94510",
+            "population": 12081,
+            "superficie_km2": "9.00",
+            "latitude_centre": "48.7779999",
+            "longitude_centre": "2.5840001"
+        },
+        {
+            "id": 9734,
+            "code_insee": "94065",
+            "nom_standard": "Rungis",
+            "slug_ville": "rungis",
+            "code_postal": "94150",
+            "population": 5647,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.7500000",
+            "longitude_centre": "2.3529999"
+        },
+        {
+            "id": 9735,
+            "code_insee": "94067",
+            "nom_standard": "Saint-Mandé",
+            "slug_ville": "saint-mande",
+            "code_postal": "94160",
+            "population": 21195,
+            "superficie_km2": "1.00",
+            "latitude_centre": "48.8419991",
+            "longitude_centre": "2.4189999"
+        },
+        {
+            "id": 9736,
+            "code_insee": "94068",
+            "nom_standard": "Saint-Maur-des-Fossés",
+            "slug_ville": "saint-maur-des-fosses",
+            "code_postal": "94210",
+            "population": 75441,
+            "superficie_km2": "11.00",
+            "latitude_centre": "48.7989998",
+            "longitude_centre": "2.4940000"
+        },
+        {
+            "id": 9737,
+            "code_insee": "94069",
+            "nom_standard": "Saint-Maurice",
+            "slug_ville": "saint-maurice",
+            "code_postal": "94410",
+            "population": 14603,
+            "superficie_km2": "1.00",
+            "latitude_centre": "48.8180008",
+            "longitude_centre": "2.4380000"
+        },
+        {
+            "id": 9738,
+            "code_insee": "94070",
+            "nom_standard": "Santeny",
+            "slug_ville": "santeny",
+            "code_postal": "94440",
+            "population": 4003,
+            "superficie_km2": "10.00",
+            "latitude_centre": "48.7360001",
+            "longitude_centre": "2.5760000"
+        },
+        {
+            "id": 9739,
+            "code_insee": "94071",
+            "nom_standard": "Sucy-en-Brie",
+            "slug_ville": "sucy-en-brie",
+            "code_postal": "94370",
+            "population": 27622,
+            "superficie_km2": "10.00",
+            "latitude_centre": "48.7659988",
+            "longitude_centre": "2.5330000"
+        },
+        {
+            "id": 9740,
+            "code_insee": "94073",
+            "nom_standard": "Thiais",
+            "slug_ville": "thiais",
+            "code_postal": "94320",
+            "population": 31097,
+            "superficie_km2": "6.00",
+            "latitude_centre": "48.7610016",
+            "longitude_centre": "2.3850000"
+        },
+        {
+            "id": 9741,
+            "code_insee": "94074",
+            "nom_standard": "Valenton",
+            "slug_ville": "valenton",
+            "code_postal": "94460",
+            "population": 14482,
+            "superficie_km2": "5.00",
+            "latitude_centre": "48.7529984",
+            "longitude_centre": "2.4610000"
+        },
+        {
+            "id": 9742,
+            "code_insee": "94075",
+            "nom_standard": "Villecresnes",
+            "slug_ville": "villecresnes",
+            "code_postal": "94440",
+            "population": 11642,
+            "superficie_km2": "6.00",
+            "latitude_centre": "48.7210007",
+            "longitude_centre": "2.5320001"
+        },
+        {
+            "id": 9743,
+            "code_insee": "94076",
+            "nom_standard": "Villejuif",
+            "slug_ville": "villejuif",
+            "code_postal": "94800",
+            "population": 57753,
+            "superficie_km2": "5.00",
+            "latitude_centre": "48.7929993",
+            "longitude_centre": "2.3599999"
+        },
+        {
+            "id": 9744,
+            "code_insee": "94077",
+            "nom_standard": "Villeneuve-le-Roi",
+            "slug_ville": "villeneuve-le-roi",
+            "code_postal": "94290",
+            "population": 21129,
+            "superficie_km2": "8.00",
+            "latitude_centre": "48.7319984",
+            "longitude_centre": "2.4100001"
+        },
+        {
+            "id": 9745,
+            "code_insee": "94078",
+            "nom_standard": "Villeneuve-Saint-Georges",
+            "slug_ville": "villeneuve-saint-georges",
+            "code_postal": "94190",
+            "population": 35492,
+            "superficie_km2": "8.00",
+            "latitude_centre": "48.7410011",
+            "longitude_centre": "2.4489999"
+        },
+        {
+            "id": 9746,
+            "code_insee": "94079",
+            "nom_standard": "Villiers-sur-Marne",
+            "slug_ville": "villiers-sur-marne",
+            "code_postal": "94350",
+            "population": 30669,
+            "superficie_km2": "4.00",
+            "latitude_centre": "48.8260002",
+            "longitude_centre": "2.5450001"
+        },
+        {
+            "id": 9747,
+            "code_insee": "94080",
+            "nom_standard": "Vincennes",
+            "slug_ville": "vincennes",
+            "code_postal": "94300",
+            "population": 48798,
+            "superficie_km2": "2.00",
+            "latitude_centre": "48.8470001",
+            "longitude_centre": "2.4380000"
+        },
+        {
+            "id": 9748,
+            "code_insee": "94081",
+            "nom_standard": "Vitry-sur-Seine",
+            "slug_ville": "vitry-sur-seine",
+            "code_postal": "94400",
+            "population": 96205,
+            "superficie_km2": "12.00",
+            "latitude_centre": "48.7879982",
+            "longitude_centre": "2.3940001"
+        }
+    ]
+}
