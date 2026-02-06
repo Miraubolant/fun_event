@@ -8,6 +8,7 @@ interface CityData {
 
 interface DepartmentData {
   code: string;
+  slug: string;
 }
 
 async function generateSitemap() {
@@ -24,11 +25,11 @@ async function generateSitemap() {
     ? citySlugMatches.map(match => match.match(/['"]([a-z0-9-]+)['"]/)?.[1]).filter(Boolean) as string[]
     : [];
 
-  // Extraction des codes de départements
+  // Extraction des slugs de départements
   const departmentsContent = fs.readFileSync(departmentsDataPath, 'utf-8');
-  const departmentCodeMatches = departmentsContent.match(/['"](\d{2})['"]\s*:\s*\{/g);
-  const departmentCodes = departmentCodeMatches
-    ? departmentCodeMatches.map(match => match.match(/['"](\d{2})['"]/)?.[1]).filter(Boolean) as string[]
+  const departmentSlugMatches = departmentsContent.match(/"slug":\s*"([a-z0-9-]+)"/g);
+  const departmentSlugs = departmentSlugMatches
+    ? departmentSlugMatches.map(match => match.match(/"slug":\s*"([a-z0-9-]+)"/)?.[1]).filter(Boolean) as string[]
     : [];
 
   const baseUrl = 'https://funevent.fr';
@@ -48,8 +49,8 @@ async function generateSitemap() {
   ];
 
   // URLs des départements
-  const departmentUrls = departmentCodes.map(code => ({
-    loc: `/location/${code}`,
+  const departmentUrls = departmentSlugs.map(slug => ({
+    loc: `/location/${slug}`,
     priority: '0.8',
     changefreq: 'weekly'
   }));
