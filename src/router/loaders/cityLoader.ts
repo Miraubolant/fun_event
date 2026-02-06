@@ -8,5 +8,11 @@ export async function cityLoader({ params }: LoaderFunctionArgs) {
     throw new Response('Ville non trouvée', { status: 404 });
   }
 
-  return { city: citiesData[citySlug] };
+  const city = citiesData[citySlug];
+
+  if (params.departmentSlug && params.departmentSlug !== city.departmentSlug) {
+    throw new Response('Ville non trouvée', { status: 404 });
+  }
+
+  return { city };
 }

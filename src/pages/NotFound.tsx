@@ -41,7 +41,7 @@ export default function NotFound() {
           {popularCities.map(city => (
             <Link
               key={city.slug}
-              to={`/ville/${city.slug}`}
+              to={`/location/${city.departmentSlug}/${city.slug}`}
               className="p-4 bg-white hover:bg-blue-50 rounded-lg transition-colors shadow-md hover:shadow-lg"
             >
               <MapPin className="w-5 h-5 text-blue-600 mx-auto mb-2" />

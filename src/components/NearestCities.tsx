@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { MapPin, Navigation } from 'lucide-react';
+import { citiesData } from '../data/generated/cities-data';
 import type { NearestCity } from '../types';
 
 interface NearestCitiesProps {
@@ -24,7 +25,7 @@ export default function NearestCities({ cities, currentCityName }: NearestCities
         {cities.map((city) => (
           <Link
             key={city.slug}
-            to={`/ville/${city.slug}`}
+            to={`/location/${citiesData[city.slug]?.departmentSlug || ''}/${city.slug}`}
             className="flex items-center justify-between p-4 bg-gradient-to-br from-blue-50 to-orange-50 hover:from-blue-100 hover:to-orange-100 rounded-xl transition-all group shadow-md hover:shadow-lg"
           >
             <div className="flex items-center gap-3 flex-1">

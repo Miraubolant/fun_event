@@ -18,12 +18,14 @@ async function generateSitemap() {
   const citiesDataPath = path.join(process.cwd(), 'src/data/generated/cities-data.ts');
   const departmentsDataPath = path.join(process.cwd(), 'src/data/generated/departments-data.ts');
 
-  // Extraction des slugs de villes (parsing simple du fichier TypeScript)
+  // Extraction des slugs de villes avec leur departmentSlug
   const citiesContent = fs.readFileSync(citiesDataPath, 'utf-8');
-  const citySlugMatches = citiesContent.match(/['"]([a-z0-9-]+)['"]\s*:\s*\{/g);
-  const citySlugs = citySlugMatches
-    ? citySlugMatches.map(match => match.match(/['"]([a-z0-9-]+)['"]/)?.[1]).filter(Boolean) as string[]
-    : [];
+  const cityEntryRegex = /"([a-z0-9-]+)":\s*\{[^}]*"departmentSlug":\s*"([a-z0-9-]+)"/g;
+  const cityEntries: Array<{ slug: string; departmentSlug: string }> = [];
+  let cityMatch;
+  while ((cityMatch = cityEntryRegex.exec(citiesContent)) !== null) {
+    cityEntries.push({ slug: cityMatch[1], departmentSlug: cityMatch[2] });
+  }
 
   // Extraction des slugs de départements
   const departmentsContent = fs.readFileSync(departmentsDataPath, 'utf-8');
@@ -56,8 +58,8 @@ async function generateSitemap() {
   }));
 
   // URLs des villes
-  const cityUrls = citySlugs.map(slug => ({
-    loc: `/ville/${slug}`,
+  const cityUrls = cityEntries.map(({ slug, departmentSlug }) => ({
+    loc: `/location/${departmentSlug}/${slug}`,
     priority: '0.7',
     changefreq: 'monthly'
   }));

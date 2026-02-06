@@ -5,6 +5,7 @@ import SEOHead from './SEOHead';
 import { useStructures } from '../contexts/StructuresContext';
 import DepartmentCitiesGrid from './DepartmentCitiesGrid';
 import FloatingCTA from './FloatingCTA';
+import { generateSlug } from '../utils/generateSlug';
 import type { DepartmentData, CityData } from '../types';
 
 export default function LocalSEOPage() {
@@ -155,7 +156,7 @@ export default function LocalSEOPage() {
                         onClick={() => {
                           setShowDropdown(false);
                           setSearchQuery('');
-                          navigate(`/ville/${city.slug}`);
+                          navigate(`/location/${department.slug}/${city.slug}`);
                         }}
                         className="w-full flex items-center gap-4 px-4 py-3 hover:bg-blue-50 transition-colors text-left"
                       >
@@ -242,7 +243,7 @@ export default function LocalSEOPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {availableStructures.map((structure) => (
-                <div key={structure.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all group">
+                <Link key={structure.id} to={`/structure/${generateSlug(structure.name)}`} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all group cursor-pointer">
                   <div className="relative">
                     <img
                       src={structure.image}
@@ -254,14 +255,20 @@ export default function LocalSEOPage() {
                     </div>
                   </div>
                   <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{structure.name}</h3>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">{structure.name}</h3>
                     <p className="text-gray-600 text-sm mb-4 line-clamp-2">{structure.description}</p>
-                    <div className="flex items-center text-sm text-gray-500">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      Livraison {department.name} incluse
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center text-sm text-gray-500">
+                        <MapPin className="w-4 h-4 mr-1" />
+                        Livraison {department.name} incluse
+                      </div>
+                      <span className="text-blue-600 font-medium text-sm flex items-center">
+                        Voir détails
+                        <ArrowRight className="w-4 h-4 ml-1" />
+                      </span>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
             <div className="text-center mt-8">
@@ -281,6 +288,7 @@ export default function LocalSEOPage() {
           cities={filteredCities}
           departmentName={department.name}
           departmentCode={department.code}
+          departmentSlug={department.slug}
         />
 
         {/* CTA Section */}

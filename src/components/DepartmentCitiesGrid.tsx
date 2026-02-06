@@ -6,9 +6,10 @@ interface DepartmentCitiesGridProps {
   cities: CityData[];
   departmentName: string;
   departmentCode: string;
+  departmentSlug: string;
 }
 
-export default function DepartmentCitiesGrid({ cities, departmentName, departmentCode }: DepartmentCitiesGridProps) {
+export default function DepartmentCitiesGrid({ cities, departmentName, departmentCode, departmentSlug }: DepartmentCitiesGridProps) {
   if (!cities || cities.length === 0) return null;
 
   return (
@@ -24,7 +25,7 @@ export default function DepartmentCitiesGrid({ cities, departmentName, departmen
         {cities.map((city) => (
           <Link
             key={city.slug}
-            to={`/ville/${city.slug}`}
+            to={`/location/${departmentSlug}/${city.slug}`}
             className="group p-5 bg-gradient-to-br from-blue-50 to-orange-50 hover:from-blue-100 hover:to-orange-100 rounded-2xl transition-all shadow-md hover:shadow-xl transform hover:-translate-y-1"
           >
             <div className="flex items-start justify-between mb-3">

@@ -5,6 +5,7 @@ import { useStructures } from '../contexts/StructuresContext';
 import NearestCities from './NearestCities';
 import FloatingCTA from './FloatingCTA';
 import QuickQuoteForm from './QuickQuoteForm';
+import { generateSlug } from '../utils/generateSlug';
 import type { CityData } from '../types';
 
 export default function CityPage() {
@@ -24,18 +25,18 @@ export default function CityPage() {
         keywords={`location structures gonflables ${city.name}, château gonflable ${city.name}, toboggan gonflable ${city.name}, animation enfant ${city.name}, location jeux ${city.postalCode}`}
         ogTitle={`Location Structures Gonflables ${city.name} - Fun Event`}
         ogDescription={pageDescription}
-        canonicalUrl={`https://funevent.fr/ville/${city.slug}`}
+        canonicalUrl={`https://funevent.fr/location/${city.departmentSlug}/${city.slug}`}
         breadcrumbs={[
           { name: "Accueil", url: "https://funevent.fr/" },
           { name: city.department, url: `https://funevent.fr/location/${city.departmentSlug}` },
-          { name: city.name, url: `https://funevent.fr/ville/${city.slug}` }
+          { name: city.name, url: `https://funevent.fr/location/${city.departmentSlug}/${city.slug}` }
         ]}
         structuredData={{
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
           "name": `Fun Event - Location Structures Gonflables ${city.name}`,
           "description": pageDescription,
-          "url": `https://funevent.fr/ville/${city.slug}`,
+          "url": `https://funevent.fr/location/${city.departmentSlug}/${city.slug}`,
           "telephone": "+33663528072",
           "email": "contact@funevent.fr",
           "priceRange": "EUR",
@@ -123,7 +124,7 @@ export default function CityPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {availableStructures.map((structure) => (
-                <div key={structure.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all group">
+                <Link key={structure.id} to={`/structure/${generateSlug(structure.name)}`} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all group cursor-pointer">
                   <div className="relative">
                     <img
                       src={structure.image}
@@ -135,14 +136,20 @@ export default function CityPage() {
                     </div>
                   </div>
                   <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{structure.name}</h3>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">{structure.name}</h3>
                     <p className="text-gray-600 text-sm mb-4 line-clamp-2">{structure.description}</p>
-                    <div className="flex items-center text-sm text-green-600">
-                      <CheckCircle className="w-4 h-4 mr-1" />
-                      Livraison gratuite à {city.name}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center text-sm text-green-600">
+                        <CheckCircle className="w-4 h-4 mr-1" />
+                        Livraison gratuite à {city.name}
+                      </div>
+                      <span className="text-blue-600 font-medium text-sm flex items-center">
+                        Voir détails
+                        <ArrowRight className="w-4 h-4 ml-1" />
+                      </span>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
             <div className="text-center mt-8">

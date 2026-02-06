@@ -99,7 +99,7 @@ export const router = createBrowserRouter([
 
       // Pages villes (683 routes dynamiques)
       {
-        path: 'ville/:citySlug',
+        path: 'location/:departmentSlug/:citySlug',
         element: <CityPage />,
         loader: cityLoader,
       },
