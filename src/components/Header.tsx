@@ -98,7 +98,7 @@ const Header: React.FC = () => {
                 <h1 className="text-xl md:text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
                   Fun Event
                 </h1>
-                <p className={`text-xs text-gray-500 transition-all duration-300 ${isScrolled ? 'opacity-0 h-0 overflow-hidden' : 'opacity-100'}`}>
+                <p className="text-xs text-gray-500">
                   Location de structures gonflables
                 </p>
               </div>
