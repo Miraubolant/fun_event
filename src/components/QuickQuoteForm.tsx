@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { Calendar, MapPin, Users, Phone, Mail, MessageSquare, Send, CheckCircle, Sparkles } from 'lucide-react';
 
 interface QuickQuoteFormProps {
-  cityName: string;
-  postalCode: string;
+  cityName?: string;
+  postalCode?: string;
+  structureName?: string;
 }
 
-export default function QuickQuoteForm({ cityName, postalCode }: QuickQuoteFormProps) {
+export default function QuickQuoteForm({ cityName, postalCode, structureName }: QuickQuoteFormProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -72,7 +73,7 @@ export default function QuickQuoteForm({ cityName, postalCode }: QuickQuoteFormP
           Demande envoyée !
         </h3>
         <p className="text-xl text-gray-700 mb-2">
-          Merci pour votre demande de devis à <strong>{cityName}</strong>
+          Merci pour votre demande de devis{structureName ? ` pour ${structureName}` : cityName ? ` à ${cityName}` : ''}
         </p>
         <p className="text-gray-600">
           Nous vous répondrons dans les <strong>48h</strong> par email ou téléphone.
@@ -95,7 +96,7 @@ export default function QuickQuoteForm({ cityName, postalCode }: QuickQuoteFormP
             <span className="font-semibold">Devis Gratuit</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-black mb-3">
-            Votre événement à {cityName}
+            {structureName ? `Réservez ${structureName}` : `Votre événement à ${cityName}`}
           </h2>
           <p className="text-lg opacity-90 font-medium">
             Réponse personnalisée en moins de 48h
@@ -171,22 +172,34 @@ export default function QuickQuoteForm({ cityName, postalCode }: QuickQuoteFormP
           </div>
         </div>
 
-        {/* Localisation (pré-remplie) */}
+        {/* Localisation */}
         <div>
           <label className="block text-sm font-bold text-gray-900 mb-2">
-            Lieu de l'événement
+            Lieu de l'événement{!cityName ? ' *' : ''}
           </label>
           <div className="relative">
             <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-blue-500" />
-            <input
-              type="text"
-              value={`${cityName} (${postalCode})`}
-              disabled
-              className="w-full pl-11 pr-4 py-3 bg-blue-50 border-2 border-blue-200 rounded-xl font-medium text-gray-700"
-            />
+            {cityName ? (
+              <input
+                type="text"
+                value={`${cityName} (${postalCode})`}
+                disabled
+                className="w-full pl-11 pr-4 py-3 bg-blue-50 border-2 border-blue-200 rounded-xl font-medium text-gray-700"
+              />
+            ) : (
+              <input
+                type="text"
+                name="location"
+                placeholder="Ville ou code postal"
+                required
+                className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all outline-none"
+              />
+            )}
           </div>
           <p className="mt-2 text-xs text-gray-500">
-            ✅ Livraison et installation gratuites à {cityName}
+            {cityName
+              ? `✅ Livraison et installation gratuites à ${cityName}`
+              : '✅ Livraison et installation gratuites en Île-de-France'}
           </p>
         </div>
 

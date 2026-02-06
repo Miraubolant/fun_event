@@ -5,6 +5,7 @@ import { Structure } from '../types';
 import { useStructures } from '../contexts/StructuresContext';
 import { useCart } from '../contexts/CartContext';
 import SEOHead from './SEOHead';
+import QuickQuoteForm from './QuickQuoteForm';
 import { generateSlug } from '../utils/generateSlug';
 
 interface Review {
@@ -414,6 +415,11 @@ const StructurePage: React.FC = () => {
           <p className="text-lg text-gray-700 leading-relaxed whitespace-pre-line">
             {structure.description}
           </p>
+        </div>
+
+        {/* Quick Quote Form */}
+        <div className="mb-16">
+          <QuickQuoteForm structureName={structure.name} />
         </div>
 
         {/* Services section */}
