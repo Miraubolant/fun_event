@@ -1,5 +1,4 @@
 import HeroModern from '../components/HeroModern';
-import HowItWorks from '../components/HowItWorks';
 import ServicesSection from '../components/ServicesSection';
 import DepartmentsSection from '../components/DepartmentsSection';
 import StatsSection from '../components/StatsSection';
@@ -10,9 +9,8 @@ export default function HomePage() {
   return (
     <>
       <HeroModern />
-      <HowItWorks />
-      <ServicesSection />
       <DepartmentsSection />
+      <ServicesSection />
       <StatsSection />
       <TestimonialsModern />
       <CtaFinalModern />
