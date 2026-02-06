@@ -1,12 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Cake, Heart, Building2, GraduationCap, Users, TreePine, ArrowRight } from 'lucide-react';
-import { Page } from '../types';
 
-interface ServicesSectionProps {
-  onNavigate: (page: Page) => void;
-}
-
-const ServicesSection: React.FC<ServicesSectionProps> = ({ onNavigate }) => {
+const ServicesSection: React.FC = () => {
   const services = [
     {
       icon: Cake,
@@ -14,7 +10,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ onNavigate }) => {
       description: 'Faites de l\'anniversaire de votre enfant un moment magique avec nos châteaux et toboggans.',
       image: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=400&h=300&fit=crop',
       features: ['Structures adaptées 3-12 ans', 'Thèmes variés', 'Installation incluse'],
-      link: 'evenement-anniversaire' as Page,
+      link: '/evenement/anniversaire',
       color: 'pink'
     },
     {
@@ -23,7 +19,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ onNavigate }) => {
       description: 'Surprenez vos invités avec des animations originales pour petits et grands.',
       image: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop',
       features: ['Animations élégantes', 'Coin enfants dédié', 'Service discret'],
-      link: 'evenement-mariage' as Page,
+      link: '/evenement/mariage',
       color: 'rose'
     },
     {
@@ -32,7 +28,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ onNavigate }) => {
       description: 'Team building, séminaire ou fête d\'entreprise : boostez la cohésion d\'équipe.',
       image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=300&fit=crop',
       features: ['Parcours d\'obstacles', 'Défis d\'équipe', 'Formules sur-mesure'],
-      link: 'evenement-entreprise' as Page,
+      link: '/evenement/entreprise',
       color: 'blue'
     },
     {
@@ -41,7 +37,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ onNavigate }) => {
       description: 'Animations parfaites pour les fêtes d\'école et kermesses associatives.',
       image: 'https://images.unsplash.com/photo-1472162072942-cd5147eb3902?w=400&h=300&fit=crop',
       features: ['Prix groupes', 'Multi-structures', 'Sécurité renforcée'],
-      link: 'evenement-kermesse' as Page,
+      link: '/evenement/kermesse',
       color: 'green'
     },
     {
@@ -50,7 +46,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ onNavigate }) => {
       description: 'Rassemblez les habitants autour d\'animations festives et conviviales.',
       image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=400&h=300&fit=crop',
       features: ['Grandes capacités', 'Tout public', 'Tarifs associatifs'],
-      link: 'evenement-fete-quartier' as Page,
+      link: '/evenement/fete-quartier',
       color: 'orange'
     },
     {
@@ -59,7 +55,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ onNavigate }) => {
       description: 'Célébrez ces moments importants avec des animations adaptées à tous les âges.',
       image: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400&h=300&fit=crop',
       features: ['Ambiance familiale', 'Structures douces', 'Service personnalisé'],
-      link: 'evenement-bapteme' as Page,
+      link: '/evenement/bapteme',
       color: 'purple'
     }
   ];
@@ -120,13 +116,13 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ onNavigate }) => {
                 </ul>
 
                 {/* CTA */}
-                <button
-                  onClick={() => onNavigate(service.link)}
+                <Link
+                  to={service.link}
                   className={`w-full py-3 px-4 bg-${service.color}-50 text-${service.color}-700 font-semibold rounded-xl hover:bg-${service.color}-100 transition-colors flex items-center justify-center gap-2 group/btn`}
                 >
                   En savoir plus
                   <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                </button>
+                </Link>
               </div>
             </div>
           ))}
@@ -135,13 +131,13 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ onNavigate }) => {
         {/* Bottom CTA */}
         <div className="text-center mt-16">
           <p className="text-gray-600 mb-6">Vous avez un projet particulier ?</p>
-          <button
-            onClick={() => onNavigate('contact')}
+          <Link
+            to="/contact"
             className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl hover:shadow-xl transition-all duration-300 inline-flex items-center gap-2"
           >
             Parlons de votre événement
             <ArrowRight className="w-5 h-5" />
-          </button>
+          </Link>
         </div>
       </div>
     </section>

@@ -1,15 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Users, Ruler, Heart, Eye, ShoppingCart, Filter, X, ChevronDown } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
 import { useCart } from '../contexts/CartContext';
 import SEOHead from './SEOHead';
-import { Structure, Page } from '../types';
+import { Structure } from '../types';
 
-interface CatalogProps {
-  onNavigate: (page: Page) => void;
-}
-
-const Catalog: React.FC<CatalogProps> = ({ onNavigate }) => {
+const Catalog: React.FC = () => {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState('tous');
   const [activeSubcategory, setActiveSubcategory] = useState<string | null>(null);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
@@ -87,7 +85,7 @@ const Catalog: React.FC<CatalogProps> = ({ onNavigate }) => {
   }
 
   const navigateToStructure = (structure: Structure) => {
-    onNavigate(`structure-${structure.id}` as Page);
+    navigate(`/structure/${structure.id}`);
   };
 
   return (

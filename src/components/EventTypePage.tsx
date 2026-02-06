@@ -1,13 +1,9 @@
 import React from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { CheckCircle, Star, ArrowRight, Phone, MessageCircle, Users, Calendar, MapPin } from 'lucide-react';
 import SEOHead from './SEOHead';
 import { useStructures } from '../contexts/StructuresContext';
-import { Page, EventType } from '../types';
-
-interface EventTypePageProps {
-  eventType: string;
-  onNavigate: (page: Page) => void;
-}
+import { EventType } from '../types';
 
 const eventTypesData: Record<string, EventType> = {
   'anniversaire': {
@@ -137,8 +133,9 @@ const eventTypesData: Record<string, EventType> = {
   }
 };
 
-const EventTypePage: React.FC<EventTypePageProps> = ({ eventType, onNavigate }) => {
-  const eventData = eventTypesData[eventType];
+const EventTypePage: React.FC = () => {
+  const { eventType } = useParams<{ eventType: string }>();
+  const eventData = eventType ? eventTypesData[eventType] : undefined;
   const { structures } = useStructures();
 
   const availableStructures = structures.filter(s => s.available).slice(0, 6);
@@ -262,13 +259,13 @@ const EventTypePage: React.FC<EventTypePageProps> = ({ eventType, onNavigate }) 
               ))}
             </div>
             <div className="text-center mt-8">
-              <button
-                onClick={() => onNavigate('catalogue')}
+              <Link
+                to="/catalogue"
                 className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-4 rounded-full font-bold hover:shadow-xl transition-all transform hover:scale-105 inline-flex items-center"
               >
                 Voir tout le catalogue
                 <ArrowRight className="w-5 h-5 ml-2" />
-              </button>
+              </Link>
             </div>
           </div>
         )}
@@ -299,13 +296,13 @@ const EventTypePage: React.FC<EventTypePageProps> = ({ eventType, onNavigate }) 
             Obtenez votre devis gratuit et personnalisé en moins de 48h
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={() => onNavigate('devis')}
+            <Link
+              to="/devis"
               className="bg-white text-blue-600 px-8 py-4 rounded-full font-bold hover:bg-gray-100 transition-all transform hover:scale-105 inline-flex items-center justify-center"
             >
               <ArrowRight className="w-5 h-5 mr-2" />
               Demander un devis gratuit
-            </button>
+            </Link>
             <a
               href="https://wa.me/33663528072"
               target="_blank"

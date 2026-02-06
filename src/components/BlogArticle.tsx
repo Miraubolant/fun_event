@@ -1,24 +1,20 @@
 import React from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { Clock, Calendar, ArrowLeft, Share2, Tag } from 'lucide-react';
 import SEOHead from './SEOHead';
 import { blogArticles } from './Blog';
-import { Page } from '../types';
 
-interface BlogArticleProps {
-  slug: string;
-  onNavigate: (page: Page) => void;
-}
-
-const BlogArticle: React.FC<BlogArticleProps> = ({ slug, onNavigate }) => {
+const BlogArticle: React.FC = () => {
+  const { slug } = useParams<{ slug: string }>();
   const article = blogArticles.find(a => a.slug === slug);
 
   if (!article) {
     return (
       <div className="py-20 text-center">
         <h1 className="text-3xl font-bold">Article non trouvé</h1>
-        <button onClick={() => onNavigate('blog')} className="mt-4 text-blue-600">
+        <Link to="/blog" className="mt-4 text-blue-600 block">
           Retour au blog
-        </button>
+        </Link>
       </div>
     );
   }
@@ -71,13 +67,13 @@ const BlogArticle: React.FC<BlogArticleProps> = ({ slug, onNavigate }) => {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Back Button */}
-        <button
-          onClick={() => onNavigate('blog')}
+        <Link
+          to="/blog"
           className="flex items-center gap-2 text-gray-600 hover:text-blue-600 mb-8 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
           Retour au blog
-        </button>
+        </Link>
 
         {/* Header */}
         <header className="mb-8">
@@ -228,18 +224,18 @@ const BlogArticle: React.FC<BlogArticleProps> = ({ slug, onNavigate }) => {
             Contactez Fun Event pour un devis gratuit et personnalisé
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={() => onNavigate('devis')}
+            <Link
+              to="/devis"
               className="bg-white text-blue-600 px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition-all"
             >
               Demander un devis
-            </button>
-            <button
-              onClick={() => onNavigate('catalogue')}
+            </Link>
+            <Link
+              to="/catalogue"
               className="border-2 border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white/10 transition-all"
             >
               Voir le catalogue
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -251,10 +247,10 @@ const BlogArticle: React.FC<BlogArticleProps> = ({ slug, onNavigate }) => {
               .filter(a => a.id !== article.id)
               .slice(0, 2)
               .map((relatedArticle) => (
-                <div
+                <Link
                   key={relatedArticle.id}
-                  className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all cursor-pointer group"
-                  onClick={() => onNavigate(relatedArticle.slug as Page)}
+                  to={`/blog/${relatedArticle.slug}`}
+                  className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all cursor-pointer group block"
                 >
                   <img
                     src={relatedArticle.image}
@@ -269,7 +265,7 @@ const BlogArticle: React.FC<BlogArticleProps> = ({ slug, onNavigate }) => {
                       {relatedArticle.excerpt}
                     </p>
                   </div>
-                </div>
+                </Link>
               ))}
           </div>
         </div>

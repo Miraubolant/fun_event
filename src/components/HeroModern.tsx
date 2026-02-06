@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Play, Star, Shield, Truck, Clock, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
 import SEOHead from './SEOHead';
-import { Page } from '../types';
 
-interface HeroModernProps {
-  onNavigate: (page: Page) => void;
-}
-
-const HeroModern: React.FC<HeroModernProps> = ({ onNavigate }) => {
+const HeroModern: React.FC = () => {
+  const navigate = useNavigate();
   const { structures } = useStructures();
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -35,7 +32,7 @@ const HeroModern: React.FC<HeroModernProps> = ({ onNavigate }) => {
 
   // Navigate to structure page
   const navigateToStructure = (structureId: string) => {
-    onNavigate(`structure-${structureId}` as Page);
+    navigate(`/structure/${structureId}`);
   };
 
   return (
@@ -89,8 +86,8 @@ const HeroModern: React.FC<HeroModernProps> = ({ onNavigate }) => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <button
-                onClick={() => onNavigate('devis')}
+              <Link
+                to="/devis"
                 className="group relative px-10 py-5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-lg rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/30 hover:-translate-y-1"
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
@@ -98,15 +95,15 @@ const HeroModern: React.FC<HeroModernProps> = ({ onNavigate }) => {
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              </button>
+              </Link>
 
-              <button
-                onClick={() => onNavigate('catalogue')}
+              <Link
+                to="/catalogue"
                 className="group px-10 py-5 bg-white text-gray-800 font-bold text-lg rounded-2xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2 shadow-lg"
               >
                 <Play className="w-5 h-5 text-blue-500" />
                 Voir le Catalogue Complet
-              </button>
+              </Link>
             </div>
 
             {/* Trust indicators */}
@@ -302,14 +299,14 @@ const HeroModern: React.FC<HeroModernProps> = ({ onNavigate }) => {
 
             {/* CTA Catalogue */}
             <div className="text-center mt-10">
-              <button
-                onClick={() => onNavigate('catalogue')}
+              <Link
+                to="/catalogue"
                 className="inline-flex items-center gap-2 px-8 py-4 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
                 style={{ background: 'linear-gradient(to right, #0F97F6, #0B7BC9)' }}
               >
                 Voir toutes nos structures
                 <ArrowRight className="w-5 h-5" />
-              </button>
+              </Link>
             </div>
           </div>
         </div>

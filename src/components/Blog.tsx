@@ -1,11 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Clock, Calendar, ArrowRight, Tag } from 'lucide-react';
 import SEOHead from './SEOHead';
-import { Page, BlogArticle } from '../types';
-
-interface BlogProps {
-  onNavigate: (page: Page) => void;
-}
+import { BlogArticle } from '../types';
 
 export const blogArticles: BlogArticle[] = [
   {
@@ -375,7 +372,7 @@ export const blogArticles: BlogArticle[] = [
   }
 ];
 
-const Blog: React.FC<BlogProps> = ({ onNavigate }) => {
+const Blog: React.FC = () => {
   const categories = ['Tous', ...new Set(blogArticles.map(a => a.category))];
   const [activeCategory, setActiveCategory] = React.useState('Tous');
 
@@ -468,10 +465,10 @@ const Blog: React.FC<BlogProps> = ({ onNavigate }) => {
         {/* Articles Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredArticles.map((article) => (
-            <article
+            <Link
               key={article.id}
-              className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all group cursor-pointer"
-              onClick={() => onNavigate(article.slug as Page)}
+              to={`/blog/${article.slug}`}
+              className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all group cursor-pointer block"
             >
               <div className="relative">
                 <img
@@ -506,7 +503,7 @@ const Blog: React.FC<BlogProps> = ({ onNavigate }) => {
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </div>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
 
@@ -516,13 +513,13 @@ const Blog: React.FC<BlogProps> = ({ onNavigate }) => {
           <p className="text-xl mb-6 opacity-90">
             Nos experts sont là pour vous conseiller et vous accompagner
           </p>
-          <button
-            onClick={() => onNavigate('devis')}
+          <Link
+            to="/devis"
             className="bg-white text-blue-600 px-8 py-4 rounded-full font-bold hover:bg-gray-100 transition-all transform hover:scale-105 inline-flex items-center"
           >
             Demander un devis gratuit
             <ArrowRight className="w-5 h-5 ml-2" />
-          </button>
+          </Link>
         </div>
       </div>
     </section>

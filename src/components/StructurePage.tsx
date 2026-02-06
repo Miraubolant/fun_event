@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Users, Ruler, Heart, Weight, Shield, Clock, ShoppingCart, MessageCircle, ChevronLeft, ChevronRight, CheckCircle, Share2, Star, MapPin, Phone, ArrowRight, Send, User, HelpCircle, ChevronDown } from 'lucide-react';
-import { Structure, Page } from '../types';
+import { Structure } from '../types';
 import { useStructures } from '../contexts/StructuresContext';
 import { useCart } from '../contexts/CartContext';
 import SEOHead from './SEOHead';
@@ -14,13 +15,9 @@ interface Review {
   avatar?: string;
 }
 
-interface StructurePageProps {
-  structureId: string;
-  onNavigate: (page: Page) => void;
-}
-
-
-const StructurePage: React.FC<StructurePageProps> = ({ structureId, onNavigate }) => {
+const StructurePage: React.FC = () => {
+  const { structureId } = useParams<{ structureId: string }>();
+  const navigate = useNavigate();
   const { structures, loading } = useStructures();
   const { addToCart, items } = useCart();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -154,7 +151,7 @@ const StructurePage: React.FC<StructurePageProps> = ({ structureId, onNavigate }
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Structure non trouvée</h1>
           <p className="text-gray-600 mb-8">Cette structure n'existe pas ou n'est plus disponible.</p>
           <button
-            onClick={() => onNavigate('catalogue')}
+            onClick={() => navigate('/catalogue')}
             className="px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold rounded-2xl hover:shadow-xl transition-all"
           >
             Retour au catalogue
@@ -197,7 +194,7 @@ const StructurePage: React.FC<StructurePageProps> = ({ structureId, onNavigate }
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back button */}
         <button
-          onClick={() => onNavigate('catalogue')}
+          onClick={() => navigate('/catalogue')}
           className="inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 font-medium mb-8 transition-colors group"
         >
           <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
@@ -693,7 +690,7 @@ const StructurePage: React.FC<StructurePageProps> = ({ structureId, onNavigate }
               {similarStructures.map((s) => (
                 <div
                   key={s.id}
-                  onClick={() => onNavigate(`structure-${s.id}` as Page)}
+                  onClick={() => navigate(`/structure/${s.id}`)}
                   className="bg-white rounded-2xl shadow-xl overflow-hidden cursor-pointer group hover:shadow-2xl transition-all hover:-translate-y-2"
                 >
                   <div className="relative h-48 overflow-hidden">
@@ -732,7 +729,7 @@ const StructurePage: React.FC<StructurePageProps> = ({ structureId, onNavigate }
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              onClick={() => onNavigate('devis')}
+              onClick={() => navigate('/devis')}
               className="px-8 py-4 bg-white text-blue-600 font-bold text-lg rounded-2xl hover:bg-blue-50 transition-all shadow-xl hover:scale-105"
             >
               Demander un devis gratuit

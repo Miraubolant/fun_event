@@ -1,12 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight, Phone, MessageCircle, CheckCircle } from 'lucide-react';
-import { Page } from '../types';
 
-interface CtaFinalModernProps {
-  onNavigate: (page: Page) => void;
-}
-
-const CtaFinalModern: React.FC<CtaFinalModernProps> = ({ onNavigate }) => {
+const CtaFinalModern: React.FC = () => {
   const benefits = [
     'Devis gratuit sous 24h',
     'Livraison et installation incluses',
@@ -53,13 +49,13 @@ const CtaFinalModern: React.FC<CtaFinalModernProps> = ({ onNavigate }) => {
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                onClick={() => onNavigate('devis')}
+              <Link
+                to="/devis"
                 className="group px-8 py-5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-lg rounded-2xl hover:shadow-2xl hover:shadow-orange-500/40 transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2"
               >
                 Demander mon devis gratuit
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
+              </Link>
 
               <a
                 href="https://wa.me/33663528072"
