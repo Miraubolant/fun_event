@@ -5,6 +5,7 @@ import { useStructures } from '../contexts/StructuresContext';
 import { useCart } from '../contexts/CartContext';
 import SEOHead from './SEOHead';
 import { Structure } from '../types';
+import { generateSlug } from '../utils/generateSlug';
 
 const Catalog: React.FC = () => {
   const navigate = useNavigate();
@@ -85,7 +86,7 @@ const Catalog: React.FC = () => {
   }
 
   const navigateToStructure = (structure: Structure) => {
-    navigate(`/structure/${structure.id}`);
+    navigate(`/structure/${generateSlug(structure.name)}`);
   };
 
   return (

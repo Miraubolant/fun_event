@@ -5,6 +5,7 @@ import { Structure } from '../types';
 import { useStructures } from '../contexts/StructuresContext';
 import { useCart } from '../contexts/CartContext';
 import SEOHead from './SEOHead';
+import { generateSlug } from '../utils/generateSlug';
 
 interface Review {
   id: string;
@@ -16,7 +17,7 @@ interface Review {
 }
 
 const StructurePage: React.FC = () => {
-  const { structureId } = useParams<{ structureId: string }>();
+  const { structureSlug } = useParams<{ structureSlug: string }>();
   const navigate = useNavigate();
   const { structures, loading } = useStructures();
   const { addToCart, items } = useCart();
@@ -31,7 +32,7 @@ const StructurePage: React.FC = () => {
   const [userReviews, setUserReviews] = useState<Review[]>([]);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
-  const structure = structures.find(s => s.id === structureId);
+  const structure = structures.find(s => generateSlug(s.name) === structureSlug);
 
   // Calculate average rating from user reviews only
   const averageRating = userReviews.length > 0
@@ -40,18 +41,18 @@ const StructurePage: React.FC = () => {
 
   // Structures similaires (même catégorie, différent id)
   const similarStructures = structures
-    .filter(s => s.category === structure?.category && s.id !== structureId && s.available)
+    .filter(s => s.category === structure?.category && s.id !== structure?.id && s.available)
     .slice(0, 3);
 
   const allImages = structure ? [structure.image, ...(structure.additionalImages || [])].filter(Boolean) : [];
 
   // Load user reviews from localStorage
   useEffect(() => {
-    const savedReviews = localStorage.getItem(`reviews-${structureId}`);
+    const savedReviews = localStorage.getItem(`reviews-${structureSlug}`);
     if (savedReviews) {
       setUserReviews(JSON.parse(savedReviews));
     }
-  }, [structureId]);
+  }, [structureSlug]);
 
   // Scroll to top on mount
   useEffect(() => {
@@ -60,7 +61,7 @@ const StructurePage: React.FC = () => {
     setImageLoaded(false);
     setShowReviewForm(false);
     setReviewSubmitted(false);
-  }, [structureId]);
+  }, [structureSlug]);
 
   const nextImage = () => {
     setImageLoaded(false);
@@ -109,7 +110,7 @@ const StructurePage: React.FC = () => {
 
     const updatedReviews = [newReview, ...userReviews];
     setUserReviews(updatedReviews);
-    localStorage.setItem(`reviews-${structureId}`, JSON.stringify(updatedReviews));
+    localStorage.setItem(`reviews-${structureSlug}`, JSON.stringify(updatedReviews));
 
     // Reset form
     setReviewName('');
@@ -170,12 +171,12 @@ const StructurePage: React.FC = () => {
         ogTitle={`${structure.name} - Fun Event`}
         ogDescription={structure.description.substring(0, 200)}
         ogImage={structure.image}
-        canonicalUrl={`https://fun-event.fr/structure/${structure.id}`}
+        canonicalUrl={`https://fun-event.fr/structure/${generateSlug(structure.name)}`}
         pageType="product"
         breadcrumbs={[
           { name: "Accueil", url: "https://fun-event.fr/" },
           { name: "Catalogue", url: "https://fun-event.fr/catalogue" },
-          { name: structure.name, url: `https://fun-event.fr/structure/${structure.id}` }
+          { name: structure.name, url: `https://fun-event.fr/structure/${generateSlug(structure.name)}` }
         ]}
         products={[{
           name: structure.name,
@@ -690,7 +691,7 @@ const StructurePage: React.FC = () => {
               {similarStructures.map((s) => (
                 <div
                   key={s.id}
-                  onClick={() => navigate(`/structure/${s.id}`)}
+                  onClick={() => navigate(`/structure/${generateSlug(s.name)}`)}
                   className="bg-white rounded-2xl shadow-xl overflow-hidden cursor-pointer group hover:shadow-2xl transition-all hover:-translate-y-2"
                 >
                   <div className="relative h-48 overflow-hidden">

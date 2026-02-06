@@ -5,6 +5,7 @@ const departments = [
   {
     code: '75',
     name: 'Paris',
+    slug: 'paris',
     fullName: 'Paris',
     cities: 1,
     color: 'from-blue-500 to-blue-600',
@@ -13,6 +14,7 @@ const departments = [
   {
     code: '77',
     name: 'Seine-et-Marne',
+    slug: 'seine-et-marne',
     fullName: 'Seine-et-Marne',
     cities: 229,
     color: 'from-orange-500 to-orange-600',
@@ -21,6 +23,7 @@ const departments = [
   {
     code: '78',
     name: 'Yvelines',
+    slug: 'yvelines',
     fullName: 'Yvelines',
     cities: 143,
     color: 'from-green-500 to-green-600',
@@ -29,6 +32,7 @@ const departments = [
   {
     code: '91',
     name: 'Essonne',
+    slug: 'essonne',
     fullName: 'Essonne',
     cities: 131,
     color: 'from-purple-500 to-purple-600',
@@ -37,6 +41,7 @@ const departments = [
   {
     code: '92',
     name: 'Hauts-de-Seine',
+    slug: 'hauts-de-seine',
     fullName: 'Hauts-de-Seine',
     cities: 36,
     color: 'from-pink-500 to-pink-600',
@@ -45,6 +50,7 @@ const departments = [
   {
     code: '93',
     name: 'Seine-Saint-Denis',
+    slug: 'seine-saint-denis',
     fullName: 'Seine-Saint-Denis',
     cities: 40,
     color: 'from-indigo-500 to-indigo-600',
@@ -53,6 +59,7 @@ const departments = [
   {
     code: '94',
     name: 'Val-de-Marne',
+    slug: 'val-de-marne',
     fullName: 'Val-de-Marne',
     cities: 47,
     color: 'from-teal-500 to-teal-600',
@@ -61,6 +68,7 @@ const departments = [
   {
     code: '95',
     name: "Val-d'Oise",
+    slug: 'val-d-oise',
     fullName: "Val-d'Oise",
     cities: 99,
     color: 'from-cyan-500 to-cyan-600',
@@ -101,7 +109,7 @@ export default function DepartmentsSection() {
           {departments.map((dept) => (
             <Link
               key={dept.code}
-              to={`/location/${dept.code}`}
+              to={`/location/${dept.slug}`}
               className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
             >
               {/* Background Gradient */}

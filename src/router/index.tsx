@@ -92,7 +92,7 @@ export const router = createBrowserRouter([
 
       // Pages départements (8 routes dynamiques)
       {
-        path: 'location/:departmentCode',
+        path: 'location/:departmentSlug',
         element: <LocalSEOPage />,
         loader: departmentLoader,
       },
@@ -106,7 +106,7 @@ export const router = createBrowserRouter([
 
       // Pages structures
       {
-        path: 'structure/:structureId',
+        path: 'structure/:structureSlug',
         element: <StructurePage />,
       },
 

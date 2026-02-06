@@ -2,9 +2,21 @@ import type { LoaderFunctionArgs } from 'react-router-dom';
 import { departmentsData } from '../../data/generated/departments-data';
 import { citiesData, citySlugs } from '../../data/generated/cities-data';
 
-export async function departmentLoader({ params }: LoaderFunctionArgs) {
-  const { departmentCode } = params;
+// Build a lookup: slug → department code
+const slugToCode: Record<string, string> = {};
+for (const [code, dept] of Object.entries(departmentsData)) {
+  slugToCode[dept.slug] = code;
+}
 
+export async function departmentLoader({ params }: LoaderFunctionArgs) {
+  const { departmentSlug } = params;
+
+  if (!departmentSlug) {
+    throw new Response('Département non trouvé', { status: 404 });
+  }
+
+  // Find department by slug
+  const departmentCode = slugToCode[departmentSlug];
   if (!departmentCode || !departmentsData[departmentCode]) {
     throw new Response('Département non trouvé', { status: 404 });
   }
@@ -16,12 +28,11 @@ export async function departmentLoader({ params }: LoaderFunctionArgs) {
     .map(slug => citiesData[slug])
     .filter(city => city.departmentCode === departmentCode)
     .sort((a, b) => {
-      // Extraire le nombre de la population (format: "107,221 habitants")
       const popA = parseInt(a.population.replace(/[^\d]/g, ''));
       const popB = parseInt(b.population.replace(/[^\d]/g, ''));
       return popB - popA;
     })
-    .slice(0, 50); // Top 50 villes par population
+    .slice(0, 50);
 
   return { department, cities };
 }

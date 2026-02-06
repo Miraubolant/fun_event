@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useLoaderData, Link } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { useLoaderData, Link, useNavigate } from 'react-router-dom';
 import { MapPin, Phone, MessageCircle, Star, Shield, Truck, Clock, ArrowRight, CheckCircle, Search } from 'lucide-react';
 import SEOHead from './SEOHead';
 import { useStructures } from '../contexts/StructuresContext';
@@ -10,7 +10,21 @@ import type { DepartmentData, CityData } from '../types';
 export default function LocalSEOPage() {
   const { department, cities } = useLoaderData() as { department: DepartmentData; cities: CityData[] };
   const { structures } = useStructures();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const availableStructures = structures.filter(s => s.available).slice(0, 6);
 
@@ -24,6 +38,11 @@ export default function LocalSEOPage() {
     );
   });
 
+  // Suggestions pour le dropdown (max 8)
+  const suggestions = searchQuery.trim().length >= 2
+    ? filteredCities.slice(0, 8)
+    : [];
+
   const pageTitle = `Location Structures Gonflables ${department.name} (${department.code}) | Fun Event`;
   const pageDescription = `Location de structures gonflables premium en ${department.fullName}. Châteaux gonflables, toboggans, jeux pour anniversaires et événements. Livraison gratuite et installation incluse.`;
 
@@ -35,18 +54,18 @@ export default function LocalSEOPage() {
         keywords={`location structures gonflables ${department.name}, château gonflable ${department.code}, toboggan gonflable ${department.name}, location jeux gonflables ${department.fullName}, anniversaire enfant ${department.name}`}
         ogTitle={`Location Structures Gonflables ${department.name} - Fun Event`}
         ogDescription={pageDescription}
-        canonicalUrl={`https://funevent.fr/location/${department.code}`}
+        canonicalUrl={`https://funevent.fr/location/${department.slug}`}
         pageType="catalog"
         breadcrumbs={[
           { name: "Accueil", url: "https://funevent.fr/" },
-          { name: `Location ${department.name}`, url: `https://funevent.fr/location/${department.code}` }
+          { name: `Location ${department.name}`, url: `https://funevent.fr/location/${department.slug}` }
         ]}
         structuredData={{
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
           "name": `Fun Event - Location Structures Gonflables ${department.name}`,
           "description": pageDescription,
-          "url": `https://funevent.fr/location/${department.code}`,
+          "url": `https://funevent.fr/location/${department.slug}`,
           "telephone": "+33663528072",
           "email": "contact@funevent.fr",
           "priceRange": "EUR",
@@ -90,8 +109,8 @@ export default function LocalSEOPage() {
             {department.description}
           </p>
 
-          {/* Search Bar - Integrated in Hero */}
-          <div className="max-w-3xl mx-auto">
+          {/* Search Bar with Autocomplete */}
+          <div className="max-w-3xl mx-auto" ref={searchRef}>
             <div className="relative group">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-orange-500 rounded-3xl blur-xl opacity-20 group-hover:opacity-30 transition-opacity" />
               <div className="relative bg-white rounded-3xl shadow-2xl p-2">
@@ -100,13 +119,19 @@ export default function LocalSEOPage() {
                   <input
                     type="text"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setShowDropdown(e.target.value.trim().length >= 2);
+                    }}
+                    onFocus={() => {
+                      if (searchQuery.trim().length >= 2) setShowDropdown(true);
+                    }}
                     placeholder="Rechercher une ville ou un code postal..."
                     className="w-full pl-16 pr-32 py-5 text-lg font-medium rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                   />
                   {searchQuery ? (
                     <button
-                      onClick={() => setSearchQuery('')}
+                      onClick={() => { setSearchQuery(''); setShowDropdown(false); }}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium text-sm transition-colors"
                     >
                       Effacer
@@ -117,16 +142,49 @@ export default function LocalSEOPage() {
                     </div>
                   )}
                 </div>
+
+                {/* Dropdown Autocomplete */}
+                {showDropdown && suggestions.length > 0 && (
+                  <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50">
+                    <div className="p-2 text-xs text-gray-500 font-medium px-4 pt-3">
+                      {filteredCities.length} ville{filteredCities.length > 1 ? 's' : ''} trouvée{filteredCities.length > 1 ? 's' : ''}
+                    </div>
+                    {suggestions.map((city) => (
+                      <button
+                        key={city.slug}
+                        onClick={() => {
+                          setShowDropdown(false);
+                          setSearchQuery('');
+                          navigate(`/ville/${city.slug}`);
+                        }}
+                        className="w-full flex items-center gap-4 px-4 py-3 hover:bg-blue-50 transition-colors text-left"
+                      >
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                          <MapPin className="w-5 h-5 text-white" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-gray-900 truncate">{city.name}</p>
+                          <p className="text-sm text-gray-500">{city.postalCode} - {city.population}</p>
+                        </div>
+                        <ArrowRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                      </button>
+                    ))}
+                    {filteredCities.length > 8 && (
+                      <div className="px-4 py-3 bg-gray-50 text-center text-sm text-gray-600 border-t border-gray-100">
+                        +{filteredCities.length - 8} autres villes
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* No results */}
+                {showDropdown && searchQuery.trim().length >= 2 && suggestions.length === 0 && (
+                  <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 p-6 text-center z-50">
+                    <p className="text-gray-500">Aucune ville trouvée pour "{searchQuery}"</p>
+                  </div>
+                )}
               </div>
             </div>
-            {searchQuery && (
-              <div className="mt-4 text-center">
-                <p className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
-                  <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-                  <span className="font-bold">{filteredCities.length}</span> ville{filteredCities.length > 1 ? 's' : ''} trouvée{filteredCities.length > 1 ? 's' : ''}
-                </p>
-              </div>
-            )}
           </div>
         </div>
 

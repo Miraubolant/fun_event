@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Play, Star, Shield, Truck, Clock, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
 import SEOHead from './SEOHead';
+import { generateSlug } from '../utils/generateSlug';
 
 const HeroModern: React.FC = () => {
   const navigate = useNavigate();
@@ -31,8 +32,8 @@ const HeroModern: React.FC = () => {
   };
 
   // Navigate to structure page
-  const navigateToStructure = (structureId: string) => {
-    navigate(`/structure/${structureId}`);
+  const navigateToStructure = (structureName: string) => {
+    navigate(`/structure/${generateSlug(structureName)}`);
   };
 
   return (
@@ -151,7 +152,7 @@ const HeroModern: React.FC = () => {
               {availableStructures.map((structure, index) => (
                 <div
                   key={structure.id}
-                  onClick={() => navigateToStructure(structure.id)}
+                  onClick={() => navigateToStructure(structure.name)}
                   className={`group relative bg-white rounded-3xl overflow-hidden border border-gray-200 cursor-pointer hover:scale-[1.03] transition-all duration-500 shadow-lg hover:shadow-2xl ${
                     index === 0 ? 'lg:col-span-2 lg:row-span-2' : ''
                   }`}
@@ -194,7 +195,7 @@ const HeroModern: React.FC = () => {
               {availableStructures.slice(0, 4).map((structure) => (
                 <div
                   key={structure.id}
-                  onClick={() => navigateToStructure(structure.id)}
+                  onClick={() => navigateToStructure(structure.name)}
                   className="group relative bg-white rounded-3xl overflow-hidden border border-gray-200 cursor-pointer hover:scale-[1.03] transition-all duration-500 shadow-lg hover:shadow-2xl"
                 >
                   <div className="aspect-[4/3] overflow-hidden">
@@ -235,7 +236,7 @@ const HeroModern: React.FC = () => {
                       className="w-full flex-shrink-0 px-2"
                     >
                       <div
-                        onClick={() => navigateToStructure(structure.id)}
+                        onClick={() => navigateToStructure(structure.name)}
                         className="relative bg-white rounded-3xl overflow-hidden border border-gray-200 cursor-pointer shadow-lg"
                       >
                         <div className="aspect-[4/3] overflow-hidden">

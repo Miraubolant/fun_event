@@ -27,7 +27,7 @@ export default function CityPage() {
         canonicalUrl={`https://funevent.fr/ville/${city.slug}`}
         breadcrumbs={[
           { name: "Accueil", url: "https://funevent.fr/" },
-          { name: city.department, url: `https://funevent.fr/location/${city.departmentCode}` },
+          { name: city.department, url: `https://funevent.fr/location/${city.departmentSlug}` },
           { name: city.name, url: `https://funevent.fr/ville/${city.slug}` }
         ]}
         structuredData={{

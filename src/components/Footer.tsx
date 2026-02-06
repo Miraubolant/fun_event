@@ -35,14 +35,14 @@ const Footer: React.FC = () => {
   ];
 
   const departments = [
-    { path: '/location/75', label: 'Paris (75)' },
-    { path: '/location/77', label: 'Seine-et-Marne (77)' },
-    { path: '/location/78', label: 'Yvelines (78)' },
-    { path: '/location/91', label: 'Essonne (91)' },
-    { path: '/location/92', label: 'Hauts-de-Seine (92)' },
-    { path: '/location/93', label: 'Seine-Saint-Denis (93)' },
-    { path: '/location/94', label: 'Val-de-Marne (94)' },
-    { path: '/location/95', label: 'Val-d\'Oise (95)' }
+    { path: '/location/paris', label: 'Paris (75)' },
+    { path: '/location/seine-et-marne', label: 'Seine-et-Marne (77)' },
+    { path: '/location/yvelines', label: 'Yvelines (78)' },
+    { path: '/location/essonne', label: 'Essonne (91)' },
+    { path: '/location/hauts-de-seine', label: 'Hauts-de-Seine (92)' },
+    { path: '/location/seine-saint-denis', label: 'Seine-Saint-Denis (93)' },
+    { path: '/location/val-de-marne', label: 'Val-de-Marne (94)' },
+    { path: '/location/val-d-oise', label: 'Val-d\'Oise (95)' }
   ];
 
   return (
