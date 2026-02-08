@@ -25,7 +25,7 @@ const Catalog: React.FC = () => {
     if (!s.available) return false;
     if (activeCategory === 'tous') return true;
     if (s.category !== activeCategory) return false;
-    if (activeSubcategory && s.subcategory !== activeSubcategory) return false;
+    if (activeSubcategory && s.subcategory_id !== activeSubcategory) return false;
     return true;
   }).sort((a, b) => (a.order || 1) - (b.order || 1));
 
