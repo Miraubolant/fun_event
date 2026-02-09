@@ -34,7 +34,7 @@ async function generateSitemap() {
     ? departmentSlugMatches.map(match => match.match(/"slug":\s*"([a-z0-9-]+)"/)?.[1]).filter(Boolean) as string[]
     : [];
 
-  const baseUrl = 'https://funevent.fr';
+  const baseUrl = 'https://fun-event.fr';
   const today = new Date().toISOString().split('T')[0];
 
   // URLs statiques avec priorités
