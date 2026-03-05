@@ -26,9 +26,8 @@ const Header: React.FC = () => {
 
   const menuItems = [
     { path: '/', label: 'Accueil' },
-    { path: '/catalogue', label: 'Catalogue' },
-    { path: '/galerie', label: 'Galerie' },
-    { path: '/blog', label: 'Blog' },
+    { path: '/catalogue', label: 'Nos structures et animations' },
+    { path: '/galerie', label: 'Nos animations' },
     { path: '/faq', label: 'FAQ' },
     { path: '/contact', label: 'Contact' },
   ].concat(isAdmin ? [{ path: '/admin', label: 'Admin' }] : []);

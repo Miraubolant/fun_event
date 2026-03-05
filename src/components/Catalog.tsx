@@ -104,11 +104,11 @@ const Catalog: React.FC = () => {
         keywords="catalogue structures gonflables, château gonflable location Paris, toboggan gonflable géant, parcours aventure gonflable, jeux aquatiques enfant, location matériel animation Île-de-France"
         ogTitle="Catalogue Premium - Structures Gonflables Fun Event"
         ogDescription="Plus de 20 structures gonflables premium pour tous les âges. Châteaux, toboggans, parcours aventure. Livraison gratuite en Île-de-France."
-        canonicalUrl="https://funevent.fr/catalogue"
+        canonicalUrl="https://fun-event.fr/catalogue"
         pageType="catalog"
         breadcrumbs={[
-          { name: "Accueil", url: "https://funevent.fr/" },
-          { name: "Catalogue", url: "https://funevent.fr/catalogue" }
+          { name: "Accueil", url: "https://fun-event.fr/" },
+          { name: "Catalogue", url: "https://fun-event.fr/catalogue" }
         ]}
         products={filteredStructures.slice(0, 10).map(structure => ({
           name: structure.name,
@@ -354,7 +354,7 @@ const Catalog: React.FC = () => {
                 />
                 <div className="absolute top-4 right-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-2xl border border-white/20 backdrop-blur-sm">
                   <span itemProp="offers" itemScope itemType="https://schema.org/Offer">
-                    {structure.customPricing ? 'Prix sur Devis' : `${structure.price}€`}
+                    {structure.customPricing ? 'Prix sur Devis' : `À partir de ${structure.price}€`}
                   </span>
                 </div>
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-700 flex items-center justify-center backdrop-blur-0 group-hover:backdrop-blur-sm">

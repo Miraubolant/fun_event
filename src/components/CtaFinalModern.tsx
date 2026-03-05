@@ -27,12 +27,12 @@ const CtaFinalModern: React.FC = () => {
               Prêt à créer des
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-600">
-                souvenirs magiques ?
+                moments inoubliables ?
               </span>
             </h2>
 
             <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              Rejoignez les <strong className="text-gray-900">500+ familles et entreprises</strong> qui nous ont fait confiance pour leurs événements en Île-de-France.
+              Rejoignez les <strong className="text-gray-900">78+ familles et entreprises</strong> qui nous ont fait confiance pour leurs événements en Île-de-France.
             </p>
 
             {/* Benefits */}

@@ -90,11 +90,11 @@ export default function DepartmentsSection() {
 
           <h2 className="text-4xl md:text-5xl font-black mb-6">
             <span className="bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-              Livraison gratuite dans toute
+              Livraison et installation en
             </span>
             <br />
             <span className="bg-gradient-to-r from-blue-500 to-orange-500 bg-clip-text text-transparent">
-              l'Île-de-France
+              Île-de-France et régions voisines
             </span>
           </h2>
 
@@ -174,7 +174,7 @@ export default function DepartmentsSection() {
                 <span className="text-2xl">⚡</span>
               </div>
               <div className="text-left">
-                <p className="font-bold text-gray-900">Devis en 48h</p>
+                <p className="font-bold text-gray-900">Devis en 24h</p>
                 <p className="text-sm text-gray-600">Réponse rapide garantie</p>
               </div>
             </div>

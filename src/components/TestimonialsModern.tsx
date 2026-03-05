@@ -1,77 +1,71 @@
 import React, { useState, useEffect } from 'react';
-import { Star, Quote, ChevronLeft, ChevronRight, Play } from 'lucide-react';
+import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Testimonial {
   id: number;
   name: string;
-  location: string;
   rating: number;
   text: string;
-  eventType: string;
+  date: string;
   avatar: string;
-  structure?: string;
 }
 
 const testimonials: Testimonial[] = [
   {
     id: 1,
-    name: "Nadia Bensaid",
-    location: "Aubervilliers (93)",
+    name: "Doul Berete",
     rating: 5,
-    text: "Service impeccable ! Le château gonflable a fait le bonheur de tous les enfants. Installation rapide et équipe très professionnelle. Je recommande vivement Fun Event pour vos événements.",
-    eventType: "Anniversaire enfant",
-    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-    structure: "Château Enchanté"
+    text: "On a travaillé cet été avec cette entreprise et l'expérience fut incroyable grâce au professionnalisme de l'équipe de Merwane. Une équipe ponctuelle, flexible et en plus ils sont très abordable par rapport aux prix du marché. À faire !",
+    date: "Juillet 2025",
+    avatar: "https://ui-avatars.com/api/?name=Doul+Berete&background=3B82F6&color=fff&size=100"
   },
   {
     id: 2,
-    name: "Karim Hamidi",
-    location: "Vitry-sur-Seine (94)",
+    name: "Deborah Dabezies",
     rating: 5,
-    text: "Nous avons loué un toboggan géant pour la fête de notre entreprise. Le succès était au rendez-vous ! Très bon rapport qualité-prix et livraison ponctuelle.",
-    eventType: "Événement entreprise",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-    structure: "Toboggan Géant"
+    text: "Expérience positive du début à la fin de la prestation. Professionnels, réactif etc.. Une journée où les enfants sont heureux ! N'hésitez pas !",
+    date: "Octobre 2025",
+    avatar: "https://ui-avatars.com/api/?name=Deborah+D&background=F97316&color=fff&size=100"
   },
   {
     id: 3,
-    name: "Fatima Khelifi",
-    location: "Sarcelles (95)",
+    name: "Inès Mir",
     rating: 5,
-    text: "Deuxième fois que nous faisons appel à Fun Event et toujours aussi satisfaits. Les structures sont propres, sécurisées et les enfants adorent. Merci !",
-    eventType: "Fête de quartier",
-    avatar: "https://randomuser.me/api/portraits/women/68.jpg",
-    structure: "Parcours d'obstacles"
+    text: "Un immense merci à Fun Event pour leur prestation lors de l'anniversaire de ma sœur ! L'animateur était formidable : ponctuel, souriant, professionnel et plein d'énergie.",
+    date: "Avril 2025",
+    avatar: "https://ui-avatars.com/api/?name=Ines+Mir&background=10B981&color=fff&size=100"
   },
   {
     id: 4,
-    name: "Rachid Bouaziz",
-    location: "Cergy (95)",
+    name: "Kenza Allili",
     rating: 5,
-    text: "Organisation parfaite pour le mariage de ma fille. Le parcours d'obstacles a occupé les enfants pendant des heures. Personnel très sympathique et à l'écoute.",
-    eventType: "Mariage",
-    avatar: "https://randomuser.me/api/portraits/men/75.jpg",
-    structure: "Combo Mariage"
+    text: "Super équipe pour les événements, entreprise très professionnel, matériel de qualité, mise en avant de la sécurité, une merveilleuse journée grâce à vous ! Merci pour votre gentillesse et professionnalisme !!",
+    date: "Juin 2025",
+    avatar: "https://ui-avatars.com/api/?name=Kenza+A&background=8B5CF6&color=fff&size=100"
   },
   {
     id: 5,
-    name: "Samira Diallo",
-    location: "Bondy (93)",
+    name: "Diatou Ngom",
     rating: 5,
-    text: "Super expérience ! La structure aquatique était géniale pour l'été. Les enfants se sont amusés comme des fous. Je recommande à 100%.",
-    eventType: "Fête estivale",
-    avatar: "https://randomuser.me/api/portraits/women/26.jpg",
-    structure: "Aqua Splash"
+    text: "Super prestataire ! Je vous le recommande grandement pour vos événements !!",
+    date: "Juin 2025",
+    avatar: "https://ui-avatars.com/api/?name=Diatou+N&background=EC4899&color=fff&size=100"
   },
   {
     id: 6,
-    name: "Mehdi Lahlou",
-    location: "Aulnay-sous-Bois (93)",
+    name: "Geoffrey Pedusselle",
     rating: 5,
-    text: "Troisième anniversaire organisé avec Fun Event. Toujours au top ! Les structures sont variées et adaptées à tous les âges. Service client réactif.",
-    eventType: "Anniversaire",
-    avatar: "https://randomuser.me/api/portraits/men/46.jpg",
-    structure: "Multi-activités"
+    text: "Service au top ! Je recommande à 100% ! Sérieux et professionnel à la fois. Très bon rapport qualité prix.",
+    date: "Juin 2025",
+    avatar: "https://ui-avatars.com/api/?name=Geoffrey+P&background=14B8A6&color=fff&size=100"
+  },
+  {
+    id: 7,
+    name: "Yasmimi Houari",
+    rating: 5,
+    text: "Très bon service de qualité !",
+    date: "Juin 2025",
+    avatar: "https://ui-avatars.com/api/?name=Yasmimi+H&background=F59E0B&color=fff&size=100"
   }
 ];
 
@@ -119,16 +113,17 @@ const TestimonialsModern: React.FC = () => {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <span className="inline-block px-4 py-2 bg-yellow-100 text-yellow-700 text-sm font-semibold rounded-full mb-4">
-            Avis vérifiés
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 text-yellow-700 text-sm font-semibold rounded-full mb-4">
+            <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4" />
+            Avis Google
           </span>
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
             Ce que disent nos <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-orange-500">clients</span>
           </h2>
           <div className="flex items-center justify-center gap-4">
             <div className="flex">{renderStars(5)}</div>
-            <span className="text-2xl font-bold text-gray-900">4.9/5</span>
-            <span className="text-gray-500">basé sur 127 avis</span>
+            <span className="text-2xl font-bold text-gray-900">5/5</span>
+            <span className="text-gray-500">basé sur 7 avis Google</span>
           </div>
         </div>
 
@@ -170,9 +165,9 @@ const TestimonialsModern: React.FC = () => {
                 "{testimonials[activeIndex].text}"
               </p>
 
-              {/* Event type badge */}
+              {/* Date badge */}
               <span className="inline-block px-4 py-2 bg-orange-100 text-orange-700 text-sm font-semibold rounded-full mb-6">
-                {testimonials[activeIndex].eventType}
+                {testimonials[activeIndex].date}
               </span>
 
               {/* Author */}
@@ -184,7 +179,7 @@ const TestimonialsModern: React.FC = () => {
                 />
                 <div className="text-left">
                   <p className="font-bold text-gray-900 text-lg">{testimonials[activeIndex].name}</p>
-                  <p className="text-gray-500">{testimonials[activeIndex].location}</p>
+                  <p className="text-gray-500 text-sm">Avis Google</p>
                 </div>
               </div>
             </div>
@@ -235,7 +230,7 @@ const TestimonialsModern: React.FC = () => {
                     {testimonial.name}
                   </p>
                   <p className={`text-sm ${index === activeIndex ? 'text-blue-100' : 'text-gray-500'}`}>
-                    {testimonial.eventType}
+                    {testimonial.date}
                   </p>
                 </div>
               </div>

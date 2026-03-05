@@ -31,7 +31,6 @@ const HeroModern: React.FC = () => {
     setCurrentSlide((prev) => (prev - 1 + availableStructures.length) % availableStructures.length);
   };
 
-  // Navigate to structure page
   const navigateToStructure = (structureName: string) => {
     navigate(`/structure/${generateSlug(structureName)}`);
   };
@@ -39,54 +38,55 @@ const HeroModern: React.FC = () => {
   return (
     <>
       <SEOHead
-        title="Fun Event - Location Structures Gonflables Premium Île-de-France | Devis Gratuit"
-        description="Spécialiste location structures gonflables premium en Île-de-France. Châteaux gonflables, toboggans géants, jeux aquatiques. Livraison gratuite Paris 75-95. Devis sous 24h."
-        keywords="location structures gonflables Paris, château gonflable Île-de-France, toboggan gonflable géant, jeux gonflables anniversaire, animation enfant Paris"
-        canonicalUrl="https://funevent.fr/"
+        title="Fun Event - Location Structures Gonflables Île-de-France | Devis Gratuit"
+        description="Location de structures gonflables, photobooth et animations en Île-de-France. Livraison et installation incluses. Devis gratuit sous 24h."
+        keywords="location structures gonflables Paris, château gonflable Île-de-France, toboggan gonflable géant, animation événement, photobooth"
+        canonicalUrl="https://fun-event.fr/"
         pageType="home"
       />
 
-      {/* Hero Principal */}
-      <section className="relative bg-gradient-to-br from-white via-blue-50/30 to-orange-50/30 overflow-hidden">
-        {/* Fond animé */}
+      {/* Hero Principal avec image de fond */}
+      <section className="relative min-h-[85vh] flex items-center overflow-hidden">
+        {/* Image de fond */}
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:64px_64px]"></div>
+          <img
+            src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?auto=format&fit=crop&w=1920&q=80"
+            alt="Structure gonflable colorée"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30"></div>
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
-          {/* Header Section */}
-          <div className="text-center mb-12">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="max-w-3xl">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 rounded-full border border-green-200 mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/15 backdrop-blur-sm rounded-full border border-white/20 mb-8">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
               </span>
-              <span className="text-sm font-medium text-green-700">Disponible 7j/7 en Île-de-France</span>
+              <span className="text-sm font-medium text-white">Disponible 7j/7 en Île-de-France</span>
             </div>
 
             {/* Titre principal */}
-            <h1 className="text-5xl md:text-7xl font-black leading-tight text-gray-900 mb-6">
+            <h1 className="text-5xl md:text-7xl font-black leading-tight text-white mb-6">
               Transformez vos
               <span className="relative mx-3">
-                <span className="bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 bg-clip-text text-transparent">
-                  Événements
+                <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                  événements
                 </span>
               </span>
               <br />
-              en <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">Souvenirs Magiques</span>
+              en <span className="bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent">moments inoubliables</span>
             </h1>
 
             {/* Description */}
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8">
-              Louez des <strong className="text-gray-900">structures gonflables premium</strong> pour créer des moments inoubliables.
-              Anniversaires, mariages, événements d'entreprise... Livraison et installation incluses.
+            <p className="text-xl text-white/90 max-w-2xl leading-relaxed mb-8">
+              Location de structures gonflables, photobooth et animations pour tous vos événements.
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <div className="flex flex-col sm:flex-row gap-4 mb-10">
               <Link
                 to="/devis"
                 className="group relative px-10 py-5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-lg rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/30 hover:-translate-y-1"
@@ -100,215 +100,197 @@ const HeroModern: React.FC = () => {
 
               <Link
                 to="/catalogue"
-                className="group px-10 py-5 bg-white text-gray-800 font-bold text-lg rounded-2xl border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2 shadow-lg"
+                className="group px-10 py-5 bg-white/15 backdrop-blur-sm text-white font-bold text-lg rounded-2xl border-2 border-white/30 hover:bg-white/25 transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2"
               >
-                <Play className="w-5 h-5 text-blue-500" />
-                Voir le Catalogue Complet
+                <Play className="w-5 h-5" />
+                Découvrir nos structures
               </Link>
             </div>
 
             {/* Trust indicators */}
-            <div className="flex flex-wrap items-center justify-center gap-6">
-              <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm px-5 py-3 rounded-2xl shadow-lg border border-gray-100">
-                <div className="flex -space-x-3">
-                  {[
-                    'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=face',
-                    'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop&crop=face',
-                    'https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=100&h=100&fit=crop&crop=face',
-                    'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face',
-                    'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=100&h=100&fit=crop&crop=face'
-                  ].map((url, i) => (
-                    <img
-                      key={i}
-                      src={url}
-                      alt={`Client satisfait ${i + 1}`}
-                      className="w-10 h-10 rounded-full border-3 border-white object-cover shadow-md"
-                    />
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex items-center gap-3 bg-white/15 backdrop-blur-sm px-5 py-3 rounded-2xl border border-white/20">
+                <div className="flex">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                   ))}
                 </div>
-                <div className="text-sm text-left">
-                  <div className="flex items-center gap-1">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                    <span className="text-gray-900 font-bold ml-1">4.9/5</span>
-                  </div>
-                  <span className="text-gray-500">+500 clients satisfaits</span>
+                <div className="text-sm text-white">
+                  <span className="font-bold">5/5</span> - 7 avis Google
                 </div>
+              </div>
+              <div className="flex items-center gap-2 bg-white/15 backdrop-blur-sm px-5 py-3 rounded-2xl border border-white/20">
+                <span className="text-sm font-medium text-white">100% clients satisfaits</span>
               </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Showcase Structures - Full Width */}
-        <div className="relative pb-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-8">
-              Découvrez nos <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">Structures Premium</span>
-            </h2>
+      {/* Showcase Structures */}
+      <section className="py-16 bg-gradient-to-br from-white via-blue-50/30 to-orange-50/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-8">
+            Découvrir nos <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">structures gonflables</span>
+          </h2>
 
-            {/* Desktop Grid - 6 structures */}
-            <div className="hidden lg:grid grid-cols-3 gap-6">
-              {availableStructures.map((structure, index) => (
-                <div
-                  key={structure.id}
-                  onClick={() => navigateToStructure(structure.name)}
-                  className={`group relative bg-white rounded-3xl overflow-hidden border border-gray-200 cursor-pointer hover:scale-[1.03] transition-all duration-500 shadow-lg hover:shadow-2xl ${
-                    index === 0 ? 'lg:col-span-2 lg:row-span-2' : ''
-                  }`}
-                >
-                  <div className={`overflow-hidden ${index === 0 ? 'aspect-[16/10]' : 'aspect-[4/3]'}`}>
-                    <img
-                      src={structure.image}
-                      alt={structure.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    />
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
-                  <div className="absolute bottom-0 left-0 right-0 p-5">
-                    <div className="flex items-end justify-between">
-                      <div>
-                        <h3 className={`font-bold text-white mb-1 ${index === 0 ? 'text-2xl' : 'text-lg'}`}>
-                          {structure.name}
-                        </h3>
-                        <p className="text-white/80 text-sm">{structure.capacity} - {structure.age}</p>
-                      </div>
-                      <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-2 rounded-xl shadow-lg">
-                        <span className="text-white font-bold text-sm">
-                          {structure.customPricing ? 'Sur devis' : `${structure.price}€`}
-                        </span>
-                      </div>
+          {/* Desktop Grid - 6 structures */}
+          <div className="hidden lg:grid grid-cols-3 gap-6">
+            {availableStructures.map((structure, index) => (
+              <div
+                key={structure.id}
+                onClick={() => navigateToStructure(structure.name)}
+                className={`group relative bg-white rounded-3xl overflow-hidden border border-gray-200 cursor-pointer hover:scale-[1.03] transition-all duration-500 shadow-lg hover:shadow-2xl ${
+                  index === 0 ? 'lg:col-span-2 lg:row-span-2' : ''
+                }`}
+              >
+                <div className={`overflow-hidden ${index === 0 ? 'aspect-[16/10]' : 'aspect-[4/3]'}`}>
+                  <img
+                    src={structure.image}
+                    alt={structure.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-5">
+                  <div className="flex items-end justify-between">
+                    <div>
+                      <h3 className={`font-bold text-white mb-1 ${index === 0 ? 'text-2xl' : 'text-lg'}`}>
+                        {structure.name}
+                      </h3>
+                      <p className="text-white/80 text-sm">{structure.capacity} - {structure.age}</p>
                     </div>
-                  </div>
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-blue-500/20">
-                    <div className="w-14 h-14 bg-white shadow-xl rounded-full flex items-center justify-center">
-                      <ArrowRight className="w-7 h-7 text-blue-600" />
+                    <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-2 rounded-xl shadow-lg">
+                      <span className="text-white font-bold text-sm">
+                        {structure.customPricing ? 'Sur devis' : `À partir de ${structure.price}€`}
+                      </span>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {/* Tablet Grid - 4 structures */}
-            <div className="hidden md:grid lg:hidden grid-cols-2 gap-6">
-              {availableStructures.slice(0, 4).map((structure) => (
-                <div
-                  key={structure.id}
-                  onClick={() => navigateToStructure(structure.name)}
-                  className="group relative bg-white rounded-3xl overflow-hidden border border-gray-200 cursor-pointer hover:scale-[1.03] transition-all duration-500 shadow-lg hover:shadow-2xl"
-                >
-                  <div className="aspect-[4/3] overflow-hidden">
-                    <img
-                      src={structure.image}
-                      alt={structure.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    />
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-blue-500/20">
+                  <div className="w-14 h-14 bg-white shadow-xl rounded-full flex items-center justify-center">
+                    <ArrowRight className="w-7 h-7 text-blue-600" />
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
-                  <div className="absolute bottom-0 left-0 right-0 p-5">
-                    <div className="flex items-end justify-between">
-                      <div>
-                        <h3 className="text-lg font-bold text-white mb-1">{structure.name}</h3>
-                        <p className="text-white/80 text-sm">{structure.capacity}</p>
-                      </div>
-                      <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-3 py-1.5 rounded-xl shadow-lg">
-                        <span className="text-white font-bold text-sm">
-                          {structure.customPricing ? 'Sur devis' : `${structure.price}€`}
-                        </span>
-                      </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Tablet Grid - 4 structures */}
+          <div className="hidden md:grid lg:hidden grid-cols-2 gap-6">
+            {availableStructures.slice(0, 4).map((structure) => (
+              <div
+                key={structure.id}
+                onClick={() => navigateToStructure(structure.name)}
+                className="group relative bg-white rounded-3xl overflow-hidden border border-gray-200 cursor-pointer hover:scale-[1.03] transition-all duration-500 shadow-lg hover:shadow-2xl"
+              >
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img
+                    src={structure.image}
+                    alt={structure.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-5">
+                  <div className="flex items-end justify-between">
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-1">{structure.name}</h3>
+                      <p className="text-white/80 text-sm">{structure.capacity}</p>
+                    </div>
+                    <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-3 py-1.5 rounded-xl shadow-lg">
+                      <span className="text-white font-bold text-sm">
+                        {structure.customPricing ? 'Sur devis' : `À partir de ${structure.price}€`}
+                      </span>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
+          </div>
 
-            {/* Mobile Carousel */}
-            <div className="md:hidden relative">
-              <div className="overflow-hidden rounded-3xl">
-                <div
-                  className="flex transition-transform duration-500 ease-out"
-                  style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-                >
-                  {availableStructures.map((structure) => (
+          {/* Mobile Carousel */}
+          <div className="md:hidden relative">
+            <div className="overflow-hidden rounded-3xl">
+              <div
+                className="flex transition-transform duration-500 ease-out"
+                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+              >
+                {availableStructures.map((structure) => (
+                  <div
+                    key={structure.id}
+                    className="w-full flex-shrink-0 px-2"
+                  >
                     <div
-                      key={structure.id}
-                      className="w-full flex-shrink-0 px-2"
+                      onClick={() => navigateToStructure(structure.name)}
+                      className="relative bg-white rounded-3xl overflow-hidden border border-gray-200 cursor-pointer shadow-lg"
                     >
-                      <div
-                        onClick={() => navigateToStructure(structure.name)}
-                        className="relative bg-white rounded-3xl overflow-hidden border border-gray-200 cursor-pointer shadow-lg"
-                      >
-                        <div className="aspect-[4/3] overflow-hidden">
-                          <img
-                            src={structure.image}
-                            alt={structure.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
-                        <div className="absolute bottom-0 left-0 right-0 p-5">
-                          <div className="flex items-end justify-between">
-                            <div>
-                              <h3 className="text-xl font-bold text-white mb-1">{structure.name}</h3>
-                              <p className="text-white/80 text-sm">{structure.capacity}</p>
-                            </div>
-                            <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-2 rounded-xl shadow-lg">
-                              <span className="text-white font-bold">
-                                {structure.customPricing ? 'Sur devis' : `${structure.price}€`}
-                              </span>
-                            </div>
+                      <div className="aspect-[4/3] overflow-hidden">
+                        <img
+                          src={structure.image}
+                          alt={structure.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+                      <div className="absolute bottom-0 left-0 right-0 p-5">
+                        <div className="flex items-end justify-between">
+                          <div>
+                            <h3 className="text-xl font-bold text-white mb-1">{structure.name}</h3>
+                            <p className="text-white/80 text-sm">{structure.capacity}</p>
+                          </div>
+                          <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-2 rounded-xl shadow-lg">
+                            <span className="text-white font-bold">
+                              {structure.customPricing ? 'Sur devis' : `À partir de ${structure.price}€`}
+                            </span>
                           </div>
                         </div>
                       </div>
                     </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {availableStructures.length > 1 && (
+              <>
+                <button
+                  onClick={prevSlide}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white shadow-lg rounded-full flex items-center justify-center"
+                >
+                  <ChevronLeft className="w-6 h-6 text-gray-700" />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white shadow-lg rounded-full flex items-center justify-center"
+                >
+                  <ChevronRight className="w-6 h-6 text-gray-700" />
+                </button>
+
+                <div className="flex justify-center gap-2 mt-4">
+                  {availableStructures.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentSlide(index)}
+                      className={`w-2 h-2 rounded-full transition-all ${
+                        index === currentSlide ? 'bg-orange-500 w-6' : 'bg-gray-300'
+                      }`}
+                    />
                   ))}
                 </div>
-              </div>
+              </>
+            )}
+          </div>
 
-              {/* Navigation mobile */}
-              {availableStructures.length > 1 && (
-                <>
-                  <button
-                    onClick={prevSlide}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white shadow-lg rounded-full flex items-center justify-center"
-                  >
-                    <ChevronLeft className="w-6 h-6 text-gray-700" />
-                  </button>
-                  <button
-                    onClick={nextSlide}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white shadow-lg rounded-full flex items-center justify-center"
-                  >
-                    <ChevronRight className="w-6 h-6 text-gray-700" />
-                  </button>
-
-                  {/* Dots */}
-                  <div className="flex justify-center gap-2 mt-4">
-                    {availableStructures.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentSlide(index)}
-                        className={`w-2 h-2 rounded-full transition-all ${
-                          index === currentSlide ? 'bg-orange-500 w-6' : 'bg-gray-300'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* CTA Catalogue */}
-            <div className="text-center mt-10">
-              <Link
-                to="/catalogue"
-                className="inline-flex items-center gap-2 px-8 py-4 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
-                style={{ background: 'linear-gradient(to right, #0F97F6, #0B7BC9)' }}
-              >
-                Voir toutes nos structures
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            </div>
+          <div className="text-center mt-10">
+            <Link
+              to="/catalogue"
+              className="inline-flex items-center gap-2 px-8 py-4 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
+              style={{ background: 'linear-gradient(to right, #0F97F6, #0B7BC9)' }}
+            >
+              Voir toutes nos structures
+              <ArrowRight className="w-5 h-5" />
+            </Link>
           </div>
         </div>
       </section>
@@ -319,8 +301,8 @@ const HeroModern: React.FC = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
               { icon: Shield, title: 'Sécurité Certifiée', desc: 'Normes NF EN 14960', color: 'blue' },
-              { icon: Truck, title: 'Livraison Gratuite', desc: 'Toute Île-de-France', color: 'orange' },
-              { icon: Clock, title: 'Réponse 24h', desc: 'Devis ultra-rapide', color: 'green' },
+              { icon: Truck, title: 'Livraison & Installation', desc: 'Île-de-France et régions voisines', color: 'orange' },
+              { icon: Clock, title: 'Réponse sous 24h', desc: 'Devis rapide et gratuit', color: 'green' },
               { icon: Users, title: 'Service 7j/7', desc: 'Toujours disponible', color: 'purple' },
             ].map((item, index) => (
               <div key={index} className="group text-center">

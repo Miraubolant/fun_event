@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { TrendingUp, Users, Star, MapPin, Award, Shield, Clock, Truck } from 'lucide-react';
+import { TrendingUp, Users, Star, MapPin, Shield, Clock, Truck, Boxes } from 'lucide-react';
 
 const StatsSection: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [counts, setCounts] = useState({ events: 0, satisfaction: 0, cities: 0, years: 0 });
+  const [counts, setCounts] = useState({ events: 0, satisfaction: 0, cities: 0, structures: 0 });
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const stats = [
-    { icon: TrendingUp, value: 500, suffix: '+', label: 'Événements réalisés', description: 'en Île-de-France', color: 'blue' },
-    { icon: Star, value: 98, suffix: '%', label: 'Clients satisfaits', description: 'recommandent nos services', color: 'orange' },
-    { icon: MapPin, value: 100, suffix: '+', label: 'Villes desservies', description: 'livraison gratuite', color: 'green' },
-    { icon: Award, value: 5, suffix: ' ans', label: 'd\'expérience', description: 'à votre service', color: 'purple' },
+    { icon: TrendingUp, value: 78, suffix: '+', label: "Événements réalisés", description: 'en 2025', color: 'blue' },
+    { icon: Star, value: 100, suffix: '%', label: 'Clients satisfaits', description: 'recommandent nos services', color: 'orange' },
+    { icon: MapPin, value: 100, suffix: '+', label: 'Villes desservies', description: 'en Île-de-France', color: 'green' },
+    { icon: Boxes, value: 20, suffix: '+', label: 'Structures gonflables', description: 'à votre disposition', color: 'purple' },
   ];
 
   useEffect(() => {
@@ -37,19 +37,19 @@ const StatsSection: React.FC = () => {
     const steps = 60;
     const interval = duration / steps;
 
-    const targets = [500, 98, 100, 5];
+    const targets = [78, 100, 100, 20];
     let step = 0;
 
     const timer = setInterval(() => {
       step++;
       const progress = step / steps;
-      const easeProgress = 1 - Math.pow(1 - progress, 3); // Ease out cubic
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
 
       setCounts({
         events: Math.round(targets[0] * easeProgress),
         satisfaction: Math.round(targets[1] * easeProgress),
         cities: Math.round(targets[2] * easeProgress),
-        years: Math.round(targets[3] * easeProgress),
+        structures: Math.round(targets[3] * easeProgress),
       });
 
       if (step >= steps) {
@@ -60,7 +60,7 @@ const StatsSection: React.FC = () => {
     return () => clearInterval(timer);
   }, [isVisible]);
 
-  const countValues = [counts.events, counts.satisfaction, counts.cities, counts.years];
+  const countValues = [counts.events, counts.satisfaction, counts.cities, counts.structures];
 
   return (
     <section ref={sectionRef} className="py-24 relative overflow-hidden bg-white">
@@ -108,9 +108,9 @@ const StatsSection: React.FC = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
             { icon: Shield, text: 'Structures certifiées NF', subtext: 'Sécurité garantie', color: 'green' },
-            { icon: Truck, text: 'Livraison gratuite', subtext: 'Toute Île-de-France', color: 'blue' },
+            { icon: Truck, text: 'Livraison & Installation', subtext: 'Île-de-France et régions voisines', color: 'blue' },
             { icon: Clock, text: 'Service 7j/7', subtext: 'À votre écoute', color: 'orange' },
-            { icon: Star, text: 'Note 4.9/5', subtext: '127 avis vérifiés', color: 'yellow' },
+            { icon: Star, text: 'Note 5/5', subtext: '7 avis Google', color: 'yellow' },
           ].map((badge, index) => (
             <div
               key={index}
