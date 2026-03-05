@@ -9,11 +9,23 @@ const HeroModern: React.FC = () => {
   const navigate = useNavigate();
   const { structures } = useStructures();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [heroImageIndex, setHeroImageIndex] = useState(0);
 
   const availableStructures = structures
     .filter(s => s.available)
     .sort((a, b) => (a.order || 1) - (b.order || 1))
     .slice(0, 6);
+
+  const heroImages = availableStructures.map(s => s.image);
+
+  // Auto-slide pour l'image de fond du hero
+  useEffect(() => {
+    if (heroImages.length <= 1) return;
+    const interval = setInterval(() => {
+      setHeroImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
 
   // Auto-slide pour le carrousel mobile
   useEffect(() => {
@@ -47,13 +59,18 @@ const HeroModern: React.FC = () => {
 
       {/* Hero Principal avec image de fond */}
       <section className="relative min-h-[85vh] flex items-center overflow-hidden">
-        {/* Image de fond */}
+        {/* Images de fond défilantes */}
         <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?auto=format&fit=crop&w=1920&q=80"
-            alt="Structure gonflable colorée"
-            className="w-full h-full object-cover"
-          />
+          {heroImages.map((img, index) => (
+            <img
+              key={img}
+              src={img}
+              alt={`Structure gonflable ${index + 1}`}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+                index === heroImageIndex ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          ))}
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30"></div>
         </div>
 
