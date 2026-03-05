@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Play, Star, Shield, Truck, Clock, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
@@ -10,6 +10,8 @@ const HeroModern: React.FC = () => {
   const { structures } = useStructures();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [heroImageIndex, setHeroImageIndex] = useState(0);
+  const [prevHeroIndex, setPrevHeroIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const availableStructures = structures
     .filter(s => s.available)
@@ -18,16 +20,22 @@ const HeroModern: React.FC = () => {
 
   const heroImages = availableStructures.map(s => s.image);
 
-  // Auto-slide pour l'image de fond du hero
+  const transitionHero = useCallback(() => {
+    if (heroImages.length <= 1) return;
+    setPrevHeroIndex(heroImageIndex);
+    setIsTransitioning(true);
+    setHeroImageIndex((prev) => (prev + 1) % heroImages.length);
+    setTimeout(() => setIsTransitioning(false), 1200);
+  }, [heroImageIndex, heroImages.length]);
+
+  // Auto-slide hero background
   useEffect(() => {
     if (heroImages.length <= 1) return;
-    const interval = setInterval(() => {
-      setHeroImageIndex((prev) => (prev + 1) % heroImages.length);
-    }, 5000);
+    const interval = setInterval(transitionHero, 6000);
     return () => clearInterval(interval);
-  }, [heroImages.length]);
+  }, [transitionHero, heroImages.length]);
 
-  // Auto-slide pour le carrousel mobile
+  // Auto-slide mobile carousel
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % Math.max(1, availableStructures.length));
@@ -49,6 +57,45 @@ const HeroModern: React.FC = () => {
 
   return (
     <>
+      <style>{`
+        @keyframes heroScale {
+          from { transform: scale(1.0); }
+          to { transform: scale(1.08); }
+        }
+        @keyframes fadeSlideUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes shimmer {
+          0% { background-position: -200% center; }
+          100% { background-position: 200% center; }
+        }
+        .hero-img-active {
+          animation: heroScale 7s ease-out forwards;
+        }
+        .hero-img-prev {
+          animation: none;
+        }
+        .hero-fade-enter {
+          animation: fadeSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .hero-fade-delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .hero-fade-delay-2 { animation-delay: 0.25s; opacity: 0; }
+        .hero-fade-delay-3 { animation-delay: 0.4s; opacity: 0; }
+        .hero-fade-delay-4 { animation-delay: 0.55s; opacity: 0; }
+        .hero-progress {
+          animation: heroProgress 6s linear forwards;
+        }
+        @keyframes heroProgress {
+          from { width: 0%; }
+          to { width: 100%; }
+        }
+        .shimmer-text {
+          background-size: 200% auto;
+          animation: shimmer 3s linear infinite;
+        }
+      `}</style>
+
       <SEOHead
         title="Fun Event - Location Structures Gonflables Île-de-France | Devis Gratuit"
         description="Location de structures gonflables, photobooth et animations en Île-de-France. Livraison et installation incluses. Devis gratuit sous 24h."
@@ -57,67 +104,106 @@ const HeroModern: React.FC = () => {
         pageType="home"
       />
 
-      {/* Hero Principal avec image de fond */}
-      <section className="relative min-h-[85vh] flex items-center overflow-hidden">
-        {/* Images de fond défilantes */}
+      {/* ═══════════ HERO ═══════════ */}
+      <section className="relative min-h-[92vh] flex items-center overflow-hidden">
+
+        {/* Background images with Ken Burns */}
         <div className="absolute inset-0">
-          {heroImages.map((img, index) => (
-            <img
-              key={img}
-              src={img}
-              alt={`Structure gonflable ${index + 1}`}
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-                index === heroImageIndex ? 'opacity-100' : 'opacity-0'
-              }`}
-            />
-          ))}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30"></div>
+          {heroImages.length > 0 && (
+            <>
+              {/* Previous image (fading out) */}
+              {isTransitioning && (
+                <img
+                  key={`prev-${prevHeroIndex}`}
+                  src={heroImages[prevHeroIndex]}
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover hero-img-prev"
+                  style={{ zIndex: 1 }}
+                />
+              )}
+              {/* Active image (fading in + Ken Burns) */}
+              <img
+                key={`active-${heroImageIndex}`}
+                src={heroImages[heroImageIndex]}
+                alt={availableStructures[heroImageIndex]?.name || 'Structure gonflable'}
+                className={`absolute inset-0 w-full h-full object-cover hero-img-active transition-opacity duration-1000 ${
+                  isTransitioning ? 'opacity-0' : 'opacity-100'
+                }`}
+                style={{ zIndex: 2 }}
+                onLoad={(e) => {
+                  if (isTransitioning) {
+                    requestAnimationFrame(() => {
+                      (e.target as HTMLImageElement).style.opacity = '1';
+                    });
+                  }
+                }}
+              />
+            </>
+          )}
+
+          {/* Overlay gradient — diagonal for depth */}
+          <div
+            className="absolute inset-0"
+            style={{
+              zIndex: 3,
+              background: 'linear-gradient(135deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.25) 100%)',
+            }}
+          />
+
+          {/* Subtle blue/orange tint at edges */}
+          <div className="absolute inset-0" style={{ zIndex: 4 }}>
+            <div className="absolute bottom-0 left-0 w-[40rem] h-[30rem] bg-blue-600/10 rounded-full blur-[120px] -translate-x-1/3 translate-y-1/3" />
+            <div className="absolute top-0 right-0 w-[30rem] h-[25rem] bg-orange-500/10 rounded-full blur-[100px] translate-x-1/4 -translate-y-1/4" />
+          </div>
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        {/* Content */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24" style={{ zIndex: 10 }}>
           <div className="max-w-3xl">
+
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/15 backdrop-blur-sm rounded-full border border-white/20 mb-8">
-              <span className="relative flex h-2 w-2">
+            <div className="hero-fade-enter hero-fade-delay-1 inline-flex items-center gap-2.5 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full border border-white/15 mb-8">
+              <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-400"></span>
               </span>
-              <span className="text-sm font-medium text-white">Disponible 7j/7 en Île-de-France</span>
+              <span className="text-sm font-semibold text-white/95 tracking-wide">Disponible 7j/7 en Île-de-France</span>
             </div>
 
-            {/* Titre principal */}
-            <h1 className="text-5xl md:text-7xl font-black leading-tight text-white mb-6">
-              Transformez vos
-              <span className="relative mx-3">
-                <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                  événements
-                </span>
+            {/* Headline */}
+            <h1 className="hero-fade-enter hero-fade-delay-2 text-[2.75rem] sm:text-6xl md:text-7xl font-black leading-[1.08] text-white mb-6 tracking-tight">
+              Transformez vos{' '}
+              <span className="shimmer-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent">
+                événements
               </span>
               <br />
-              en <span className="bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent">moments inoubliables</span>
+              en{' '}
+              <span className="bg-gradient-to-r from-orange-400 to-orange-500 bg-clip-text text-transparent">
+                moments inoubliables
+              </span>
             </h1>
 
-            {/* Description */}
-            <p className="text-xl text-white/90 max-w-2xl leading-relaxed mb-8">
+            {/* Subtitle */}
+            <p className="hero-fade-enter hero-fade-delay-3 text-lg md:text-xl text-white/80 max-w-2xl leading-relaxed mb-10">
               Location de structures gonflables, photobooth et animations pour tous vos événements.
             </p>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-10">
+            {/* CTAs */}
+            <div className="hero-fade-enter hero-fade-delay-4 flex flex-col sm:flex-row gap-4 mb-10">
               <Link
                 to="/devis"
-                className="group relative px-10 py-5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-lg rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/30 hover:-translate-y-1"
+                className="group relative px-10 py-5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-lg rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-[0_20px_50px_-12px_rgba(249,115,22,0.45)] hover:-translate-y-1"
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
                   Devis Gratuit en 24h
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-red-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </Link>
 
               <Link
                 to="/catalogue"
-                className="group px-10 py-5 bg-white/15 backdrop-blur-sm text-white font-bold text-lg rounded-2xl border-2 border-white/30 hover:bg-white/25 transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2"
+                className="group px-10 py-5 bg-white/10 backdrop-blur-md text-white font-bold text-lg rounded-2xl border border-white/20 hover:bg-white/20 hover:border-white/30 transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-2"
               >
                 <Play className="w-5 h-5" />
                 Découvrir nos structures
@@ -125,33 +211,66 @@ const HeroModern: React.FC = () => {
             </div>
 
             {/* Trust indicators */}
-            <div className="flex flex-wrap items-center gap-4">
-              <div className="flex items-center gap-3 bg-white/15 backdrop-blur-sm px-5 py-3 rounded-2xl border border-white/20">
-                <div className="flex">
+            <div className="hero-fade-enter hero-fade-delay-4 flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-5 py-3 rounded-2xl border border-white/15">
+                <div className="flex -space-x-0.5">
                   {[1, 2, 3, 4, 5].map((i) => (
                     <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                   ))}
                 </div>
-                <div className="text-sm text-white">
-                  <span className="font-bold">5/5</span> - 7 avis Google
-                </div>
+                <span className="text-sm text-white/90">
+                  <span className="font-bold text-white">5/5</span> — 7 avis Google
+                </span>
               </div>
-              <div className="flex items-center gap-2 bg-white/15 backdrop-blur-sm px-5 py-3 rounded-2xl border border-white/20">
-                <span className="text-sm font-medium text-white">100% clients satisfaits</span>
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-5 py-3 rounded-2xl border border-white/15">
+                <span className="text-sm font-semibold text-white/90">100% clients satisfaits</span>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Slide progress bar */}
+        {heroImages.length > 1 && (
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10" style={{ zIndex: 10 }}>
+            <div
+              key={heroImageIndex}
+              className="h-full bg-gradient-to-r from-blue-400 to-orange-400 hero-progress"
+            />
+          </div>
+        )}
+
+        {/* Image indicator dots */}
+        {heroImages.length > 1 && (
+          <div className="absolute bottom-6 right-6 md:bottom-8 md:right-8 flex gap-2" style={{ zIndex: 10 }}>
+            {heroImages.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  setPrevHeroIndex(heroImageIndex);
+                  setIsTransitioning(true);
+                  setHeroImageIndex(idx);
+                  setTimeout(() => setIsTransitioning(false), 1200);
+                }}
+                className={`h-1.5 rounded-full transition-all duration-500 ${
+                  idx === heroImageIndex
+                    ? 'w-8 bg-white'
+                    : 'w-1.5 bg-white/40 hover:bg-white/60'
+                }`}
+                aria-label={`Image ${idx + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
-      {/* Showcase Structures */}
-      <section className="py-16 bg-gradient-to-br from-white via-blue-50/30 to-orange-50/30">
+      {/* ═══════════ STRUCTURES SHOWCASE ═══════════ */}
+      <section className="py-16 bg-gradient-to-br from-white via-blue-50/30 to-orange-50/30 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-8">
             Découvrir nos <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">structures gonflables</span>
           </h2>
 
-          {/* Desktop Grid - 6 structures */}
+          {/* Desktop Grid */}
           <div className="hidden lg:grid grid-cols-3 gap-6">
             {availableStructures.map((structure, index) => (
               <div
@@ -168,7 +287,7 @@ const HeroModern: React.FC = () => {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-5">
                   <div className="flex items-end justify-between">
                     <div>
@@ -193,7 +312,7 @@ const HeroModern: React.FC = () => {
             ))}
           </div>
 
-          {/* Tablet Grid - 4 structures */}
+          {/* Tablet Grid */}
           <div className="hidden md:grid lg:hidden grid-cols-2 gap-6">
             {availableStructures.slice(0, 4).map((structure) => (
               <div
@@ -208,7 +327,7 @@ const HeroModern: React.FC = () => {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-5">
                   <div className="flex items-end justify-between">
                     <div>
@@ -234,10 +353,7 @@ const HeroModern: React.FC = () => {
                 style={{ transform: `translateX(-${currentSlide * 100}%)` }}
               >
                 {availableStructures.map((structure) => (
-                  <div
-                    key={structure.id}
-                    className="w-full flex-shrink-0 px-2"
-                  >
+                  <div key={structure.id} className="w-full flex-shrink-0 px-2">
                     <div
                       onClick={() => navigateToStructure(structure.name)}
                       className="relative bg-white rounded-3xl overflow-hidden border border-gray-200 cursor-pointer shadow-lg"
@@ -249,7 +365,7 @@ const HeroModern: React.FC = () => {
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                       <div className="absolute bottom-0 left-0 right-0 p-5">
                         <div className="flex items-end justify-between">
                           <div>
@@ -312,7 +428,7 @@ const HeroModern: React.FC = () => {
         </div>
       </section>
 
-      {/* Section Avantages */}
+      {/* ═══════════ AVANTAGES ═══════════ */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
