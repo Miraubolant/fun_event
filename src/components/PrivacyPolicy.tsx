@@ -9,7 +9,7 @@ const PrivacyPolicy: React.FC = () => {
         title="Politique de Confidentialité - Fun Event | Protection Données Personnelles"
         description="🔒 Politique de confidentialité Fun Event. Protection de vos données personnelles, RGPD, cookies, droits utilisateurs. Transparence totale sur l'utilisation de vos informations."
         keywords="politique confidentialité Fun Event, protection données personnelles, RGPD structures gonflables, cookies site web, droits utilisateurs"
-        canonicalUrl="https://funevent.fr/politique-confidentialite"
+        canonicalUrl="https://fun-event.fr/politique-confidentialite"
       />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}

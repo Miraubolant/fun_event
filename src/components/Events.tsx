@@ -43,7 +43,7 @@ const Events: React.FC = () => {
         keywords="galerie événements structures gonflables, photos châteaux gonflables anniversaire, événements Fun Event Paris, inspiration fête enfant, structures gonflables mariage, animation entreprise Île-de-France"
         ogTitle="Galerie Photos - Fun Event en Île-de-France"
         ogDescription="Laissez-vous inspirer par nos plus beaux événements ! Structures gonflables premium en action lors d'anniversaires, mariages et fêtes."
-        canonicalUrl="https://funevent.fr/galerie"
+        canonicalUrl="https://fun-event.fr/galerie"
         structuredData={{
           "@context": "https://schema.org",
           "@type": "ImageGallery",
@@ -52,7 +52,7 @@ const Events: React.FC = () => {
           "provider": {
             "@type": "Organization",
             "name": "Fun Event",
-            "url": "https://funevent.fr"
+            "url": "https://fun-event.fr"
           },
           "image": sortedPhotos.slice(0, 6).map(photo => ({
             "@type": "ImageObject",

@@ -177,13 +177,13 @@ const Footer: React.FC = () => {
                 </a>
 
                 <a
-                  href="mailto:contact@funevent.fr"
+                  href="mailto:contact@fun-event.fr"
                   className="flex items-center gap-3 p-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
                   itemProp="email"
                 >
                   <Mail className="w-5 h-5 text-blue-500" />
                   <div>
-                    <p className="font-medium text-gray-900">contact@funevent.fr</p>
+                    <p className="font-medium text-gray-900">contact@fun-event.fr</p>
                     <p className="text-xs text-gray-500">Réponse sous 24h</p>
                   </div>
                 </a>

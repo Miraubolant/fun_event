@@ -293,7 +293,7 @@ const Quote: React.FC = () => {
         keywords="devis gratuit structures gonflables, estimation location château gonflable, prix toboggan gonflable Paris, tarif animation enfant Île-de-France, devis événement Fun Event"
         ogTitle="Devis Gratuit et Rapide - Structures Gonflables Fun Event"
         ogDescription="Formulaire simple en 3 étapes pour obtenir votre devis personnalisé. Estimation immédiate et réponse garantie sous 48h."
-        canonicalUrl="https://funevent.fr/devis"
+        canonicalUrl="https://fun-event.fr/devis"
         structuredData={{
           "@context": "https://schema.org",
           "@type": "Service",
@@ -303,7 +303,7 @@ const Quote: React.FC = () => {
             "@type": "Organization",
             "name": "Fun Event",
             "telephone": "+33663528072",
-            "email": "contact@funevent.fr"
+            "email": "contact@fun-event.fr"
           },
           "areaServed": {
             "@type": "AdministrativeArea",

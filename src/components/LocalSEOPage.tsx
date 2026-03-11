@@ -55,20 +55,20 @@ export default function LocalSEOPage() {
         keywords={`location structures gonflables ${department.name}, château gonflable ${department.code}, toboggan gonflable ${department.name}, location jeux gonflables ${department.fullName}, anniversaire enfant ${department.name}`}
         ogTitle={`Location Structures Gonflables ${department.name} - Fun Event`}
         ogDescription={pageDescription}
-        canonicalUrl={`https://funevent.fr/location/${department.slug}`}
+        canonicalUrl={`https://fun-event.fr/location/${department.slug}`}
         pageType="catalog"
         breadcrumbs={[
-          { name: "Accueil", url: "https://funevent.fr/" },
-          { name: `Location ${department.name}`, url: `https://funevent.fr/location/${department.slug}` }
+          { name: "Accueil", url: "https://fun-event.fr/" },
+          { name: `Location ${department.name}`, url: `https://fun-event.fr/location/${department.slug}` }
         ]}
         structuredData={{
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
           "name": `Fun Event - Location Structures Gonflables ${department.name}`,
           "description": pageDescription,
-          "url": `https://funevent.fr/location/${department.slug}`,
+          "url": `https://fun-event.fr/location/${department.slug}`,
           "telephone": "+33663528072",
-          "email": "contact@funevent.fr",
+          "email": "contact@fun-event.fr",
           "priceRange": "EUR",
           "address": {
             "@type": "PostalAddress",

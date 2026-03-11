@@ -123,7 +123,7 @@ const Contact: React.FC = () => {
         keywords="contact Fun Event, téléphone location structures gonflables, WhatsApp château gonflable Paris, email devis toboggan gonflable, service client 7j/7 Île-de-France"
         ogTitle="Contactez Fun Event - Service Client 7j/7"
         ogDescription="Équipe disponible 7j/7 pour vos projets d'événements. Téléphone, WhatsApp, email - Réponse rapide garantie !"
-        canonicalUrl="https://funevent.fr/contact"
+        canonicalUrl="https://fun-event.fr/contact"
         structuredData={{
           "@context": "https://schema.org",
           "@type": "ContactPage",

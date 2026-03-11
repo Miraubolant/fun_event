@@ -225,7 +225,7 @@ const FAQ: React.FC = () => {
         keywords="FAQ structures gonflables, questions location château gonflable, tarifs livraison installation, sécurité normes gonflables, réservation Fun Event Paris, service client 7j/7"
         ogTitle="FAQ Complète - Location Structures Gonflables Fun Event"
         ogDescription="Trouvez rapidement les réponses à toutes vos questions sur nos services de location de structures gonflables premium."
-        canonicalUrl="https://funevent.fr/faq"
+        canonicalUrl="https://fun-event.fr/faq"
         structuredData={{
           "@context": "https://schema.org",
           "@type": "FAQPage",

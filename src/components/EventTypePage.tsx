@@ -155,10 +155,10 @@ const EventTypePage: React.FC = () => {
         keywords={`${eventData.name.toLowerCase()}, structures gonflables ${eventData.name.toLowerCase()}, animation ${eventData.name.toLowerCase()}, location gonflable ${eventData.name.toLowerCase()}, Fun Event`}
         ogTitle={`${eventData.name} - Structures Gonflables Fun Event`}
         ogDescription={pageDescription}
-        canonicalUrl={`https://funevent.fr/evenement-${eventData.id}`}
+        canonicalUrl={`https://fun-event.fr/evenement-${eventData.id}`}
         breadcrumbs={[
-          { name: "Accueil", url: "https://funevent.fr/" },
-          { name: eventData.name, url: `https://funevent.fr/evenement-${eventData.id}` }
+          { name: "Accueil", url: "https://fun-event.fr/" },
+          { name: eventData.name, url: `https://fun-event.fr/evenement-${eventData.id}` }
         ]}
         structuredData={{
           "@context": "https://schema.org",

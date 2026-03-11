@@ -148,15 +148,15 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         keywords="location structures gonflables Paris, château gonflable Île-de-France, toboggan gonflable géant, jeux gonflables anniversaire, animation enfant Paris, location matériel festif 75 77 78 91 92 93 94 95"
         ogTitle="Fun Event - Structures Gonflables Premium pour Événements Magiques"
         ogDescription="Créez des moments inoubliables avec nos structures gonflables premium. Livraison gratuite en Île-de-France, installation incluse, service 7j/7."
-        canonicalUrl="https://funevent.fr/"
+        canonicalUrl="https://fun-event.fr/"
         structuredData={{
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
           "name": "Fun Event",
           "description": "Location de structures gonflables premium pour événements en Île-de-France",
-          "url": "https://funevent.fr",
+          "url": "https://fun-event.fr",
           "telephone": "+33663528072",
-          "email": "contact@funevent.fr",
+          "email": "contact@fun-event.fr",
           "logo": "https://i.imgur.com/gfhDZfm.png",
           "image": "https://i.imgur.com/gfhDZfm.png",
           "priceRange": "€€",
