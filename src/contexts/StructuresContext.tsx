@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Structure, Category, CarouselPhoto, FAQCategory, FAQQuestion, SocialLink, DeliveryZone, Subcategory } from '../types';
+import { Structure, Category, CarouselPhoto, FAQCategory, FAQQuestion, SocialLink, DeliveryZone, Subcategory, Review } from '../types';
 import { supabase } from '../lib/supabase';
 
 interface StructuresContextType {
@@ -10,6 +10,7 @@ interface StructuresContextType {
   socialLinks: SocialLink[];
   deliveryZones: DeliveryZone[];
   subcategories: Subcategory[];
+  reviews: Review[];
   loading: boolean;
   addStructure: (structure: Omit<Structure, 'id'>) => Promise<void>;
   updateStructure: (id: string, structure: Partial<Structure>) => Promise<void>;
@@ -38,6 +39,9 @@ interface StructuresContextType {
   addSubcategory: (subcategory: Omit<Subcategory, 'id'>) => Promise<void>;
   updateSubcategory: (id: string, subcategory: Partial<Subcategory>) => Promise<void>;
   deleteSubcategory: (id: string) => Promise<void>;
+  addReview: (review: Omit<Review, 'id'>) => Promise<void>;
+  updateReview: (id: string, review: Partial<Review>) => Promise<void>;
+  deleteReview: (id: string) => Promise<void>;
   refreshData: () => Promise<void>;
 }
 
@@ -63,6 +67,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [deliveryZones, setDeliveryZones] = useState<DeliveryZone[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Charger les données depuis Supabase
@@ -77,6 +82,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       setSocialLinks([]);
       setDeliveryZones([]);
       setSubcategories([]);
+      setReviews([]);
       setLoading(false);
       return;
     }
@@ -107,6 +113,9 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
           available,
           order_position,
           custom_pricing,
+          show_dimensions,
+          show_capacity,
+          show_age,
           created_at,
           updated_at
         `).order('order_position', { ascending: true })
@@ -139,7 +148,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
           description: item.description || '',
           available: item.available ?? true,
           order: item.order_position || 1,
-          customPricing: item.custom_pricing ?? false
+          customPricing: item.custom_pricing ?? false,
+          showDimensions: item.show_dimensions ?? true,
+          showCapacity: item.show_capacity ?? true,
+          showAge: item.show_age ?? true
         }));
         setStructures(transformedStructures);
       } else {
@@ -161,8 +173,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
         // Zones de livraison
         supabase.from('delivery_zones').select('*').eq('active', true).order('order_position'),
         // Sous-catégories
-        supabase.from('subcategories').select('*').eq('active', true).order('order_position')
-      ]).then(async ([photosResult, faqCategoriesResult, socialLinksResult, deliveryZonesResult, subcategoriesResult]) => {
+        supabase.from('subcategories').select('*').eq('active', true).order('order_position'),
+        // Avis
+        supabase.from('reviews').select('*').order('order_position')
+      ]).then(async ([photosResult, faqCategoriesResult, socialLinksResult, deliveryZonesResult, subcategoriesResult, reviewsResult]) => {
         
         // Traiter les photos du carrousel
         if (photosResult.status === 'fulfilled' && !photosResult.value.error) {
@@ -245,6 +259,20 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
           }));
           setSubcategories(transformedSubcategories);
         }
+
+        // Traiter les avis
+        if (reviewsResult.status === 'fulfilled' && !reviewsResult.value.error) {
+          const transformedReviews = (reviewsResult.value.data || []).map(item => ({
+            id: item.id,
+            name: item.name,
+            rating: item.rating,
+            comment: item.comment,
+            date: item.date,
+            visible: item.visible ?? true,
+            order: item.order_position || 0
+          }));
+          setReviews(transformedReviews);
+        }
       });
       
     } catch (error) {
@@ -257,6 +285,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       setSocialLinks([]);
       setDeliveryZones([]);
       setSubcategories([]);
+      setReviews([]);
       setLoading(false);
     }
   };
@@ -317,7 +346,10 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
           description: newStructure.description,
           available: newStructure.available,
           order_position: nextOrder,
-          custom_pricing: newStructure.customPricing ?? false
+          custom_pricing: newStructure.customPricing ?? false,
+          show_dimensions: newStructure.showDimensions ?? true,
+          show_capacity: newStructure.showCapacity ?? true,
+          show_age: newStructure.showAge ?? true
         })
         .select()
         .single();
@@ -360,6 +392,9 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       if (updatedStructure.available !== undefined) updateData.available = updatedStructure.available;
       if (updatedStructure.order !== undefined) updateData.order_position = updatedStructure.order;
       if (updatedStructure.customPricing !== undefined) updateData.custom_pricing = updatedStructure.customPricing;
+      if (updatedStructure.showDimensions !== undefined) updateData.show_dimensions = updatedStructure.showDimensions;
+      if (updatedStructure.showCapacity !== undefined) updateData.show_capacity = updatedStructure.showCapacity;
+      if (updatedStructure.showAge !== undefined) updateData.show_age = updatedStructure.showAge;
 
       const { error } = await supabase
         .from('structures')
@@ -984,6 +1019,78 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
     }
   };
 
+  // Fonctions pour les avis
+  const addReview = async (newReview: Omit<Review, 'id'>) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+
+    try {
+      const { error } = await supabase
+        .from('reviews')
+        .insert({
+          name: newReview.name,
+          rating: newReview.rating,
+          comment: newReview.comment,
+          date: newReview.date,
+          visible: newReview.visible ?? true,
+          order_position: newReview.order || 0
+        });
+
+      if (error) throw error;
+      await refreshData();
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout de l\'avis:', error);
+      throw error;
+    }
+  };
+
+  const updateReview = async (id: string, updatedReview: Partial<Review>) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+
+    try {
+      const updateData: any = {};
+      if (updatedReview.name !== undefined) updateData.name = updatedReview.name;
+      if (updatedReview.rating !== undefined) updateData.rating = updatedReview.rating;
+      if (updatedReview.comment !== undefined) updateData.comment = updatedReview.comment;
+      if (updatedReview.date !== undefined) updateData.date = updatedReview.date;
+      if (updatedReview.visible !== undefined) updateData.visible = updatedReview.visible;
+      if (updatedReview.order !== undefined) updateData.order_position = updatedReview.order;
+
+      const { error } = await supabase
+        .from('reviews')
+        .update(updateData)
+        .eq('id', id);
+
+      if (error) throw error;
+      await refreshData();
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour de l\'avis:', error);
+      throw error;
+    }
+  };
+
+  const deleteReview = async (id: string) => {
+    if (!supabase) {
+      throw new Error('Supabase non configuré');
+    }
+
+    try {
+      const { error } = await supabase
+        .from('reviews')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      await refreshData();
+    } catch (error) {
+      console.error('Erreur lors de la suppression de l\'avis:', error);
+      throw error;
+    }
+  };
+
   return (
     <StructuresContext.Provider value={{
       structures,
@@ -993,6 +1100,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       socialLinks,
       deliveryZones,
       subcategories,
+      reviews,
       loading,
       addStructure,
       updateStructure,
@@ -1021,6 +1129,9 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
       addSubcategory,
       updateSubcategory,
       deleteSubcategory,
+      addReview,
+      updateReview,
+      deleteReview,
       refreshData
     }}>
       {children}

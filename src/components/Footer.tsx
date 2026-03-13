@@ -74,7 +74,7 @@ const Footer: React.FC = () => {
               </Link>
 
               <p className="text-gray-600 mb-6 leading-relaxed" itemProp="description">
-                Spécialistes de la location de structures gonflables en Île-de-France.
+                Spécialistes de la location de châteaux et structures gonflables en Île-de-France.
                 Nous rendons vos événements inoubliables depuis 2020.
               </p>
 

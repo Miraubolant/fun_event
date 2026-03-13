@@ -1,5 +1,5 @@
 // AUTO-GENERATED FILE - DO NOT EDIT
-// Generated on 2026-02-06T11:46:00.416Z
+// Generated on 2026-03-05T09:29:02.591Z
 // Total cities in Île-de-France: 683
 
 import type { CityData } from '../../types';

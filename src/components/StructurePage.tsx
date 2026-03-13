@@ -1,21 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Users, Ruler, Heart, Weight, Shield, Clock, ShoppingCart, MessageCircle, ChevronLeft, ChevronRight, CheckCircle, Share2, Star, MapPin, Phone, ArrowRight, Send, User, HelpCircle, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Users, Ruler, Heart, Weight, Shield, Clock, ShoppingCart, MessageCircle, ChevronLeft, ChevronRight, CheckCircle, Share2, Star, MapPin, Phone, ArrowRight, HelpCircle, ChevronDown } from 'lucide-react';
 import { Structure } from '../types';
 import { useStructures } from '../contexts/StructuresContext';
 import { useCart } from '../contexts/CartContext';
 import SEOHead from './SEOHead';
 import QuickQuoteForm from './QuickQuoteForm';
 import { generateSlug } from '../utils/generateSlug';
-
-interface Review {
-  id: string;
-  name: string;
-  rating: number;
-  comment: string;
-  date: string;
-  avatar?: string;
-}
 
 const StructurePage: React.FC = () => {
   const { structureSlug } = useParams<{ structureSlug: string }>();
@@ -25,20 +16,7 @@ const StructurePage: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  // Review form state
-  const [showReviewForm, setShowReviewForm] = useState(false);
-  const [reviewName, setReviewName] = useState('');
-  const [reviewRating, setReviewRating] = useState(5);
-  const [reviewComment, setReviewComment] = useState('');
-  const [userReviews, setUserReviews] = useState<Review[]>([]);
-  const [reviewSubmitted, setReviewSubmitted] = useState(false);
-
   const structure = structures.find(s => generateSlug(s.name) === structureSlug);
-
-  // Calculate average rating from user reviews only
-  const averageRating = userReviews.length > 0
-    ? (userReviews.reduce((sum, r) => sum + r.rating, 0) / userReviews.length).toFixed(1)
-    : null;
 
   // Structures similaires (même catégorie, différent id)
   const similarStructures = structures
@@ -47,21 +25,11 @@ const StructurePage: React.FC = () => {
 
   const allImages = structure ? [structure.image, ...(structure.additionalImages || [])].filter(Boolean) : [];
 
-  // Load user reviews from localStorage
-  useEffect(() => {
-    const savedReviews = localStorage.getItem(`reviews-${structureSlug}`);
-    if (savedReviews) {
-      setUserReviews(JSON.parse(savedReviews));
-    }
-  }, [structureSlug]);
-
   // Scroll to top on mount
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
     setCurrentImageIndex(0);
     setImageLoaded(false);
-    setShowReviewForm(false);
-    setReviewSubmitted(false);
   }, [structureSlug]);
 
   const nextImage = () => {
@@ -97,30 +65,6 @@ const StructurePage: React.FC = () => {
     }
   };
 
-  const handleSubmitReview = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!reviewName.trim() || !reviewComment.trim()) return;
-
-    const newReview: Review = {
-      id: `user-${Date.now()}`,
-      name: reviewName,
-      rating: reviewRating,
-      comment: reviewComment,
-      date: new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }),
-    };
-
-    const updatedReviews = [newReview, ...userReviews];
-    setUserReviews(updatedReviews);
-    localStorage.setItem(`reviews-${structureSlug}`, JSON.stringify(updatedReviews));
-
-    // Reset form
-    setReviewName('');
-    setReviewRating(5);
-    setReviewComment('');
-    setShowReviewForm(false);
-    setReviewSubmitted(true);
-    setTimeout(() => setReviewSubmitted(false), 3000);
-  };
 
   if (loading) {
     return (
@@ -167,7 +111,7 @@ const StructurePage: React.FC = () => {
     <section className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-orange-50 relative overflow-hidden">
       <SEOHead
         title={`${structure.name} - Location Structure Gonflable | Fun Event`}
-        description={`${structure.description.substring(0, 150)}... Location en Île-de-France avec livraison gratuite. À partir de ${structure.customPricing ? 'devis personnalisé' : structure.price + '€/jour'}.`}
+        description={`${structure.description.substring(0, 150)}... Location en Île-de-France avec livraison et installation incluses. À partir de ${structure.customPricing ? 'devis personnalisé' : structure.price + '€/jour'}.`}
         keywords={`${structure.name}, location structure gonflable, ${structure.category}, Fun Event, Île-de-France`}
         ogTitle={`${structure.name} - Fun Event`}
         ogDescription={structure.description.substring(0, 200)}
@@ -308,51 +252,51 @@ const StructurePage: React.FC = () => {
             <div className="flex flex-wrap gap-3">
               <div className="flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-medium">
                 <CheckCircle className="w-4 h-4" />
-                Livraison gratuite
+                Livraison & Installation incluses
               </div>
               <div className="flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium">
                 <Shield className="w-4 h-4" />
                 Certifié NF
               </div>
-              {userReviews.length > 0 && (
-                <div className="flex items-center gap-2 bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full text-sm font-medium">
-                  <Star className="w-4 h-4 fill-yellow-500" />
-                  {averageRating}/5 ({userReviews.length} avis)
-                </div>
-              )}
             </div>
 
             {/* Specifications */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
-                    <Ruler className="w-5 h-5 text-white" />
+              {(structure.showDimensions !== false) && structure.size && (
+                <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
+                      <Ruler className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-gray-500 text-sm">Dimensions</span>
                   </div>
-                  <span className="text-gray-500 text-sm">Dimensions</span>
+                  <p className="text-lg font-bold text-gray-900">{structure.size}</p>
                 </div>
-                <p className="text-lg font-bold text-gray-900">{structure.size}</p>
-              </div>
+              )}
 
-              <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center">
-                    <Users className="w-5 h-5 text-white" />
+              {(structure.showCapacity !== false) && structure.capacity && (
+                <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center">
+                      <Users className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-gray-500 text-sm">Capacité</span>
                   </div>
-                  <span className="text-gray-500 text-sm">Capacité</span>
+                  <p className="text-lg font-bold text-gray-900">{structure.capacity}</p>
                 </div>
-                <p className="text-lg font-bold text-gray-900">{structure.capacity}</p>
-              </div>
+              )}
 
-              <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-pink-500 rounded-xl flex items-center justify-center">
-                    <Heart className="w-5 h-5 text-white" />
+              {(structure.showAge !== false) && structure.age && (
+                <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 bg-pink-500 rounded-xl flex items-center justify-center">
+                      <Heart className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-gray-500 text-sm">Âge recommandé</span>
                   </div>
-                  <span className="text-gray-500 text-sm">Âge recommandé</span>
+                  <p className="text-lg font-bold text-gray-900">{structure.age}</p>
                 </div>
-                <p className="text-lg font-bold text-gray-900">{structure.age}</p>
-              </div>
+              )}
 
               {structure.maxWeight && (
                 <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
@@ -443,7 +387,7 @@ const StructurePage: React.FC = () => {
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { icon: '🚚', title: 'Livraison gratuite', desc: 'Partout en Île-de-France' },
+              { icon: '🚚', title: 'Livraison & Installation', desc: 'Île-de-France et régions voisines' },
               { icon: '🔧', title: 'Installation incluse', desc: 'Par nos techniciens qualifiés' },
               { icon: '📦', title: 'Récupération', desc: 'En fin de journée' },
               { icon: '🛡️', title: 'Assurance RC Pro', desc: 'Couverture complète' },
@@ -475,7 +419,7 @@ const StructurePage: React.FC = () => {
               },
               {
                 question: "La livraison et l'installation sont-elles incluses ?",
-                answer: "Oui, la livraison et l'installation sont entièrement gratuites dans toute l'Île-de-France. Nos techniciens qualifiés s'occupent du montage, des tests de sécurité et vous expliquent le fonctionnement. La récupération en fin de journée est également incluse."
+                answer: "Oui, la livraison et l'installation sont incluses en Île-de-France et régions voisines. Nos techniciens qualifiés s'occupent du montage, des tests de sécurité et vous expliquent le fonctionnement. La récupération en fin de journée est également incluse."
               },
               {
                 question: "Quelles sont les conditions de sécurité ?",
@@ -507,184 +451,6 @@ const StructurePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Reviews section */}
-        <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 mb-16">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-3">
-              <Star className="w-8 h-8 text-yellow-500 fill-yellow-500" />
-              Avis clients ({userReviews.length})
-            </h2>
-            <button
-              onClick={() => setShowReviewForm(!showReviewForm)}
-              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all flex items-center gap-2"
-            >
-              <Send className="w-5 h-5" />
-              Laisser un avis
-            </button>
-          </div>
-
-          {/* Success message */}
-          {reviewSubmitted && (
-            <div className="mb-6 p-4 bg-green-100 text-green-700 rounded-xl flex items-center gap-3">
-              <CheckCircle className="w-6 h-6" />
-              <span className="font-medium">Merci pour votre avis ! Il a été publié avec succès.</span>
-            </div>
-          )}
-
-          {/* Review form */}
-          {showReviewForm && (
-            <form onSubmit={handleSubmitReview} className="mb-8 p-6 bg-gray-50 rounded-2xl">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Partagez votre expérience</h3>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Votre nom</label>
-                  <input
-                    type="text"
-                    value={reviewName}
-                    onChange={(e) => setReviewName(e.target.value)}
-                    placeholder="Ex: Marie D."
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Note</label>
-                  <div className="flex gap-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        type="button"
-                        onClick={() => setReviewRating(star)}
-                        className="p-1 transition-transform hover:scale-110"
-                      >
-                        <Star
-                          className={`w-8 h-8 ${
-                            star <= reviewRating
-                              ? 'text-yellow-400 fill-yellow-400'
-                              : 'text-gray-300'
-                          }`}
-                        />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Votre avis</label>
-                  <textarea
-                    value={reviewComment}
-                    onChange={(e) => setReviewComment(e.target.value)}
-                    placeholder="Partagez votre expérience avec cette structure..."
-                    rows={4}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
-                    required
-                  />
-                </div>
-
-                <div className="flex gap-3">
-                  <button
-                    type="submit"
-                    className="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-xl hover:from-green-600 hover:to-green-700 transition-all"
-                  >
-                    Publier mon avis
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowReviewForm(false)}
-                    className="px-6 py-3 bg-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-300 transition-all"
-                  >
-                    Annuler
-                  </button>
-                </div>
-              </div>
-            </form>
-          )}
-
-          {/* Reviews content */}
-          {userReviews.length > 0 ? (
-            <>
-              {/* Average rating */}
-              <div className="flex items-center gap-6 mb-8 p-6 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl">
-                <div className="text-center">
-                  <div className="text-5xl font-black text-gray-900">{averageRating}</div>
-                  <div className="flex gap-1 justify-center mt-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className={`w-5 h-5 ${
-                          star <= Math.round(parseFloat(averageRating || '0'))
-                            ? 'text-yellow-400 fill-yellow-400'
-                            : 'text-gray-300'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <div className="text-sm text-gray-500 mt-1">{userReviews.length} avis</div>
-                </div>
-                <div className="flex-1">
-                  <p className="text-gray-600">
-                    Nos clients adorent cette structure ! Découvrez leurs témoignages ci-dessous.
-                  </p>
-                </div>
-              </div>
-
-              {/* Reviews list */}
-              <div className="space-y-6">
-                {userReviews.slice(0, 6).map((review) => (
-                  <div key={review.id} className="p-6 bg-gray-50 rounded-2xl">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                          <User className="w-6 h-6 text-white" />
-                        </div>
-                        <div>
-                          <div className="font-bold text-gray-900">{review.name}</div>
-                          <div className="text-sm text-gray-500">{review.date}</div>
-                        </div>
-                      </div>
-                      <div className="flex gap-0.5">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star
-                            key={star}
-                            className={`w-4 h-4 ${
-                              star <= review.rating
-                                ? 'text-yellow-400 fill-yellow-400'
-                                : 'text-gray-300'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-gray-700">{review.comment}</p>
-                  </div>
-                ))}
-              </div>
-
-              {userReviews.length > 6 && (
-                <div className="text-center mt-6">
-                  <p className="text-gray-500">Et {userReviews.length - 6} autres avis...</p>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="text-center py-12 bg-gray-50 rounded-2xl">
-              <div className="text-6xl mb-4">💬</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Aucun avis pour le moment</h3>
-              <p className="text-gray-600 mb-6">Soyez le premier à partager votre expérience avec cette structure !</p>
-              {!showReviewForm && (
-                <button
-                  onClick={() => setShowReviewForm(true)}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all inline-flex items-center gap-2"
-                >
-                  <Send className="w-5 h-5" />
-                  Laisser le premier avis
-                </button>
-              )}
-            </div>
-          )}
-        </div>
 
         {/* Similar structures */}
         {similarStructures.length > 0 && (
@@ -707,7 +473,7 @@ const StructurePage: React.FC = () => {
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     <div className="absolute top-4 right-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-full text-sm font-bold">
-                      {s.customPricing ? 'Devis' : `${s.price}€`}
+                      {s.customPricing ? 'Devis' : `À partir de ${s.price}€`}
                     </div>
                   </div>
                   <div className="p-6">

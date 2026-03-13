@@ -1,5 +1,5 @@
 // AUTO-GENERATED FILE - DO NOT EDIT
-// Generated on 2026-02-06T11:46:01.296Z
+// Generated on 2026-03-05T09:29:03.362Z
 // Total departments in Île-de-France: 8
 
 import type { DepartmentData } from '../../types';

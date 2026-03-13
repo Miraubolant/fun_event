@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, ChevronRight, Sparkles } from 'lucide-react';
+import IleDeFranceMap from './IleDeFranceMap';
 
 const departments = [
   {
@@ -9,7 +11,8 @@ const departments = [
     fullName: 'Paris',
     cities: 1,
     color: 'from-blue-500 to-blue-600',
-    bgColor: 'from-blue-50 to-blue-100'
+    bgColor: 'from-blue-50 to-blue-100',
+    hex: '#3b82f6',
   },
   {
     code: '77',
@@ -18,7 +21,8 @@ const departments = [
     fullName: 'Seine-et-Marne',
     cities: 229,
     color: 'from-orange-500 to-orange-600',
-    bgColor: 'from-orange-50 to-orange-100'
+    bgColor: 'from-orange-50 to-orange-100',
+    hex: '#f97316',
   },
   {
     code: '78',
@@ -27,7 +31,8 @@ const departments = [
     fullName: 'Yvelines',
     cities: 143,
     color: 'from-green-500 to-green-600',
-    bgColor: 'from-green-50 to-green-100'
+    bgColor: 'from-green-50 to-green-100',
+    hex: '#22c55e',
   },
   {
     code: '91',
@@ -36,7 +41,8 @@ const departments = [
     fullName: 'Essonne',
     cities: 131,
     color: 'from-purple-500 to-purple-600',
-    bgColor: 'from-purple-50 to-purple-100'
+    bgColor: 'from-purple-50 to-purple-100',
+    hex: '#a855f7',
   },
   {
     code: '92',
@@ -45,7 +51,8 @@ const departments = [
     fullName: 'Hauts-de-Seine',
     cities: 36,
     color: 'from-pink-500 to-pink-600',
-    bgColor: 'from-pink-50 to-pink-100'
+    bgColor: 'from-pink-50 to-pink-100',
+    hex: '#ec4899',
   },
   {
     code: '93',
@@ -54,7 +61,8 @@ const departments = [
     fullName: 'Seine-Saint-Denis',
     cities: 40,
     color: 'from-indigo-500 to-indigo-600',
-    bgColor: 'from-indigo-50 to-indigo-100'
+    bgColor: 'from-indigo-50 to-indigo-100',
+    hex: '#6366f1',
   },
   {
     code: '94',
@@ -63,7 +71,8 @@ const departments = [
     fullName: 'Val-de-Marne',
     cities: 47,
     color: 'from-teal-500 to-teal-600',
-    bgColor: 'from-teal-50 to-teal-100'
+    bgColor: 'from-teal-50 to-teal-100',
+    hex: '#14b8a6',
   },
   {
     code: '95',
@@ -72,11 +81,14 @@ const departments = [
     fullName: "Val-d'Oise",
     cities: 99,
     color: 'from-cyan-500 to-cyan-600',
-    bgColor: 'from-cyan-50 to-cyan-100'
-  }
+    bgColor: 'from-cyan-50 to-cyan-100',
+    hex: '#06b6d4',
+  },
 ];
 
 export default function DepartmentsSection() {
+  const [hoveredDept, setHoveredDept] = useState<string | null>(null);
+
   return (
     <section className="py-20 bg-gradient-to-b from-white to-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -104,54 +116,96 @@ export default function DepartmentsSection() {
           </p>
         </div>
 
-        {/* Departments Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        {/* Map + List Layout (Desktop) */}
+        <div className="hidden lg:grid lg:grid-cols-2 gap-12 items-start mb-12">
+
+          {/* Carte interactive */}
+          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 relative">
+            <div className="absolute top-4 left-6">
+              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Carte interactive</span>
+            </div>
+            <IleDeFranceMap
+              onHover={(dept) => setHoveredDept(dept?.id || null)}
+              activeDept={hoveredDept}
+            />
+            <p className="text-center text-sm text-gray-400 mt-4">Cliquez sur un département pour voir les villes</p>
+          </div>
+
+          {/* Liste des départements */}
+          <div className="space-y-3">
+            {departments.map((dept) => (
+              <Link
+                key={dept.code}
+                to={`/location/${dept.slug}`}
+                className={`group flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300 ${
+                  hoveredDept === dept.code
+                    ? 'bg-white shadow-lg border-gray-200 scale-[1.02]'
+                    : 'bg-white/60 border-gray-100 hover:bg-white hover:shadow-md hover:border-gray-200'
+                }`}
+                onMouseEnter={() => setHoveredDept(dept.code)}
+                onMouseLeave={() => setHoveredDept(null)}
+              >
+                {/* Color indicator */}
+                <div
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-sm transition-transform duration-300 ${
+                    hoveredDept === dept.code ? 'scale-110' : 'group-hover:scale-105'
+                  }`}
+                  style={{ backgroundColor: dept.hex }}
+                >
+                  <span className="text-white font-bold text-sm">{dept.code}</span>
+                </div>
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-gray-900 group-hover:text-gray-800">
+                    {dept.fullName}
+                  </h3>
+                  <div className="flex items-center gap-1.5 text-sm text-gray-500">
+                    <MapPin className="w-3.5 h-3.5" />
+                    <span>{dept.cities} ville{dept.cities > 1 ? 's' : ''}</span>
+                  </div>
+                </div>
+
+                {/* Arrow */}
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  hoveredDept === dept.code
+                    ? 'bg-gray-900 text-white'
+                    : 'bg-gray-100 text-gray-400 group-hover:bg-gray-200'
+                }`}>
+                  <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${
+                    hoveredDept === dept.code ? 'translate-x-0.5' : ''
+                  }`} />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Mobile/Tablet Grid (inchangé) */}
+        <div className="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+          {/* Carte en haut sur mobile */}
+          <div className="md:col-span-2 bg-white rounded-3xl shadow-lg border border-gray-100 p-6 mb-2">
+            <IleDeFranceMap />
+            <p className="text-center text-sm text-gray-400 mt-3">Cliquez sur un département pour voir les villes</p>
+          </div>
+
           {departments.map((dept) => (
             <Link
               key={dept.code}
               to={`/location/${dept.slug}`}
-              className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+              className="group flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300"
             >
-              {/* Background Gradient */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${dept.bgColor} opacity-90 group-hover:opacity-100 transition-opacity`} />
-
-              {/* Content */}
-              <div className="relative p-6 h-full flex flex-col">
-
-                {/* Icon Badge */}
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${dept.color} flex items-center justify-center mb-4 shadow-md group-hover:scale-110 transition-transform`}>
-                  <MapPin className="w-7 h-7 text-white" />
-                </div>
-
-                {/* Department Info */}
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className={`text-2xl font-bold bg-gradient-to-r ${dept.color} bg-clip-text text-transparent`}>
-                      {dept.code}
-                    </span>
-                    <ChevronRight className={`w-5 h-5 text-gray-400 group-hover:text-gray-700 group-hover:translate-x-1 transition-all`} />
-                  </div>
-
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-gray-800">
-                    {dept.fullName}
-                  </h3>
-
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${dept.color}`} />
-                    <span className="font-medium">{dept.cities} ville{dept.cities > 1 ? 's' : ''}</span>
-                  </div>
-                </div>
-
-                {/* Bottom Action */}
-                <div className="mt-4 pt-4 border-t border-gray-200/50">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600 font-medium">Voir les villes</span>
-                    <div className={`w-8 h-8 rounded-full bg-gradient-to-r ${dept.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                      <ChevronRight className="w-4 h-4 text-white" />
-                    </div>
-                  </div>
-                </div>
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform"
+                style={{ backgroundColor: dept.hex }}
+              >
+                <span className="text-white font-bold text-sm">{dept.code}</span>
               </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-gray-900 text-sm">{dept.fullName}</h3>
+                <span className="text-xs text-gray-500">{dept.cities} ville{dept.cities > 1 ? 's' : ''}</span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" />
             </Link>
           ))}
         </div>
@@ -164,8 +218,8 @@ export default function DepartmentsSection() {
                 <span className="text-2xl">🚚</span>
               </div>
               <div className="text-left">
-                <p className="font-bold text-gray-900">Livraison & Installation Gratuites</p>
-                <p className="text-sm text-gray-600">Dans toute l'Île-de-France</p>
+                <p className="font-bold text-gray-900">Livraison & Installation</p>
+                <p className="text-sm text-gray-600">Île-de-France et régions voisines</p>
               </div>
             </div>
             <div className="hidden md:block w-px h-12 bg-gray-200" />

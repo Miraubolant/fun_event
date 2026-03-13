@@ -16,6 +16,19 @@ export interface Structure {
   available: boolean;
   order?: number;
   customPricing?: boolean;
+  showDimensions?: boolean;
+  showCapacity?: boolean;
+  showAge?: boolean;
+}
+
+export interface Review {
+  id: string;
+  name: string;
+  rating: number;
+  comment: string;
+  date: string;
+  visible: boolean;
+  order: number;
 }
 
 export interface Category {

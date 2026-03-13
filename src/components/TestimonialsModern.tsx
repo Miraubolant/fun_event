@@ -1,23 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useStructures } from '../contexts/StructuresContext';
 
 interface Testimonial {
-  id: number;
+  id: number | string;
   name: string;
   rating: number;
   text: string;
   date: string;
   avatar: string;
+  source: 'google' | 'admin';
 }
 
-const testimonials: Testimonial[] = [
+const googleTestimonials: Testimonial[] = [
   {
     id: 1,
     name: "Doul Berete",
     rating: 5,
     text: "On a travaillé cet été avec cette entreprise et l'expérience fut incroyable grâce au professionnalisme de l'équipe de Merwane. Une équipe ponctuelle, flexible et en plus ils sont très abordable par rapport aux prix du marché. À faire !",
     date: "Juillet 2025",
-    avatar: "https://ui-avatars.com/api/?name=Doul+Berete&background=3B82F6&color=fff&size=100"
+    avatar: "https://ui-avatars.com/api/?name=Doul+Berete&background=3B82F6&color=fff&size=100",
+    source: 'google'
   },
   {
     id: 2,
@@ -25,7 +28,8 @@ const testimonials: Testimonial[] = [
     rating: 5,
     text: "Expérience positive du début à la fin de la prestation. Professionnels, réactif etc.. Une journée où les enfants sont heureux ! N'hésitez pas !",
     date: "Octobre 2025",
-    avatar: "https://ui-avatars.com/api/?name=Deborah+D&background=F97316&color=fff&size=100"
+    avatar: "https://ui-avatars.com/api/?name=Deborah+D&background=F97316&color=fff&size=100",
+    source: 'google'
   },
   {
     id: 3,
@@ -33,7 +37,8 @@ const testimonials: Testimonial[] = [
     rating: 5,
     text: "Un immense merci à Fun Event pour leur prestation lors de l'anniversaire de ma sœur ! L'animateur était formidable : ponctuel, souriant, professionnel et plein d'énergie.",
     date: "Avril 2025",
-    avatar: "https://ui-avatars.com/api/?name=Ines+Mir&background=10B981&color=fff&size=100"
+    avatar: "https://ui-avatars.com/api/?name=Ines+Mir&background=10B981&color=fff&size=100",
+    source: 'google'
   },
   {
     id: 4,
@@ -41,7 +46,8 @@ const testimonials: Testimonial[] = [
     rating: 5,
     text: "Super équipe pour les événements, entreprise très professionnel, matériel de qualité, mise en avant de la sécurité, une merveilleuse journée grâce à vous ! Merci pour votre gentillesse et professionnalisme !!",
     date: "Juin 2025",
-    avatar: "https://ui-avatars.com/api/?name=Kenza+A&background=8B5CF6&color=fff&size=100"
+    avatar: "https://ui-avatars.com/api/?name=Kenza+A&background=8B5CF6&color=fff&size=100",
+    source: 'google'
   },
   {
     id: 5,
@@ -49,7 +55,8 @@ const testimonials: Testimonial[] = [
     rating: 5,
     text: "Super prestataire ! Je vous le recommande grandement pour vos événements !!",
     date: "Juin 2025",
-    avatar: "https://ui-avatars.com/api/?name=Diatou+N&background=EC4899&color=fff&size=100"
+    avatar: "https://ui-avatars.com/api/?name=Diatou+N&background=EC4899&color=fff&size=100",
+    source: 'google'
   },
   {
     id: 6,
@@ -57,7 +64,8 @@ const testimonials: Testimonial[] = [
     rating: 5,
     text: "Service au top ! Je recommande à 100% ! Sérieux et professionnel à la fois. Très bon rapport qualité prix.",
     date: "Juin 2025",
-    avatar: "https://ui-avatars.com/api/?name=Geoffrey+P&background=14B8A6&color=fff&size=100"
+    avatar: "https://ui-avatars.com/api/?name=Geoffrey+P&background=14B8A6&color=fff&size=100",
+    source: 'google'
   },
   {
     id: 7,
@@ -65,32 +73,59 @@ const testimonials: Testimonial[] = [
     rating: 5,
     text: "Très bon service de qualité !",
     date: "Juin 2025",
-    avatar: "https://ui-avatars.com/api/?name=Yasmimi+H&background=F59E0B&color=fff&size=100"
+    avatar: "https://ui-avatars.com/api/?name=Yasmimi+H&background=F59E0B&color=fff&size=100",
+    source: 'google'
   }
 ];
 
+const avatarColors = ['3B82F6', 'F97316', '10B981', '8B5CF6', 'EC4899', '14B8A6', 'F59E0B', 'EF4444', '6366F1'];
+
 const TestimonialsModern: React.FC = () => {
+  const { reviews } = useStructures();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+  // Combine Google reviews with visible admin reviews
+  const allTestimonials: Testimonial[] = [
+    ...googleTestimonials,
+    ...reviews
+      .filter(r => r.visible)
+      .map((r, i) => ({
+        id: `admin-${r.id}`,
+        name: r.name,
+        rating: r.rating,
+        text: r.comment,
+        date: r.date,
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(r.name)}&background=${avatarColors[i % avatarColors.length]}&color=fff&size=100`,
+        source: 'admin' as const
+      }))
+  ];
 
   useEffect(() => {
     if (!isAutoPlaying) return;
 
     const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % testimonials.length);
+      setActiveIndex((prev) => (prev + 1) % allTestimonials.length);
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, allTestimonials.length]);
+
+  // Reset index if it goes out of bounds
+  useEffect(() => {
+    if (activeIndex >= allTestimonials.length) {
+      setActiveIndex(0);
+    }
+  }, [allTestimonials.length, activeIndex]);
 
   const handlePrev = () => {
     setIsAutoPlaying(false);
-    setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+    setActiveIndex((prev) => (prev - 1 + allTestimonials.length) % allTestimonials.length);
   };
 
   const handleNext = () => {
     setIsAutoPlaying(false);
-    setActiveIndex((prev) => (prev + 1) % testimonials.length);
+    setActiveIndex((prev) => (prev + 1) % allTestimonials.length);
   };
 
   const renderStars = (rating: number) => {
@@ -104,6 +139,9 @@ const TestimonialsModern: React.FC = () => {
     ));
   };
 
+  const current = allTestimonials[activeIndex];
+  if (!current) return null;
+
   return (
     <section className="py-24 bg-gradient-to-b from-white to-slate-50 relative overflow-hidden">
       {/* Background decorations */}
@@ -114,8 +152,8 @@ const TestimonialsModern: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <span className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 text-yellow-700 text-sm font-semibold rounded-full mb-4">
-            <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4" />
-            Avis Google
+            <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+            Avis clients
           </span>
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
             Ce que disent nos <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-orange-500">clients</span>
@@ -123,7 +161,7 @@ const TestimonialsModern: React.FC = () => {
           <div className="flex items-center justify-center gap-4">
             <div className="flex">{renderStars(5)}</div>
             <span className="text-2xl font-bold text-gray-900">5/5</span>
-            <span className="text-gray-500">basé sur 7 avis Google</span>
+            <span className="text-gray-500">basé sur {allTestimonials.length} avis</span>
           </div>
         </div>
 
@@ -158,28 +196,30 @@ const TestimonialsModern: React.FC = () => {
             {/* Content */}
             <div className="text-center">
               {/* Rating */}
-              <div className="flex justify-center mb-6">{renderStars(testimonials[activeIndex].rating)}</div>
+              <div className="flex justify-center mb-6">{renderStars(current.rating)}</div>
 
               {/* Text */}
               <p className="text-xl md:text-2xl text-gray-700 leading-relaxed mb-8 italic">
-                "{testimonials[activeIndex].text}"
+                "{current.text}"
               </p>
 
               {/* Date badge */}
               <span className="inline-block px-4 py-2 bg-orange-100 text-orange-700 text-sm font-semibold rounded-full mb-6">
-                {testimonials[activeIndex].date}
+                {current.date}
               </span>
 
               {/* Author */}
               <div className="flex items-center justify-center gap-4">
                 <img
-                  src={testimonials[activeIndex].avatar}
-                  alt={testimonials[activeIndex].name}
+                  src={current.avatar}
+                  alt={current.name}
                   className="w-16 h-16 rounded-full object-cover border-4 border-white shadow-lg"
                 />
                 <div className="text-left">
-                  <p className="font-bold text-gray-900 text-lg">{testimonials[activeIndex].name}</p>
-                  <p className="text-gray-500 text-sm">Avis Google</p>
+                  <p className="font-bold text-gray-900 text-lg">{current.name}</p>
+                  <p className="text-gray-500 text-sm">
+                    {current.source === 'google' ? 'Avis Google' : 'Avis client'}
+                  </p>
                 </div>
               </div>
             </div>
@@ -188,7 +228,7 @@ const TestimonialsModern: React.FC = () => {
 
         {/* Dots */}
         <div className="flex justify-center gap-3">
-          {testimonials.map((_, index) => (
+          {allTestimonials.map((_, index) => (
             <button
               key={index}
               onClick={() => {
@@ -206,7 +246,7 @@ const TestimonialsModern: React.FC = () => {
 
         {/* Mini cards preview */}
         <div className="hidden md:grid grid-cols-3 gap-6 mt-12">
-          {testimonials.slice(0, 3).map((testimonial, index) => (
+          {allTestimonials.slice(0, 3).map((testimonial, index) => (
             <div
               key={testimonial.id}
               onClick={() => {

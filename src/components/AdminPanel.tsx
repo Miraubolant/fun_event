@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Save, X, Package, DollarSign, Image, Camera, ArrowUp, ArrowDown, AlertTriangle, GripVertical } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, X, Package, DollarSign, Image, Camera, ArrowUp, ArrowDown, AlertTriangle, GripVertical, Star } from 'lucide-react';
 import { useStructures } from '../contexts/StructuresContext';
 import { useAuth } from '../contexts/AuthContext';
-import { Structure, Category, CarouselPhoto, DeliveryZone, Subcategory } from '../types';
+import { Structure, Category, CarouselPhoto, DeliveryZone, Subcategory, Review } from '../types';
 
 const AdminPanel: React.FC = () => {
   const {
@@ -27,7 +27,11 @@ const AdminPanel: React.FC = () => {
     deleteDeliveryZone,
     addSubcategory,
     updateSubcategory,
-    deleteSubcategory
+    deleteSubcategory,
+    reviews,
+    addReview,
+    updateReview,
+    deleteReview
   } = useStructures();
   const { logout } = useAuth();
   
@@ -41,6 +45,8 @@ const AdminPanel: React.FC = () => {
   const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
   const [editingZoneId, setEditingZoneId] = useState<string | null>(null);
   const [editingSubcategoryId, setEditingSubcategoryId] = useState<string | null>(null);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
 
   const [deleteConfirm, setDeleteConfirm] = useState<{
     isOpen: boolean;
@@ -54,6 +60,7 @@ const AdminPanel: React.FC = () => {
   const [photoData, setPhotoData] = useState<Partial<CarouselPhoto>>({});
   const [zoneData, setZoneData] = useState<Partial<DeliveryZone>>({});
   const [subcategoryData, setSubcategoryData] = useState<Partial<Subcategory>>({});
+  const [reviewData, setReviewData] = useState<Partial<Review>>({});
   const [newImageUrl, setNewImageUrl] = useState('');
   
   // États pour le glisser-déposer
@@ -90,6 +97,12 @@ const AdminPanel: React.FC = () => {
     setShowSubcategoryModal(true);
   };
 
+  const openReviewModal = () => {
+    setReviewData({ rating: 5, visible: true });
+    setEditingReviewId(null);
+    setShowReviewModal(true);
+  };
+
   // Fonctions pour fermer les modales
   const closeAllModals = () => {
     setShowStructureModal(false);
@@ -97,15 +110,18 @@ const AdminPanel: React.FC = () => {
     setShowPhotoModal(false);
     setShowZoneModal(false);
     setShowSubcategoryModal(false);
+    setShowReviewModal(false);
     setEditingStructureId(null);
     setEditingPhotoId(null);
     setEditingZoneId(null);
     setEditingSubcategoryId(null);
+    setEditingReviewId(null);
     setFormData({});
     setCategoryData({});
     setPhotoData({});
     setZoneData({});
     setSubcategoryData({});
+    setReviewData({});
     setNewImageUrl('');
   };
 
@@ -150,7 +166,10 @@ const AdminPanel: React.FC = () => {
           additionalImages: formData.additionalImages || [],
           description: formData.description || '',
           available: formData.available ?? true,
-          customPricing: formData.customPricing ?? false
+          customPricing: formData.customPricing ?? false,
+          showDimensions: formData.showDimensions ?? true,
+          showCapacity: formData.showCapacity ?? true,
+          showAge: formData.showAge ?? true
         };
         
         addStructure(newStructure).then(() => {
@@ -164,7 +183,7 @@ const AdminPanel: React.FC = () => {
   };
 
   const handleSaveCategory = () => {
-    if (categoryData.label && categoryData.icon) {
+    if (categoryData.label) {
       const newCategory = {
         label: categoryData.label,
         icon: categoryData.icon
@@ -487,6 +506,58 @@ const AdminPanel: React.FC = () => {
     setShowSubcategoryModal(true);
   };
 
+  // Fonctions pour les avis
+  const handleSaveReview = () => {
+    if (reviewData.name && reviewData.comment) {
+      if (editingReviewId) {
+        updateReview(editingReviewId, reviewData);
+      } else {
+        addReview({
+          name: reviewData.name,
+          rating: reviewData.rating || 5,
+          comment: reviewData.comment,
+          date: reviewData.date || new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }),
+          visible: reviewData.visible ?? true,
+          order: reviewData.order || 0
+        });
+      }
+      closeAllModals();
+    }
+  };
+
+  const handleEditReview = (review: Review) => {
+    setEditingReviewId(review.id);
+    setReviewData({
+      name: review.name,
+      rating: review.rating,
+      comment: review.comment,
+      date: review.date,
+      visible: review.visible,
+      order: review.order
+    });
+    setShowReviewModal(true);
+  };
+
+  const handleDeleteReview = (id: string) => {
+    setDeleteConfirm({ isOpen: true, type: 'structure', id, name: 'cet avis' });
+  };
+
+  const confirmDeleteReview = async (id: string) => {
+    try {
+      await deleteReview(id);
+    } catch (error) {
+      alert('Erreur lors de la suppression de l\'avis');
+    }
+  };
+
+  const handleToggleReviewVisibility = async (review: Review) => {
+    try {
+      await updateReview(review.id, { visible: !review.visible });
+    } catch (error) {
+      alert('Erreur lors de la mise à jour de l\'avis');
+    }
+  };
+
   return (
     <section className="py-8 lg:py-16 bg-gradient-to-br from-gray-50 via-blue-50/30 to-orange-50/30 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -678,6 +749,75 @@ const AdminPanel: React.FC = () => {
                 </div>
               );
             })}
+          </div>
+        </div>
+
+        {/* Section des avis */}
+        <div className="bg-white rounded-xl shadow-lg p-4 lg:p-6 mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl lg:text-2xl font-bold text-gray-900">Avis clients ({reviews.length})</h2>
+            <button
+              onClick={openReviewModal}
+              className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 rounded-lg font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all flex items-center text-sm shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Nouvel avis
+            </button>
+          </div>
+
+          <p className="text-sm text-gray-500 mb-4">
+            Ces avis seront affichés sur la page d'accueil dans la section témoignages, en complément des avis Google existants.
+          </p>
+
+          <div className="space-y-3">
+            {reviews.map((review) => (
+              <div key={review.id} className={`p-4 rounded-lg border transition-all ${review.visible ? 'bg-white border-gray-200' : 'bg-gray-50 border-gray-100 opacity-60'}`}>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="font-bold text-gray-900">{review.name}</span>
+                      <div className="flex">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star key={i} className={`w-4 h-4 ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} />
+                        ))}
+                      </div>
+                      <span className="text-xs text-gray-500">{review.date}</span>
+                      {!review.visible && (
+                        <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full">Masqué</span>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-600 line-clamp-2">{review.comment}</p>
+                  </div>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <button
+                      onClick={() => handleToggleReviewVisibility(review)}
+                      className={`p-1.5 rounded transition-colors ${review.visible ? 'text-green-600 hover:bg-green-100' : 'text-gray-400 hover:bg-gray-200'}`}
+                      title={review.visible ? 'Masquer' : 'Afficher'}
+                    >
+                      {review.visible ? '👁️' : '🚫'}
+                    </button>
+                    <button
+                      onClick={() => handleEditReview(review)}
+                      className="text-blue-600 hover:text-blue-800 transition-colors p-1.5 hover:bg-blue-100 rounded"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => confirmDeleteReview(review.id)}
+                      className="text-red-600 hover:text-red-800 transition-colors p-1.5 hover:bg-red-100 rounded"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+            {reviews.length === 0 && (
+              <div className="text-center py-8 text-gray-400">
+                <Star className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                <p>Aucun avis ajouté. Cliquez sur "Nouvel avis" pour en créer un.</p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -1102,6 +1242,43 @@ const AdminPanel: React.FC = () => {
                     </div>
                   </div>
                   
+                  {/* Affichage des caractéristiques */}
+                  <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-teal-500">
+                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                      <span className="w-4 h-4 mr-2">👁️</span>
+                      Affichage sur la fiche
+                    </h4>
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          checked={formData.showDimensions ?? true}
+                          onChange={(e) => setFormData({...formData, showDimensions: e.target.checked})}
+                          className="w-4 h-4 text-teal-600 rounded"
+                        />
+                        <label className="text-sm text-gray-700">Afficher les dimensions</label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          checked={formData.showCapacity ?? true}
+                          onChange={(e) => setFormData({...formData, showCapacity: e.target.checked})}
+                          className="w-4 h-4 text-teal-600 rounded"
+                        />
+                        <label className="text-sm text-gray-700">Afficher la capacité</label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          checked={formData.showAge ?? true}
+                          onChange={(e) => setFormData({...formData, showAge: e.target.checked})}
+                          className="w-4 h-4 text-teal-600 rounded"
+                        />
+                        <label className="text-sm text-gray-700">Afficher l'âge recommandé</label>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Image principale */}
                   <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-purple-500">
                     <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
@@ -1268,7 +1445,7 @@ const AdminPanel: React.FC = () => {
                 />
                 <input
                   type="text"
-                  placeholder="Emoji (ex: 🏰) *"
+                  placeholder="Emoji (ex: 🏰)"
                   value={categoryData.icon || ''}
                   onChange={(e) => setCategoryData({...categoryData, icon: e.target.value})}
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
@@ -1464,7 +1641,7 @@ const AdminPanel: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Icône (emoji) *
+                    Icône (emoji)
                   </label>
                   <input
                     type="text"
@@ -1615,6 +1792,116 @@ const AdminPanel: React.FC = () => {
               >
                 Supprimer
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modale Avis */}
+      {showReviewModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-gray-900">
+                  {editingReviewId ? 'Modifier l\'avis' : 'Ajouter un avis'}
+                </h3>
+                <button
+                  onClick={closeAllModals}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Nom du client *
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="ex: Jean Dupont"
+                    value={reviewData.name || ''}
+                    onChange={(e) => setReviewData({...reviewData, name: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Note (1-5)
+                  </label>
+                  <div className="flex gap-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setReviewData({...reviewData, rating: star})}
+                        className="p-1"
+                      >
+                        <Star className={`w-8 h-8 transition-colors ${star <= (reviewData.rating || 5) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Commentaire *
+                  </label>
+                  <textarea
+                    placeholder="Le commentaire du client..."
+                    value={reviewData.comment || ''}
+                    onChange={(e) => setReviewData({...reviewData, comment: e.target.value})}
+                    rows={4}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Date
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="ex: Mars 2026"
+                    value={reviewData.date || ''}
+                    onChange={(e) => setReviewData({...reviewData, date: e.target.value})}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={reviewData.visible ?? true}
+                      onChange={(e) => setReviewData({...reviewData, visible: e.target.checked})}
+                      className="mr-2 w-4 h-4 text-yellow-600 rounded focus:ring-yellow-500"
+                    />
+                    <span className="text-sm font-semibold text-gray-700">Visible sur la page d'accueil</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                <button
+                  onClick={handleSaveReview}
+                  disabled={!reviewData.name || !reviewData.comment}
+                  className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Save className="w-5 h-5 mr-2" />
+                  {editingReviewId ? 'Modifier' : 'Ajouter'}
+                </button>
+                <button
+                  onClick={closeAllModals}
+                  className="bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors flex items-center justify-center shadow-lg hover:shadow-xl"
+                >
+                  <X className="w-5 h-5 mr-2" />
+                  Annuler
+                </button>
+              </div>
             </div>
           </div>
         </div>

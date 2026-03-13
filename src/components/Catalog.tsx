@@ -130,9 +130,9 @@ const Catalog: React.FC = () => {
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-700 leading-relaxed font-semibold max-w-4xl mx-auto drop-shadow-sm" itemProp="description">
-              🎪 Découvrez notre <span className="font-bold" style={{color: '#0F97F6'}}>large gamme</span> de structures gonflables 
-              <span className="font-bold text-orange-500"> premium</span> pour tous les âges et tous les 
-              <span className="font-bold" style={{color: '#0F97F6'}}> événements</span> 🎉
+              Découvrez notre gamme de <span className="font-bold" style={{color: '#0F97F6'}}>structures gonflables</span> pour tous les âges et tous les événements.
+              <br className="hidden md:block" />
+              Avec <span className="font-bold text-orange-500">Fun Event</span>, vous pouvez louer votre château gonflable pour un anniversaire, une fête familiale, une kermesse ou un événement.
             </p>
           </div>
         </div>

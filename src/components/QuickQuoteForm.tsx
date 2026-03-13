@@ -34,26 +34,39 @@ export default function QuickQuoteForm({ cityName, postalCode, structureName }: 
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simuler l'envoi (à remplacer par votre vraie logique)
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      const body = new FormData();
+      body.append('name', formData.name);
+      body.append('email', formData.email);
+      body.append('phone', formData.phone);
+      body.append('eventType', formData.eventType);
+      body.append('date', formData.date);
+      body.append('guests', formData.guests);
+      body.append('message', formData.message);
+      if (structureName) body.append('structure', structureName);
+      if (cityName) body.append('location', `${cityName} (${postalCode})`);
 
-    console.log('Devis demandé pour', cityName, formData);
-    setIsSubmitted(true);
-    setIsSubmitting(false);
-
-    // Réinitialiser après 5 secondes
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        eventType: '',
-        date: '',
-        guests: '',
-        message: ''
+      const response = await fetch('https://formspree.io/f/myzpezbg', {
+        method: 'POST',
+        body,
+        headers: { 'Accept': 'application/json' },
       });
-    }, 5000);
+
+      if (response.ok) {
+        setIsSubmitted(true);
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setFormData({ name: '', email: '', phone: '', eventType: '', date: '', guests: '', message: '' });
+        }, 5000);
+      } else {
+        alert("Erreur lors de l'envoi. Veuillez réessayer.");
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert("Erreur lors de l'envoi. Veuillez réessayer.");
+    }
+
+    setIsSubmitting(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -76,7 +89,7 @@ export default function QuickQuoteForm({ cityName, postalCode, structureName }: 
           Merci pour votre demande de devis{structureName ? ` pour ${structureName}` : cityName ? ` à ${cityName}` : ''}
         </p>
         <p className="text-gray-600">
-          Nous vous répondrons dans les <strong>48h</strong> par email ou téléphone.
+          Nous vous répondrons dans les <strong>24h</strong> par email ou téléphone.
         </p>
       </div>
     );
@@ -99,7 +112,7 @@ export default function QuickQuoteForm({ cityName, postalCode, structureName }: 
             {structureName ? `Réservez ${structureName}` : `Votre événement à ${cityName}`}
           </h2>
           <p className="text-lg opacity-90 font-medium">
-            Réponse personnalisée en moins de 48h
+            Réponse personnalisée en moins de 24h
           </p>
         </div>
       </div>
@@ -198,8 +211,8 @@ export default function QuickQuoteForm({ cityName, postalCode, structureName }: 
           </div>
           <p className="mt-2 text-xs text-gray-500">
             {cityName
-              ? `✅ Livraison et installation gratuites à ${cityName}`
-              : '✅ Livraison et installation gratuites en Île-de-France'}
+              ? `✅ Livraison et installation incluses à ${cityName}`
+              : '✅ Livraison et installation incluses en Île-de-France'}
           </p>
         </div>
 
