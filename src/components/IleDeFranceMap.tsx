@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, ChevronRight } from 'lucide-react';
+import { MapPin, ChevronRight, Navigation } from 'lucide-react';
 
 interface Department {
   id: string;
@@ -87,7 +87,6 @@ const departments: Department[] = [
   },
 ];
 
-// Pre-calculated label positions (center of each department)
 const labelPositions: Record<string, { x: number; y: number }> = {
   '75': { x: 312, y: 143 },
   '77': { x: 345, y: 162 },
@@ -108,6 +107,15 @@ const IleDeFranceMap: React.FC<IleDeFranceMapProps> = ({ onHover, activeDept }) 
   const navigate = useNavigate();
   const [hoveredDept, setHoveredDept] = useState<string | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+  const [pulsePhase, setPulsePhase] = useState(0);
+
+  // Subtle pulse animation for Paris beacon
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPulsePhase((p) => (p + 1) % 3);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleMouseEnter = (dept: Department, e: React.MouseEvent) => {
     setHoveredDept(dept.id);
@@ -116,7 +124,6 @@ const IleDeFranceMap: React.FC<IleDeFranceMapProps> = ({ onHover, activeDept }) 
     if (svg) {
       const rect = svg.getBoundingClientRect();
       const pos = labelPositions[dept.id];
-      // Convert SVG coordinates to screen position
       const scaleX = rect.width / 130;
       const scaleY = rect.height / 100;
       setTooltipPos({
@@ -138,47 +145,125 @@ const IleDeFranceMap: React.FC<IleDeFranceMapProps> = ({ onHover, activeDept }) 
   const active = activeDept || hoveredDept;
   const activeDeptData = departments.find(d => d.id === active);
 
+  // Paris center in SVG coords
+  const parisCenter = labelPositions['75'];
+
   return (
     <div className="relative">
+      <style>{`
+        @keyframes mapPulseRing {
+          0% { r: 2; opacity: 0.6; }
+          100% { r: 12; opacity: 0; }
+        }
+        @keyframes mapFloat {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-3px); }
+        }
+        @keyframes tooltipEnter {
+          from { opacity: 0; transform: translate(-50%, -90%) scale(0.92); }
+          to { opacity: 1; transform: translate(-50%, -100%) scale(1); }
+        }
+        .map-tooltip-enter {
+          animation: tooltipEnter 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .map-dept-path {
+          transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .map-dept-path:hover {
+          filter: brightness(1.1) drop-shadow(0 2px 6px rgba(0,0,0,0.2));
+        }
+      `}</style>
+
       <svg
-        viewBox="265 115 130 100"
-        className="w-full h-auto"
+        viewBox="260 112 140 108"
+        className="w-full h-auto drop-shadow-sm"
         xmlns="http://www.w3.org/2000/svg"
-        aria-label="Carte interactive de l'Île-de-France"
+        aria-label="Carte interactive de l'Ile-de-France"
       >
         <defs>
-          {/* Ombre portée pour les départements survolés */}
-          <filter id="dept-shadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="1" stdDeviation="2" floodColor="#000" floodOpacity="0.2" />
-          </filter>
-          <filter id="dept-glow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="2" result="blur" />
-            <feFlood floodColor="#3b82f6" floodOpacity="0.3" />
-            <feComposite in2="blur" operator="in" />
+          {/* Gradient backgrounds for each department */}
+          {departments.map((dept) => (
+            <linearGradient key={`grad-${dept.id}`} id={`dept-grad-${dept.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor={dept.fill} stopOpacity="1" />
+              <stop offset="100%" stopColor={dept.fillHover} stopOpacity="1" />
+            </linearGradient>
+          ))}
+
+          {/* Glow filter for active state */}
+          <filter id="dept-active-glow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="1.5" result="blur" />
+            <feFlood floodOpacity="0.25" result="flood" />
+            <feComposite in="flood" in2="blur" operator="in" result="shadow" />
             <feMerge>
-              <feMergeNode />
+              <feMergeNode in="shadow" />
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
+
+          {/* Subtle inner shadow */}
+          <filter id="dept-inner" x="-5%" y="-5%" width="110%" height="110%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="0.8" result="blur" />
+            <feOffset dx="0" dy="0.5" />
+            <feComposite in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" />
+            <feFlood floodColor="#000" floodOpacity="0.08" />
+            <feComposite in2="SourceGraphic" operator="in" />
+            <feMerge>
+              <feMergeNode in="SourceGraphic" />
+              <feMergeNode />
+            </feMerge>
+          </filter>
+
+          {/* Dot pattern for background texture */}
+          <pattern id="map-dots" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r="0.3" fill="rgba(148,163,184,0.15)" />
+          </pattern>
         </defs>
 
-        {/* Départements */}
+        {/* Background texture area */}
+        <rect x="260" y="112" width="140" height="108" fill="url(#map-dots)" rx="2" />
+
+        {/* Subtle concentric rings from Paris - geographic context */}
+        {[18, 30, 42].map((r, i) => (
+          <circle
+            key={i}
+            cx={parisCenter.x}
+            cy={parisCenter.y}
+            r={r}
+            fill="none"
+            stroke="rgba(59,130,246,0.06)"
+            strokeWidth="0.3"
+            strokeDasharray="2 2"
+          />
+        ))}
+
+        {/* Department paths */}
         {departments.map((dept) => {
           const isActive = active === dept.id;
+          const pos = labelPositions[dept.id];
           return (
             <g key={dept.id}>
+              {/* Shadow underneath */}
+              {isActive && (
+                <path
+                  d={dept.path}
+                  fill="rgba(0,0,0,0.1)"
+                  transform={`translate(0.4, 0.6)`}
+                  className="pointer-events-none"
+                  style={{ filter: 'blur(1px)' }}
+                />
+              )}
               <path
                 d={dept.path}
-                fill={isActive ? dept.fillHover : dept.fill}
-                stroke="white"
-                strokeWidth={isActive ? 1.2 : 0.6}
+                fill={`url(#dept-grad-${dept.id})`}
+                stroke={isActive ? 'white' : 'rgba(255,255,255,0.8)'}
+                strokeWidth={isActive ? 1.4 : 0.5}
                 strokeLinejoin="round"
-                className="transition-all duration-300 cursor-pointer"
+                className="map-dept-path cursor-pointer"
                 style={{
-                  filter: isActive ? 'url(#dept-glow)' : 'none',
-                  transform: isActive ? 'scale(1.02)' : 'scale(1)',
-                  transformOrigin: `${labelPositions[dept.id].x}px ${labelPositions[dept.id].y}px`,
-                  opacity: active && !isActive ? 0.55 : 1,
+                  filter: isActive ? 'url(#dept-active-glow)' : 'url(#dept-inner)',
+                  transform: isActive ? 'scale(1.03)' : 'scale(1)',
+                  transformOrigin: `${pos.x}px ${pos.y}px`,
+                  opacity: active && !isActive ? 0.45 : 1,
                 }}
                 onMouseEnter={(e) => handleMouseEnter(dept, e)}
                 onMouseLeave={handleMouseLeave}
@@ -186,55 +271,131 @@ const IleDeFranceMap: React.FC<IleDeFranceMapProps> = ({ onHover, activeDept }) 
                 role="button"
                 aria-label={`${dept.name} - ${dept.cities} villes`}
               />
-              {/* Code du département */}
-              <text
-                x={labelPositions[dept.id].x}
-                y={labelPositions[dept.id].y}
-                textAnchor="middle"
-                dominantBaseline="central"
-                className="pointer-events-none select-none"
-                fill="white"
-                fontWeight="bold"
-                fontSize={dept.id === '75' || dept.id === '92' || dept.id === '93' || dept.id === '94' ? 3 : 4.5}
-                style={{
-                  textShadow: '0 0.5px 1px rgba(0,0,0,0.3)',
-                }}
-              >
-                {dept.id}
-              </text>
+              {/* Department label with backdrop */}
+              {(dept.id !== '75' && dept.id !== '92' && dept.id !== '93' && dept.id !== '94') && (
+                <>
+                  <ellipse
+                    cx={pos.x}
+                    cy={pos.y}
+                    rx="5"
+                    ry="3"
+                    fill="rgba(0,0,0,0.2)"
+                    className="pointer-events-none"
+                  />
+                  <text
+                    x={pos.x}
+                    y={pos.y}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    className="pointer-events-none select-none"
+                    fill="white"
+                    fontWeight="800"
+                    fontSize="4.2"
+                    letterSpacing="0.3"
+                    style={{ textShadow: '0 0.8px 2px rgba(0,0,0,0.4)' }}
+                  >
+                    {dept.id}
+                  </text>
+                </>
+              )}
+              {/* Smaller labels for petite couronne */}
+              {(dept.id === '92' || dept.id === '93' || dept.id === '94') && (
+                <text
+                  x={pos.x}
+                  y={pos.y}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  className="pointer-events-none select-none"
+                  fill="white"
+                  fontWeight="800"
+                  fontSize="2.8"
+                  letterSpacing="0.2"
+                  style={{ textShadow: '0 0.5px 1.5px rgba(0,0,0,0.4)' }}
+                >
+                  {dept.id}
+                </text>
+              )}
             </g>
           );
         })}
+
+        {/* Paris special treatment - pulsing beacon */}
+        <g className="pointer-events-none">
+          {[0, 1, 2].map((i) => (
+            <circle
+              key={`pulse-${i}`}
+              cx={parisCenter.x}
+              cy={parisCenter.y}
+              r="2"
+              fill="none"
+              stroke="white"
+              strokeWidth="0.4"
+              opacity={pulsePhase === i ? 0.6 : 0}
+              style={{
+                animation: pulsePhase === i ? 'mapPulseRing 2s ease-out forwards' : 'none',
+              }}
+            />
+          ))}
+          {/* Paris label - icon style */}
+          <circle cx={parisCenter.x} cy={parisCenter.y} r="2.5" fill="rgba(255,255,255,0.25)" />
+          <text
+            x={parisCenter.x}
+            y={parisCenter.y}
+            textAnchor="middle"
+            dominantBaseline="central"
+            fill="white"
+            fontWeight="900"
+            fontSize="2.8"
+            letterSpacing="0.2"
+            style={{ textShadow: '0 0.5px 1.5px rgba(0,0,0,0.5)' }}
+          >
+            75
+          </text>
+        </g>
       </svg>
 
       {/* Tooltip */}
       {hoveredDept && activeDeptData && (
         <div
-          className="absolute pointer-events-none z-20 animate-fade-in"
+          className="absolute pointer-events-none z-20 map-tooltip-enter"
           style={{
             left: `${tooltipPos.x}px`,
-            top: `${tooltipPos.y - 20}px`,
+            top: `${tooltipPos.y - 24}px`,
             transform: 'translate(-50%, -100%)',
           }}
         >
-          <div className="bg-white rounded-xl shadow-xl border border-gray-200 px-4 py-3 min-w-[160px]">
-            <div className="flex items-center gap-2 mb-1">
-              <div
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: activeDeptData.fill }}
-              />
-              <span className="font-bold text-gray-900 text-sm">{activeDeptData.name}</span>
+          <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 overflow-hidden min-w-[180px]">
+            {/* Color accent bar */}
+            <div
+              className="h-1"
+              style={{ background: `linear-gradient(90deg, ${activeDeptData.fill}, ${activeDeptData.fillHover})` }}
+            />
+            <div className="px-4 py-3">
+              <div className="flex items-center gap-2.5 mb-1.5">
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center shadow-sm"
+                  style={{ background: `linear-gradient(135deg, ${activeDeptData.fill}, ${activeDeptData.fillHover})` }}
+                >
+                  <span className="text-white font-bold text-xs">{activeDeptData.id}</span>
+                </div>
+                <div>
+                  <span className="font-bold text-gray-900 text-sm block leading-tight">{activeDeptData.name}</span>
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <MapPin className="w-3 h-3" />
+                    <span>{activeDeptData.cities} ville{activeDeptData.cities > 1 ? 's' : ''}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-1 text-xs font-semibold mt-2 pt-2 border-t border-gray-100"
+                style={{ color: activeDeptData.fill }}
+              >
+                <Navigation className="w-3 h-3" />
+                <span>Explorer les villes</span>
+                <ChevronRight className="w-3 h-3 ml-auto" />
+              </div>
             </div>
-            <div className="flex items-center gap-1 text-xs text-gray-500">
-              <MapPin className="w-3 h-3" />
-              <span>{activeDeptData.cities} ville{activeDeptData.cities > 1 ? 's' : ''} desservie{activeDeptData.cities > 1 ? 's' : ''}</span>
-            </div>
-            <div className="flex items-center gap-1 text-xs text-blue-600 font-medium mt-1">
-              <span>Voir les villes</span>
-              <ChevronRight className="w-3 h-3" />
-            </div>
-            {/* Flèche du tooltip */}
-            <div className="absolute left-1/2 -translate-x-1/2 -bottom-1.5 w-3 h-3 bg-white border-r border-b border-gray-200 transform rotate-45" />
+            {/* Tooltip arrow */}
+            <div className="absolute left-1/2 -translate-x-1/2 -bottom-2 w-4 h-4 bg-white/95 border-r border-b border-gray-100 transform rotate-45 backdrop-blur-xl" />
           </div>
         </div>
       )}
