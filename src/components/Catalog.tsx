@@ -378,27 +378,33 @@ const Catalog: React.FC = () => {
                 </p>
                 
                 <div className="space-y-4 mb-8">
-                  <div className="flex items-center text-sm text-gray-700 bg-gradient-to-r from-blue-50 to-blue-50/50 p-3 rounded-xl backdrop-blur-sm border border-blue-100/50">
-                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3 shadow-lg">
-                      <Ruler className="w-4 h-4 text-white" />
+                  {(structure.showDimensions !== false) && structure.size && (
+                    <div className="flex items-center text-sm text-gray-700 bg-gradient-to-r from-blue-50 to-blue-50/50 p-3 rounded-xl backdrop-blur-sm border border-blue-100/50">
+                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3 shadow-lg">
+                        <Ruler className="w-4 h-4 text-white" />
+                      </div>
+                      <span className="font-medium">Dimensions:</span>
+                      <span className="ml-2 font-semibold">{structure.size}</span>
                     </div>
-                    <span className="font-medium">Dimensions:</span>
-                    <span className="ml-2 font-semibold">{structure.size}</span>
-                  </div>
-                  <div className="flex items-center text-sm text-gray-700 bg-gradient-to-r from-orange-50 to-orange-50/50 p-3 rounded-xl backdrop-blur-sm border border-orange-100/50">
-                    <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center mr-3 shadow-lg">
-                      <Users className="w-4 h-4 text-white" />
+                  )}
+                  {(structure.showCapacity !== false) && structure.capacity && (
+                    <div className="flex items-center text-sm text-gray-700 bg-gradient-to-r from-orange-50 to-orange-50/50 p-3 rounded-xl backdrop-blur-sm border border-orange-100/50">
+                      <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center mr-3 shadow-lg">
+                        <Users className="w-4 h-4 text-white" />
+                      </div>
+                      <span className="font-medium">Capacité:</span>
+                      <span className="ml-2 font-semibold">{structure.capacity}</span>
                     </div>
-                    <span className="font-medium">Capacité:</span>
-                    <span className="ml-2 font-semibold">{structure.capacity}</span>
-                  </div>
-                  <div className="flex items-center text-sm text-gray-700 bg-gradient-to-r from-pink-50 to-pink-50/50 p-3 rounded-xl backdrop-blur-sm border border-pink-100/50">
-                    <div className="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center mr-3 shadow-lg">
-                      <Heart className="w-4 h-4 text-white" />
+                  )}
+                  {(structure.showAge !== false) && structure.age && (
+                    <div className="flex items-center text-sm text-gray-700 bg-gradient-to-r from-pink-50 to-pink-50/50 p-3 rounded-xl backdrop-blur-sm border border-pink-100/50">
+                      <div className="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center mr-3 shadow-lg">
+                        <Heart className="w-4 h-4 text-white" />
+                      </div>
+                      <span className="font-medium">Âge:</span>
+                      <span className="ml-2 font-semibold">{structure.age}</span>
                     </div>
-                    <span className="font-medium">Âge:</span>
-                    <span className="ml-2 font-semibold">{structure.age}</span>
-                  </div>
+                  )}
                 </div>
                 
                 <div className="flex gap-4">
