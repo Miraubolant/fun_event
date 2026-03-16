@@ -332,37 +332,31 @@ const Catalog: React.FC = () => {
               itemType="https://schema.org/Product"
               itemProp="itemListElement"
             >
-              <div className="relative">
-                {/* État de chargement */}
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse rounded-t-2xl"></div>
+              <div className="relative overflow-hidden">
+                {/* Image avec zoom au hover */}
                 <img
                   src={structure.image}
                   alt={`${structure.name} - Location structure gonflable ${structure.category} en Île-de-France | Fun Event`}
-                  className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700 relative z-0"
+                  className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700"
                   itemProp="image"
                   loading="lazy"
-                  onLoad={(e) => {
-                    // Masquer le placeholder une fois l'image chargée
-                    const placeholder = e.currentTarget.previousElementSibling;
-                    if (placeholder) placeholder.style.display = 'none';
-                  }}
                   onError={(e) => {
                     e.currentTarget.src = 'https://images.pexels.com/photos/1148998/pexels-photo-1148998.jpeg?auto=compress&cs=tinysrgb&w=400';
-                    const placeholder = e.currentTarget.previousElementSibling;
-                    if (placeholder) placeholder.style.display = 'none';
                   }}
                 />
-                <div className="absolute top-4 right-4 z-20 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-2xl border border-white/20 backdrop-blur-sm">
+                {/* Badge prix - toujours au-dessus */}
+                <div className="absolute top-4 right-4 z-30 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
                   <span itemProp="offers" itemScope itemType="https://schema.org/Offer">
                     {structure.customPricing || structure.price === 0 ? 'Prix sur Devis' : `À partir de ${structure.price}€`}
                   </span>
                 </div>
-                <div className="absolute inset-0 z-10 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-700 flex items-center justify-center backdrop-blur-0 group-hover:backdrop-blur-sm">
+                {/* Overlay au hover */}
+                <div className="absolute inset-0 z-20 bg-black/0 group-hover:bg-black/30 transition-all duration-500 flex items-center justify-center">
                   <button
                     onClick={(e) => { e.stopPropagation(); navigateToStructure(structure); }}
-                    className="opacity-0 group-hover:opacity-100 bg-white/95 backdrop-blur-sm text-blue-600 px-8 py-4 rounded-full font-bold transform translate-y-6 group-hover:translate-y-0 transition-all duration-700 shadow-2xl hover:shadow-3xl border border-white/30 hover:scale-110"
+                    className="opacity-0 group-hover:opacity-100 bg-white/95 text-blue-600 px-8 py-4 rounded-full font-bold transform translate-y-6 group-hover:translate-y-0 transition-all duration-500 shadow-2xl hover:scale-110"
                   >
-                    <Eye className="w-5 h-5 inline mr-3 drop-shadow-sm" />
+                    <Eye className="w-5 h-5 inline mr-3" />
                     Voir les détails
                   </button>
                 </div>
