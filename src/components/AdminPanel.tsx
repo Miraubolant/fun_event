@@ -991,7 +991,7 @@ const AdminPanel: React.FC = () => {
                     </td>
                     <td className="px-3 lg:px-6 py-4">
                       <div className="text-xs lg:text-sm font-semibold text-gray-900">
-                        {structure.customPricing ? (
+                        {(structure.customPricing || !structure.price) ? (
                           <div className="text-orange-600">Prix sur Devis</div>
                         ) : (
                           <>
