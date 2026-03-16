@@ -354,7 +354,7 @@ const Catalog: React.FC = () => {
                 />
                 <div className="absolute top-4 right-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-2xl border border-white/20 backdrop-blur-sm">
                   <span itemProp="offers" itemScope itemType="https://schema.org/Offer">
-                    {structure.customPricing || !structure.price ? 'Prix sur Devis' : `À partir de ${structure.price}€`}
+                    {structure.customPricing || structure.price === 0 ? 'Prix sur Devis' : `À partir de ${structure.price}€`}
                   </span>
                 </div>
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-700 flex items-center justify-center backdrop-blur-0 group-hover:backdrop-blur-sm">

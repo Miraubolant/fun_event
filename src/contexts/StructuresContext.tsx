@@ -95,30 +95,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
         // Charger les catégories
         supabase.from('categories').select('*').order('label'),
         // Charger les structures (données critiques)
-        supabase.from('structures').select(`
-          id,
-          name,
-          category_id,
-          subcategory_id,
-          size,
-          capacity,
-          age,
-          price,
-          price_2_days,
-          max_weight,
-          services,
-          image,
-          additional_images,
-          description,
-          available,
-          order_position,
-          custom_pricing,
-          show_dimensions,
-          show_capacity,
-          show_age,
-          created_at,
-          updated_at
-        `).order('order_position', { ascending: true })
+        supabase.from('structures').select('*').order('order_position', { ascending: true })
       ]);
 
       // Traiter les catégories
@@ -139,7 +116,7 @@ export const StructuresProvider: React.FC<StructuresProviderProps> = ({ children
           size: item.size || '',
           capacity: item.capacity || '',
           age: item.age || '',
-          price: item.price || 0,
+          price: item.price ?? 0,
           price2Days: item.price_2_days,
           maxWeight: item.max_weight,
           services: item.services,

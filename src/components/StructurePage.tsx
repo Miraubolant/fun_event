@@ -231,7 +231,7 @@ const StructurePage: React.FC = () => {
             {/* Title and price */}
             <div>
               <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">{structure.name}</h1>
-              {(structure.customPricing || !structure.price) ? (
+              {(structure.customPricing || structure.price === 0) ? (
                 <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-2xl font-bold text-xl shadow-lg">
                   Prix sur devis
                 </div>
@@ -313,7 +313,7 @@ const StructurePage: React.FC = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
-              {!(structure.customPricing || !structure.price) && (
+              {!(structure.customPricing || structure.price === 0) && (
                 <button
                   onClick={() => addToCart(structure)}
                   className={`flex-1 py-4 px-8 rounded-2xl font-bold text-lg transition-all transform hover:scale-[1.02] shadow-xl flex items-center justify-center gap-3 ${
@@ -333,7 +333,7 @@ const StructurePage: React.FC = () => {
                 className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white py-4 px-8 rounded-2xl font-bold text-lg hover:from-green-600 hover:to-green-700 transition-all transform hover:scale-[1.02] shadow-xl flex items-center justify-center gap-3"
               >
                 <MessageCircle className="w-6 h-6" />
-                {(structure.customPricing || !structure.price) ? 'Demander un devis' : 'WhatsApp'}
+                {(structure.customPricing || structure.price === 0) ? 'Demander un devis' : 'WhatsApp'}
               </a>
             </div>
 
@@ -473,7 +473,7 @@ const StructurePage: React.FC = () => {
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     <div className="absolute top-4 right-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-2 rounded-full text-sm font-bold">
-                      {(s.customPricing || !s.price) ? 'Devis' : `À partir de ${s.price}€`}
+                      {(s.customPricing || s.price === 0) ? 'Devis' : `À partir de ${s.price}€`}
                     </div>
                   </div>
                   <div className="p-6">
@@ -521,7 +521,7 @@ const StructurePage: React.FC = () => {
       </div>
 
       {/* Floating Cart Bar - Sticky bottom */}
-      {!(structure.customPricing || !structure.price) && (
+      {!(structure.customPricing || structure.price === 0) && (
         <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-gray-200 shadow-2xl z-50 transform transition-transform duration-300">
           <div className="max-w-7xl mx-auto px-4 py-4">
             <div className="flex items-center justify-between gap-4">
@@ -575,7 +575,7 @@ const StructurePage: React.FC = () => {
       )}
 
       {/* Spacer for floating bar */}
-      {!(structure.customPricing || !structure.price) && <div className="h-24" />}
+      {!(structure.customPricing || structure.price === 0) && <div className="h-24" />}
     </section>
   );
 };
