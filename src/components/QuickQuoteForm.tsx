@@ -209,11 +209,6 @@ export default function QuickQuoteForm({ cityName, postalCode, structureName }: 
               />
             )}
           </div>
-          <p className="mt-2 text-xs text-gray-500">
-            {cityName
-              ? `✅ Livraison et installation incluses à ${cityName}`
-              : '✅ Livraison et installation incluses en Île-de-France'}
-          </p>
         </div>
 
         {/* Informations de contact */}
