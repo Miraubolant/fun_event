@@ -262,13 +262,13 @@ export default function DepartmentsSection() {
           <div className="bg-white rounded-3xl shadow-xl border border-gray-100/80 mb-6">
             {/* Accent ligne en haut avec son propre overflow-hidden */}
             <div className="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 rounded-t-3xl" />
-            <div className="p-4">
-              <div className="flex items-center gap-2 mb-3">
+            <div className="px-2 pt-4 pb-2">
+              <div className="flex items-center gap-2 mb-3 px-3">
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Carte interactive — Appuyez pour naviguer</span>
               </div>
-              {/* Conteneur SVG avec hauteur minimale explicite */}
-              <div className="w-full" style={{ minHeight: '220px' }}>
+              {/* Carte pleine largeur, sans padding latéral */}
+              <div className="w-full" style={{ minHeight: '300px' }}>
                 <IleDeFranceMap />
               </div>
             </div>
