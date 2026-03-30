@@ -137,9 +137,9 @@ export default function DepartmentsSection() {
               {/* Card glow on hover */}
               <div className="absolute -inset-1 bg-gradient-to-br from-blue-400/20 via-transparent to-orange-400/20 rounded-[2rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-              <div className="relative bg-white rounded-3xl shadow-xl border border-gray-100/80 overflow-hidden">
+              <div className="relative bg-white rounded-3xl shadow-xl border border-gray-100/80">
                 {/* Top accent line */}
-                <div className="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500" />
+                <div className="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 rounded-t-3xl" />
 
                 <div className="p-6 pb-4">
                   {/* Map header */}
@@ -258,18 +258,22 @@ export default function DepartmentsSection() {
 
         {/* Mobile / Tablet */}
         <div className="lg:hidden mb-16">
-          {/* Map card mobile */}
-          <div className="bg-white rounded-3xl shadow-xl border border-gray-100/80 overflow-hidden mb-6">
-            <div className="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500" />
-            <div className="p-5">
+          {/* Map card mobile — pas de overflow-hidden global pour ne pas couper la carte */}
+          <div className="bg-white rounded-3xl shadow-xl border border-gray-100/80 mb-6">
+            {/* Accent ligne en haut avec son propre overflow-hidden */}
+            <div className="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 rounded-t-3xl" />
+            <div className="p-4">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Carte interactive</span>
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Carte interactive — Appuyez pour naviguer</span>
               </div>
-              <IleDeFranceMap />
+              {/* Conteneur SVG avec hauteur minimale explicite */}
+              <div className="w-full" style={{ minHeight: '220px' }}>
+                <IleDeFranceMap />
+              </div>
             </div>
-            <div className="border-t border-gray-100 bg-gray-50/50 px-5 py-3 flex items-center justify-between">
-              <p className="text-sm text-gray-400">Cliquez sur un departement</p>
+            <div className="border-t border-gray-100 bg-gray-50/50 px-5 py-3 flex items-center justify-between rounded-b-3xl">
+              <p className="text-sm text-gray-400">Appuyez sur un département</p>
               <p className="text-lg font-black bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
                 {totalCities}+ villes
               </p>

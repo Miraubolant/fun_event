@@ -124,11 +124,16 @@ const IleDeFranceMap: React.FC<IleDeFranceMapProps> = ({ onHover, activeDept }) 
     if (svg) {
       const rect = svg.getBoundingClientRect();
       const pos = labelPositions[dept.id];
-      const scaleX = rect.width / 130;
-      const scaleY = rect.height / 100;
+      // viewBox="260 112 140 108"
+      const scaleX = rect.width / 140;
+      const scaleY = rect.height / 108;
+      const rawX = (pos.x - 260) * scaleX;
+      const rawY = (pos.y - 112) * scaleY;
+      // Clamp tooltip to stay inside the SVG container
+      const tooltipW = 190;
       setTooltipPos({
-        x: (pos.x - 265) * scaleX,
-        y: (pos.y - 115) * scaleY,
+        x: Math.min(Math.max(rawX, tooltipW / 2), rect.width - tooltipW / 2),
+        y: Math.max(rawY, 60),
       });
     }
   };
@@ -176,7 +181,8 @@ const IleDeFranceMap: React.FC<IleDeFranceMapProps> = ({ onHover, activeDept }) 
 
       <svg
         viewBox="260 112 140 108"
-        className="w-full h-auto drop-shadow-sm"
+        className="w-full drop-shadow-sm"
+        style={{ aspectRatio: '140 / 108', display: 'block' }}
         xmlns="http://www.w3.org/2000/svg"
         aria-label="Carte interactive de l'Ile-de-France"
       >
@@ -354,10 +360,10 @@ const IleDeFranceMap: React.FC<IleDeFranceMapProps> = ({ onHover, activeDept }) 
         </g>
       </svg>
 
-      {/* Tooltip */}
+      {/* Tooltip — masqué sur mobile (touch ne déclenche pas hover) */}
       {hoveredDept && activeDeptData && (
         <div
-          className="absolute pointer-events-none z-20 map-tooltip-enter"
+          className="absolute pointer-events-none z-20 map-tooltip-enter hidden sm:block"
           style={{
             left: `${tooltipPos.x}px`,
             top: `${tooltipPos.y - 24}px`,
